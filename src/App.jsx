@@ -28,7 +28,7 @@ const chordie = {
 }
 
 function App() {
-  const [chords, setChords] = useState({sharp: [], flat: []})
+  const [chords, setChords] = useState({ sharp: [], flat: [] })
   const [notes, setNotes] = useState(initialNotes);
   const [isSharp, setIsSharp] = useState(false);
 
@@ -49,9 +49,9 @@ function App() {
 
     setNotes(updatedNotes);
 
-    setChords({sharp: detect([...Object.values(chordie)], { assumePerfectFifth: true })});
+    setChords({ sharp: detect([...Object.values(chordie)], { assumePerfectFifth: true }) });
 
-    const flatChordie = {...chordie};
+    const flatChordie = { ...chordie };
     for (let [k, v] of Object.entries(chordie)) {
       if (enharmonicMap[v]) {
         flatChordie[k] = enharmonicMap[v];
@@ -69,26 +69,30 @@ function App() {
       <div className="guitar">
         <div className="frets">
           {Array(12).fill(0).map((k, i) => (
-            <div className="fret" key={i} data-fret={i}></div>
+            <div className="fret" key={i} data-fret={i}>
+              <div className="fret-silver"></div>
+            </div>
           ))}
         </div>
-        {Object.entries(notes).map(([string, v], i) => (
-          <div className={`string ${string}`} key={i} data-string={string}>
-            {Object.entries(v).map(([note, _v], _i) => (
-              <div
-                className={`note ${_v ? 'active' : ''}`}
-                key={_i}
-                onClick={() =>
-                  handleClick(string, note)}
-                data-note={note}
-              >
-                <h4>{note}</h4>
-              </div>
-            )
-            )}
-          </div>
-        )
-        )}
+        <div className="strings">
+          {Object.entries(notes).map(([string, v], i) => (
+            <div className={`string ${string}`} key={i} data-string={string}>
+              {Object.entries(v).map(([note, _v], _i) => (
+                <div
+                  className={`note ${_v ? 'active' : ''}`}
+                  key={_i}
+                  onClick={() =>
+                    handleClick(string, note)}
+                  data-note={note}
+                >
+                  <h4>{note}</h4>
+                </div>
+              )
+              )}
+            </div>
+          )
+          )}
+        </div>
       </div>
       <div className='notes' style={{ display: 'flex', gap: 50 }}>
         {chords.sharp.length > 0 ? (

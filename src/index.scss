@@ -4,6 +4,11 @@
 	box-sizing: border-box;
 }
 
+*::selection {
+	background-color: transparent;
+	color: inherit;
+}
+
 html {
 	font-size: 62.5%;
 }
@@ -17,12 +22,22 @@ body {
 // }
 
 .container {
-	background-color: black;
 	color: white;
+	perspective: 100vw;
+	transform-style: preserve-3d;
 
 	.guitar {
+		$fret-width: .5rem;
+		$fret-max-width: .5vw;
+		$nut-width: 1.2rem;
+		$nut-max-width: 1vw;
+
+		transform: rotateX(5deg);
 		margin: 25px;
 		position: relative;
+		max-width: fit-content;
+		background-image: url(https://plus.unsplash.com/premium_photo-1675782999354-2f2711e437a5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80);
+    background-size: cover;
 
 		.frets {
 			height: 100%;
@@ -38,8 +53,33 @@ body {
 				display: flex;
 				position: relative;
 
+
+				&:not(:last-child) .fret-silver {
+					position: absolute;
+					right: 0;
+					background-color: black;
+					height: 100%;
+					transform: translateX(50%);
+				}
+
+				&:first-child .fret-silver {
+					background-color: wheat;
+					width: $nut-width;
+					max-width: $nut-max-width;
+				}
+
+				&:not(:first-child) .fret-silver {
+					position: absolute;
+					right: 0;
+					width: $fret-width;
+					max-width: $fret-max-width;
+					height: 100%;
+					transform: translateX(50%);
+					border-radius: 100px;
+				}
+
 				&:first-child {
-					width: 5vw;
+					width: 6vw;
 					max-width: 5rem;
 				}
 
@@ -49,12 +89,11 @@ body {
 				&:nth-child(10):after {
 					content:'';
 					position: absolute;
-					width: 2.2rem;
+					width: 2.4rem;
 					max-width: 2vw;
-					height: 2.2rem;
+					height: 2.4rem;
 					max-height: 2vw;
-					background-color: wheat;
-					border: 1px solid black;
+					background-image: url(https://plus.unsplash.com/premium_photo-1667668224582-84f16f7dedd0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1309&q=80);
 					transform: translate(-50%, -50%);
 					border-radius: 50%;
 					left: 50%;
@@ -68,12 +107,11 @@ body {
 				&:nth-child(6):before {
 					content:'';
 					position: absolute;
-					width: 2.2rem;
+					width: 2.4rem;
 					max-width: 2vw;
-					height: 2.2rem;
+					height: 2.4rem;
 					max-height: 2vw;
-					background-color: wheat;
-					border: 1px solid black;
+					background-image: url(https://plus.unsplash.com/premium_photo-1667668224582-84f16f7dedd0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1309&q=80);
 					transform: translate(-50%, -50%);
 					border-radius: 50%;
 					left: 50%;
@@ -82,84 +120,100 @@ body {
 			}
 		}
 
-		.string {
-			width: 100%;
-			max-width: fit-content;
-			height: auto;
-			background: #a4741e;;
-			color: #fff;
-			display: flex;
-			flex-wrap: nowrap;
-			position: relative;
+		.strings {
 
-			&::after {
-				content: '';
-				position: absolute;
-				left: 0;
-				top: 50%;
+			.string {
 				width: 100%;
-				background-color: white;
-				height: 4px;
-				transform: translateY(-50%);
-				z-index: 99;
-				pointer-events: none;
-			}
-
-			[class^="note"] {
-				color: black;
-				height: 5vw;
-				max-height: 5rem;
-				width: 10vw;
-				max-width: 7.5rem;
-				display: inline-block;
+				max-width: fit-content;
+				height: auto;
+				color: #fff;
 				display: flex;
-				justify-content: center;
-				align-items: center;
+				flex-wrap: nowrap;
 				position: relative;
-				cursor: pointer;
-
-				&:not(:first-child) {
-					border-left: .25rem solid black;
-				}
-
-				&:first-child {
-					width: 5vw;
-					max-width: 5rem;
-					border-right: .25rem solid black;
-				}
-
-				h4 {
-					opacity: 0;
-					z-index: 9999;
-					font-size: clamp(1rem, 2vw, 2.6rem);
-					font-weight: 600;
-				}
-
-				&:hover  h4,
-				&.active h4 {
-					opacity: 1;
-				}
-
-				&:hover::after,
-				&.active::after {
+	
+				&::after {
 					content: '';
-					height: 70%;
-					width: 49.63%;
-					color: white;
-					border-radius: 50%;
 					position: absolute;
+					left: 0;
 					top: 50%;
-					left: 50%;
-					transform: translate(-50%, -50%);
-					background-color: orange;
-					z-index: 999;
-					border: 3px solid black;
+					width: 100%;
+					background-color: white;
+					transform: translateY(-50%);
+					z-index: 99;
+					pointer-events: none;
+					box-shadow: 0px -6px 10px 2px rgba(0,0,0,1);
 				}
+	
+				@for $i from 1 through 6 {
+					&:nth-child(#{$i})::after {
+						height: $i * .05rem;
+						max-height: $i * .05vw;
+					}
+				}
+	
+				[class^="note"] {
+					color: black;
+					height: 5vw;
+					max-height: 5rem;
+					width: 10vw;
+					max-width: 7.5rem;
+					display: inline-block;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					position: relative;
+					cursor: pointer;
+	
+					&:not(:first-child) {
+						// border-left: .25rem solid;
+						// border-left: $fret-width solid black;
+					}
+	
+					&:first-child {
+						width: 6vw;
+						max-width: 5rem;
+						// border-right: $nut-width solid black;
 
-				&:hover:first-child::after,
-				&.active:first-child::after {
-					height: 50%;
-					width: 50%;
+						h4 {
+							font-size: clamp(.8rem, 1.6vw, 2.2rem);
+						}
+
+					}
+	
+					h4 {
+						opacity: 0;
+						z-index: 9999;
+						font-size: clamp(1rem, 2vw, 2.6rem);
+						font-weight: 600;
+					}
+	
+					&:hover  h4,
+					&.active h4 {
+						opacity: 1;
+					}
+	
+					&:hover::after,
+					&.active::after {
+						content: '';
+						height: 70%;
+						width: 49.63%;
+						color: white;
+						border-radius: 50%;
+						position: absolute;
+						top: 50%;
+						left: 50%;
+						transform: translate(-50%, -50%);
+						background-color: orange;
+						z-index: 999;
+						border: 3px solid black;
+						box-shadow: -6px -3px 8px 3px rgba(0,0,0,.6);
+					}
+	
+					&:hover:first-child::after,
+					&.active:first-child::after {
+						height: 50%;
+						width: 50%;
+					}
 				}
 			}
 		}
