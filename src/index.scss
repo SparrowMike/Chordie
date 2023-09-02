@@ -25,6 +25,7 @@ body {
 	color: white;
 	perspective: 100vw;
 	transform-style: preserve-3d;
+	z-index: -1;
 
 	.guitar {
 		$fret-width: .5rem;
@@ -38,6 +39,7 @@ body {
 		max-width: fit-content;
 		background-image: url(https://plus.unsplash.com/premium_photo-1675782999354-2f2711e437a5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80);
     background-size: cover;
+		z-index: 1;
 
 		.frets {
 			height: 100%;
@@ -164,10 +166,10 @@ body {
 					position: relative;
 					cursor: pointer;
 	
-					&:not(:first-child) {
+					// &:not(:first-child) {
 						// border-left: .25rem solid;
 						// border-left: $fret-width solid black;
-					}
+					// }
 	
 					&:first-child {
 						width: 6vw;
