@@ -30,17 +30,14 @@ const chordie = {
 }
 
 function App() {
-  const [chords, setChords] = useState([])
+  const [chords, setChords] = useState({})
   const [notes, setNotes] = useState(initialNotes);
-  const [isSharp, setIsSharp] = useState(false);
+  const [moreInfo, setMoreInfo] = useState(false);
+  const [showNotes, setShowNotes] = useState(true);
 
-  const handleCheckboxChange = () => {
-    setIsSharp(!isSharp);
+  const handleRadioChange = () => {
+    setShowNotes(!showNotes);
   };
-
-  const triggerIntervals = () => {
-    console.log('trigger')
-  }
 
   const handleChordUpate = (string, target) => {
     const updatedNotes = { ...notes };
@@ -55,8 +52,27 @@ function App() {
 
     setNotes(updatedNotes);
 
-    setChords(detectChord([...Object.values(chordie)]));
-    // setChords(detectChord([...Object.values(chordie)], { assumePerfectFifth: true }));
+    const detectedChords = detectChord([...Object.values(chordie)]); //? ----  { assumePerfectFifth: true } 
+    const chordsObj = {}
+
+    for (let idx in detectedChords) {
+      const overChord = detectedChords[idx].indexOf('/');
+      const { name, aliases, intervals, notes, quality, type } = overChord <= 0 
+        ? getChordData(detectedChords[idx]) 
+        : getChordData(detectedChords[idx].slice(0, overChord));
+
+      const intervalsObj = notes.reduce((obj, key, index) => {
+        obj[key] = intervals[index];
+        return obj;
+      }, {});
+
+      chordsObj[idx] = {
+        chord: detectedChords[idx],
+        name, aliases, intervals, notes, quality, type, intervalsObj
+      };
+    }
+
+    setChords(chordsObj);
   };
 
   useEffect(() => {
@@ -89,10 +105,13 @@ function App() {
                   className={`note ${_v.active ? 'active' : ''} ${isMobile ? 'mobile' : ''}`}
                   key={_i}
                   onClick={() =>
-                  handleChordUpate(string, note)}
+                    handleChordUpate(string, note)}
                   data-note={note}
                 >
-                  <h4>{note}</h4>
+                  <h4>{showNotes || !Object.values(chords).length
+                    ? note
+                    : (chords[0]?.intervalsObj[note] || chords[0]?.intervalsObj[enharmonicMap[note]])}
+                  </h4>
                 </div>
               )
               )}
@@ -101,33 +120,61 @@ function App() {
           )}
         </div>
       </div>
-      <div className='notes' style={{ display: 'flex', gap: 50 }}>
-        {chords.length > 0 ? (
+      <div className='notes'>
+        <div style={{ padding: '10px 0' }}>
+          <label>
+            <input
+              type="checkbox"
+              className="checkbox"
+              id="myCheckbox"
+              checked={moreInfo}
+              onChange={() => setMoreInfo(!moreInfo)}
+            />
+            More chord information
+          </label>
+        </div>
+        {Object.keys(chords).length ? (
           <ul>
-            {chords.map((k, i) => (
-              <li key={i}>{k}</li>
+            {Object.values(chords).map((v, i) => (
+              <li key={i}>Detected chord: {v.chord} {moreInfo ? (
+                <div style={{ paddingLeft: '25px' }}>
+                  <p>Name: {v.name}</p>
+                  <p>Aliases: {v.aliases.join(' / ')}</p>
+                  <p>Intervals: {v.intervals.join(' / ')}</p>
+                  <p>Notes: {v.notes.join(' / ')}</p>
+                </div>
+              ) : ''}
+              </li>
             ))}
           </ul>
         ) : (
           <div>No chords available.</div>
         )}
-        {/* <ul>
-          Flats
-          {chords.flat.map((k, i) => (
-            <li key={i}>{k}</li>
-          ))}
-        </ul> */}
       </div>
-      {/* <div className="checkbox-container" style={{padding: '50px;'}}>
-        <input
-          type="checkbox"
-          className="checkbox"
-          id="myCheckbox"
-          checked={isSharp}
-          onChange={handleCheckboxChange}
-        />
-        <label htmlFor="myCheckbox">Use Flats</label>
-      </div> */}
+      <div style={{ padding: '25px' }}>
+        <div className="options">
+          <h2>Chord Options</h2>
+          <label>
+            <input
+              type="radio"
+              value="notes"
+              checked={showNotes}
+              onChange={handleRadioChange}
+            />
+            Show notes
+          </label>
+          <label>
+            <input
+              type="radio"
+              disabled={!Object.keys(chords).length}
+              value="intervals"
+              checked={!showNotes}
+              onChange={handleRadioChange}
+            />
+            Show Intervals
+          </label>
+        </div>
+      </div>
     </div>
   )
 }
