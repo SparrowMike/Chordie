@@ -142,17 +142,17 @@ body {
 					transform: translateY(-50%);
 					z-index: 99;
 					pointer-events: none;
-					box-shadow: 0px -6px 10px 2px rgba(0,0,0,1);
 				}
 	
 				@for $i from 1 through 6 {
 					&:nth-child(#{$i})::after {
 						height: $i * .05rem;
 						max-height: $i * .05vw;
+						box-shadow: 0px $i * -1.25px 8px 1px rgba(0,0,0,1);
 					}
 				}
 	
-				[class^="note"] {
+				.note {
 					color: black;
 					height: 5vw;
 					max-height: 5rem;
@@ -165,15 +165,9 @@ body {
 					position: relative;
 					cursor: pointer;
 	
-					// &:not(:first-child) {
-						// border-left: .25rem solid;
-						// border-left: $fret-width solid black;
-					// }
-	
 					&:first-child {
 						width: 6vw;
 						max-width: 5rem;
-						// border-right: $nut-width solid black;
 
 						h4 {
 							font-size: clamp(.8rem, 1.6vw, 2.2rem);
@@ -188,12 +182,12 @@ body {
 						font-weight: 600;
 					}
 	
-					&:hover  h4,
+					&:not(.mobile):hover  h4,
 					&.active h4 {
 						opacity: 1;
 					}
 	
-					&:hover::after,
+					&:not(.mobile):hover::after,
 					&.active::after {
 						content: '';
 						height: 70%;

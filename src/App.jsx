@@ -1,5 +1,7 @@
-import { useState } from 'react'
-import { detect } from "@tonaljs/chord-detect";
+import { useState, useEffect } from 'react'
+import { isMobile } from 'react-device-detect';
+import { get as getChordData } from '@tonaljs/chord';
+import { detect as detectChord } from "@tonaljs/chord-detect";
 
 const enharmonicMap = {
   "C#": "Db",
@@ -10,12 +12,12 @@ const enharmonicMap = {
 }
 
 const initialNotes = {
-  e: { E: false, F: false, 'F#': false, G: false, 'G#': false, A: false, 'A#': false, B: false, C: false, 'C#': false, D: false, 'D#': false },
-  B: { B: false, C: false, 'C#': false, D: false, 'D#': false, E: false, F: false, 'F#': false, G: false, 'G#': false, A: false, 'A#': false },
-  G: { G: false, 'G#': false, A: false, 'A#': false, B: false, C: false, 'C#': false, D: false, 'D#': false, E: false, F: false, 'F#': false },
-  D: { D: false, 'D#': false, E: false, F: false, 'F#': false, G: false, 'G#': false, A: false, 'A#': false, B: false, C: false, 'C#': false },
-  A: { A: false, 'A#': false, B: false, C: false, 'C#': false, D: false, 'D#': false, E: false, F: false, 'F#': false, G: false, 'G#': false },
-  E: { E: false, F: false, 'F#': false, G: false, 'G#': false, A: false, 'A#': false, B: false, C: false, 'C#': false, D: false, 'D#': false },
+  e: { E: { active: false }, F: { active: false }, 'F#': { active: false }, G: { active: false }, 'G#': { active: false }, A: { active: false }, 'A#': { active: false }, B: { active: false }, C: { active: false }, 'C#': { active: false }, D: { active: false }, 'D#': { active: false } },
+  B: { B: { active: false }, C: { active: false }, 'C#': { active: false }, D: { active: false }, 'D#': { active: false }, E: { active: false }, F: { active: false }, 'F#': { active: false }, G: { active: false }, 'G#': { active: false }, A: { active: false }, 'A#': { active: false } },
+  G: { G: { active: false }, 'G#': { active: false }, A: { active: false }, 'A#': { active: false }, B: { active: false }, C: { active: false }, 'C#': { active: false }, D: { active: false }, 'D#': { active: false }, E: { active: false }, F: { active: false }, 'F#': { active: false } },
+  D: { D: { active: false }, 'D#': { active: false }, E: { active: false }, F: { active: false }, 'F#': { active: false }, G: { active: false }, 'G#': { active: false }, A: { active: false }, 'A#': { active: false }, B: { active: false }, C: { active: false }, 'C#': { active: false } },
+  A: { A: { active: false }, 'A#': { active: false }, B: { active: false }, C: { active: false }, 'C#': { active: false }, D: { active: false }, 'D#': { active: false }, E: { active: false }, F: { active: false }, 'F#': { active: false }, G: { active: false }, 'G#': { active: false } },
+  E: { E: { active: false }, F: { active: false }, 'F#': { active: false }, G: { active: false }, 'G#': { active: false }, A: { active: false }, 'A#': { active: false }, B: { active: false }, C: { active: false }, 'C#': { active: false }, D: { active: false }, 'D#': { active: false } },
 };
 
 const chordie = {
@@ -28,7 +30,7 @@ const chordie = {
 }
 
 function App() {
-  const [chords, setChords] = useState({ sharp: [], flat: [] })
+  const [chords, setChords] = useState([])
   const [notes, setNotes] = useState(initialNotes);
   const [isSharp, setIsSharp] = useState(false);
 
@@ -36,33 +38,38 @@ function App() {
     setIsSharp(!isSharp);
   };
 
-  const handleClick = (string, target) => {
+  const triggerIntervals = () => {
+    console.log('trigger')
+  }
+
+  const handleChordUpate = (string, target) => {
     const updatedNotes = { ...notes };
-    const currentValue = updatedNotes[string][target]
+    const currentValue = updatedNotes[string][target].active
 
     for (const note in updatedNotes[string]) {
-      updatedNotes[string][note] = false;
+      updatedNotes[string][note].active = false;
     }
 
-    updatedNotes[string][target] = !currentValue;
+    updatedNotes[string][target].active = !currentValue;
     chordie[string] = !currentValue ? target : null;
 
     setNotes(updatedNotes);
 
-    setChords({ sharp: detect([...Object.values(chordie)], { assumePerfectFifth: true }) });
+    setChords(detectChord([...Object.values(chordie)]));
+    // setChords(detectChord([...Object.values(chordie)], { assumePerfectFifth: true }));
+  };
 
-    const flatChordie = { ...chordie };
-    for (let [k, v] of Object.entries(chordie)) {
-      if (enharmonicMap[v]) {
-        flatChordie[k] = enharmonicMap[v];
+  useEffect(() => {
+    if (chords.length) {
+      const idx = chords[0].indexOf('/');
+      if (idx < 0) {
+        console.log(getChordData(chords[0]))
+      } else {
+        // console.log(chords[0].slice(0, idx), chords[0].slice(idx + 1))
+        console.log(getChordData(chords[0].slice(0, idx)))
       }
     }
-
-    setChords(prevState => ({
-      ...prevState,
-      flat: detect([...Object.values(flatChordie)], { assumePerfectFifth: true })
-    }))
-  };
+  }, [chords])
 
   return (
     <div className="container">
@@ -79,10 +86,10 @@ function App() {
             <div className={`string ${string}`} key={i} data-string={string}>
               {Object.entries(v).map(([note, _v], _i) => (
                 <div
-                  className={`note ${_v ? 'active' : ''}`}
+                  className={`note ${_v.active ? 'active' : ''} ${isMobile ? 'mobile' : ''}`}
                   key={_i}
                   onClick={() =>
-                    handleClick(string, note)}
+                  handleChordUpate(string, note)}
                   data-note={note}
                 >
                   <h4>{note}</h4>
@@ -95,9 +102,9 @@ function App() {
         </div>
       </div>
       <div className='notes' style={{ display: 'flex', gap: 50 }}>
-        {chords.sharp.length > 0 ? (
+        {chords.length > 0 ? (
           <ul>
-            {chords.sharp.map((k, i) => (
+            {chords.map((k, i) => (
               <li key={i}>{k}</li>
             ))}
           </ul>
