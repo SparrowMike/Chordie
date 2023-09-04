@@ -75,11 +75,6 @@ function App() {
       };
     }
 
-
-    const filteredChordie = Object.entries(chordie).filter(([, v]) => v !== null);
-
-    console.log(filteredChordie, chordsObj[0])
-
     const convertDouble = (note, type) => {
       const target = note.replace(type, '');
       return chromaticSharp[(chromaticSharp.indexOf(target) + 2) % chromaticSharp.length];
@@ -104,16 +99,15 @@ function App() {
           }
         }
       }
-      console.log(updatedNotes)
     }
     setNotes(updatedNotes);
     setChords(chordsObj);
   };
 
   useEffect(() => {
-    // console.log(majorKey(chords[0]))
-    // console.log(minorKey(chords[0]))
-    // console.log(chords[0]?.chord, chordScales(chords[0]?.chord))
+    // console.log(majorKey(chords[0]?.chord), chords[0]?.chord)
+    // console.log(minorKey(chords[0]?.chord))
+    console.log(chords[0]?.chord, chordScales(chords[0]?.chord))
   }, [chords]);
 
   return (
@@ -128,25 +122,27 @@ function App() {
         </div>
         <div className="strings">
           {Object.entries(notes).map(([string, v], i) => (
-            <div className={`string ${string}`} key={i} data-string={string}>
-              {Object.entries(v).map(([note, _v], _i) => (
-                <div
-                  className={`note ${_v.active ? 'active' : ''} ${isMobile ? 'mobile' : ''}`}
-                  key={_i}
-                  onClick={() =>
-                    handleChordUpate(string, note)}
-                  data-note={note}
-                >
-                  <h4>{showNotes || !Object.values(chords).length
-                    ? _v?.relativeNote || note
-                    : chords[0]?.intervalsObj[_v?.relativeNote || note]}
-                  </h4>
-                </div>
-              )
+            <div className="string" key={i} data-string={string}>
+              {Object.entries(v).map(([note, _v], _i) => {
+                const chordNote = showNotes || !Object.values(chords).length
+                  ? _v?.relativeNote || note
+                  : chords[0]?.intervalsObj[_v?.relativeNote || note]
+
+                return (
+                  <div
+                    className={`note ${_v.active ? 'active' : ''} ${isMobile ? 'mobile' : ''}`}
+                    key={_i}
+                    onClick={() =>
+                      handleChordUpate(string, note)}
+                    data-note={chordNote}
+                  >
+                    <h4>{chordNote}</h4>
+                  </div>
+                )
+              }
               )}
             </div>
-          )
-          )}
+          ))}
         </div>
       </div>
       <div className='notes'>
