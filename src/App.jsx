@@ -1,14 +1,19 @@
 import { useState, useEffect } from 'react'
 import { isMobile } from 'react-device-detect';
-import { get as getChordData } from '@tonaljs/chord';
+import { get as getChordData, chordScales } from '@tonaljs/chord';
 import { detect as detectChord } from "@tonaljs/chord-detect";
+import { majorKey, minorKey } from '@tonaljs/key';
+
+const chromaticSharp = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
 const enharmonicMap = {
-  "C#": "Db",
-  "D#": "Eb",
-  "F#": "Gb",
-  "G#": "Ab",
-  "A#": "Bb",
+  "E#": "F",
+  "B#": "C",
+  "Ab": "G#",
+  "Bb": "A#",
+  "Db": "C#",
+  "Eb": "D#",
+  "Gb": "F#",
 }
 
 const initialNotes = {
@@ -50,15 +55,13 @@ function App() {
     updatedNotes[string][target].active = !currentValue;
     chordie[string] = !currentValue ? target : null;
 
-    setNotes(updatedNotes);
-
     const detectedChords = detectChord([...Object.values(chordie)]); //? ----  { assumePerfectFifth: true } 
     const chordsObj = {}
 
     for (let idx in detectedChords) {
       const overChord = detectedChords[idx].indexOf('/');
-      const { name, aliases, intervals, notes, quality, type } = overChord <= 0 
-        ? getChordData(detectedChords[idx]) 
+      const { name, aliases, intervals, notes, quality, type } = overChord <= 0
+        ? getChordData(detectedChords[idx])
         : getChordData(detectedChords[idx].slice(0, overChord));
 
       const intervalsObj = notes.reduce((obj, key, index) => {
@@ -72,20 +75,46 @@ function App() {
       };
     }
 
+
+    const filteredChordie = Object.entries(chordie).filter(([, v]) => v !== null);
+
+    console.log(filteredChordie, chordsObj[0])
+
+    const convertDouble = (note, type) => {
+      const target = note.replace(type, '');
+      return chromaticSharp[(chromaticSharp.indexOf(target) + 2) % chromaticSharp.length];
+    }
+
+    for (const val of Object.values(updatedNotes)) {
+      for (const _v of Object.values(val)) {
+        delete _v.relativeNote;
+      }
+      if (chordsObj[0]?.notes) {
+        for (const relNote of chordsObj[0].notes) {
+
+          if (relNote.includes('##')) {
+            val[convertDouble(relNote, '##')].relativeNote = relNote;
+          }
+          if (relNote.includes('bb')) {
+            val[convertDouble(relNote, 'bb')].relativeNote = relNote;
+          }
+
+          if (enharmonicMap[relNote]) {
+            val[enharmonicMap[relNote]].relativeNote = relNote;
+          }
+        }
+      }
+      console.log(updatedNotes)
+    }
+    setNotes(updatedNotes);
     setChords(chordsObj);
   };
 
   useEffect(() => {
-    if (chords.length) {
-      const idx = chords[0].indexOf('/');
-      if (idx < 0) {
-        console.log(getChordData(chords[0]))
-      } else {
-        // console.log(chords[0].slice(0, idx), chords[0].slice(idx + 1))
-        console.log(getChordData(chords[0].slice(0, idx)))
-      }
-    }
-  }, [chords])
+    // console.log(majorKey(chords[0]))
+    // console.log(minorKey(chords[0]))
+    // console.log(chords[0]?.chord, chordScales(chords[0]?.chord))
+  }, [chords]);
 
   return (
     <div className="container">
@@ -109,8 +138,8 @@ function App() {
                   data-note={note}
                 >
                   <h4>{showNotes || !Object.values(chords).length
-                    ? note
-                    : (chords[0]?.intervalsObj[note] || chords[0]?.intervalsObj[enharmonicMap[note]])}
+                    ? _v?.relativeNote || note
+                    : chords[0]?.intervalsObj[_v?.relativeNote || note]}
                   </h4>
                 </div>
               )
