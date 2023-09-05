@@ -6,7 +6,7 @@ import { majorKey, minorKey } from '@tonaljs/key';
 
 const chromaticSharp = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
-const enharmonicMap = {
+const enharmonicMap: { [key: string]: string } = {
   "E#": "F",
   "B#": "C",
   "Ab": "G#",
@@ -25,7 +25,7 @@ const initialNotes = {
   E: { E: { active: false }, F: { active: false }, 'F#': { active: false }, G: { active: false }, 'G#': { active: false }, A: { active: false }, 'A#': { active: false }, B: { active: false }, C: { active: false }, 'C#': { active: false }, D: { active: false }, 'D#': { active: false } },
 };
 
-const chordie = {
+const chordie: { [key: string]: string | null } = {
   E: null,
   A: null,
   D: null,
@@ -34,17 +34,35 @@ const chordie = {
   e: null,
 }
 
+interface ChordInfo {
+  chord: string;
+  name: string;
+  aliases: string[];
+  intervals: string[];
+  notes: string[];
+  quality: string;
+  type: string;
+  intervalsObj: { [key: string]: string };
+}
+
+
 function App() {
-  const [chords, setChords] = useState({})
-  const [notes, setNotes] = useState(initialNotes);
+  const [chords, setChords] = useState<{ [key: string]: ChordInfo }>({})
+  const [notes, setNotes] = useState<{ [key: string]: { [key: string]: { active: boolean, relativeNote?: string } } }>(initialNotes);
   const [moreInfo, setMoreInfo] = useState(false);
   const [showNotes, setShowNotes] = useState(true);
+  // const [chordTones, setChordTones] = useState(false);
 
   const handleRadioChange = () => {
     setShowNotes(!showNotes);
   };
 
-  const handleChordUpate = (string, target) => {
+  // const handleShowNotes = () => {
+
+  //   setChordTones(!chordTones);
+  // }
+
+  const handleChordUpate = (string: string, target: string) => {
     const updatedNotes = { ...notes };
     const currentValue = updatedNotes[string][target].active
 
@@ -55,19 +73,26 @@ function App() {
     updatedNotes[string][target].active = !currentValue;
     chordie[string] = !currentValue ? target : null;
 
-    const detectedChords = detectChord([...Object.values(chordie)]); //? ----  { assumePerfectFifth: true } 
-    const chordsObj = {}
+    const nonNullStringChordie: string[] = Object.values(chordie).filter((v): v is string => v !== null);
 
-    for (let idx in detectedChords) {
+    
+    const detectedChords = detectChord(nonNullStringChordie).length 
+      ? detectChord(nonNullStringChordie)
+      : detectChord(nonNullStringChordie, { assumePerfectFifth: true })
+
+    console.log(detectChord(nonNullStringChordie), detectChord(nonNullStringChordie, { assumePerfectFifth: true }))
+    const chordsObj: { [key: string]: ChordInfo } = {}
+
+    for (const idx in detectedChords) {
       const overChord = detectedChords[idx].indexOf('/');
       const { name, aliases, intervals, notes, quality, type } = overChord <= 0
         ? getChordData(detectedChords[idx])
         : getChordData(detectedChords[idx].slice(0, overChord));
 
-      const intervalsObj = notes.reduce((obj, key, index) => {
+      const intervalsObj: { [key: string]: string } = notes.reduce((obj, key, index) => {
         obj[key] = intervals[index];
         return obj;
-      }, {});
+      }, {} as { [key: string]: string });
 
       chordsObj[idx] = {
         chord: detectedChords[idx],
@@ -75,7 +100,7 @@ function App() {
       };
     }
 
-    const convertDouble = (note, type) => {
+    const convertDouble = (note: string, type: string) => {
       const target = note.replace(type, '');
       return chromaticSharp[(chromaticSharp.indexOf(target) + 2) % chromaticSharp.length];
     }
@@ -84,6 +109,7 @@ function App() {
       for (const _v of Object.values(val)) {
         delete _v.relativeNote;
       }
+
       if (chordsObj[0]?.notes) {
         for (const relNote of chordsObj[0].notes) {
 
@@ -107,14 +133,14 @@ function App() {
   useEffect(() => {
     // console.log(majorKey(chords[0]?.chord), chords[0]?.chord)
     // console.log(minorKey(chords[0]?.chord))
-    console.log(chords[0]?.chord, chordScales(chords[0]?.chord))
+    // console.log(chords[0]?.chord, chordScales(chords[0]?.chord))
   }, [chords]);
 
   return (
     <div className="container">
       <div className="guitar">
         <div className="frets">
-          {Array(12).fill(0).map((k, i) => (
+          {Array(12).fill(0).map((_, i) => (
             <div className="fret" key={i} data-fret={i}>
               <div className="fret-silver"></div>
             </div>
@@ -198,6 +224,16 @@ function App() {
             />
             Show Intervals
           </label>
+          {/* <label>
+            <input
+              type="checkbox"
+              className="checkbox"
+              id="myCheckbox"
+              checked={chordTones}
+              onChange={handleShowNotes}
+            />
+            Show chord tones
+          </label> */}
         </div>
       </div>
     </div>
