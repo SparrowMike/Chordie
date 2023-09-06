@@ -220,6 +220,10 @@ body {
 		&, ul li {
 			font-size: 1.8rem;
 			list-style: none;
+
+			.active {
+				text-decoration: underline;
+			}
 		}
 	}
 }

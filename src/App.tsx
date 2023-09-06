@@ -12,6 +12,7 @@ import { detect as detectChord } from "@tonaljs/chord-detect";
 /**
  * An array representing the chromatic scale with sharp notation.
  */
+// const chromaticScale = ['C', ['C#', 'Db'], 'D', ['D#', 'Eb'], 'E', 'F', ['F#', 'Gb'], 'G', ['G#', 'Ab'], 'A', ['A#', 'Bb'], 'B']; //? --- ['B#', 'C'] ?
 const chromaticSharp = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
 /**
@@ -73,9 +74,11 @@ interface Notes {
 function App() {
   const [chords, setChords] = useState<{ [key: string]: ChordInfo }>({})
   const [notes, setNotes] = useState<{ [key: string]: Notes }>(initialNotes);
+
   const [moreInfo, setMoreInfo] = useState(false);
   const [showNotes, setShowNotes] = useState(true);
   const [chordTones, setChordTones] = useState(false);
+  const [activeChord, setActiveChord] = useState(0);
 
   const handleRadioChange = () => {
     setShowNotes((prevShowNotes) => !prevShowNotes);
@@ -101,12 +104,13 @@ function App() {
   const showChordTones = (show?: boolean) => {
     for (const string of Object.values(notes)) {
       for (const note of Object.keys(string)) {
+        delete string[note].chordTone;
+      }
+      if (show) {
         for (const val of Object.values(chordie)) {
-          if (val && show) {
+          if (val) {
             string[val].chordTone = true;
-          } else {
-            delete string[note].chordTone;
-          }
+          } 
         }
       }
     }
@@ -126,7 +130,7 @@ function App() {
       updatedNotes[string][note].active = false;
     }
 
-    // if (updatedNotes[string][target].chordTone) {} //? ----- whats the expected behaviour ???
+    // if (updatedNotes[string][target].chordTone) {} //? ----- whats the expected behaviour ?? should you be able to disable the note directly from chord toens ?? 
 
     // Toggle the activity status of the target note
     updatedNotes[string][target].active = !currentTargetState;
@@ -138,14 +142,14 @@ function App() {
     const nonNullStringChordie: string[] = Object.values(chordie).filter((v): v is string => v !== null);
     const detectedChords = detectChord(nonNullStringChordie).length
       ? detectChord(nonNullStringChordie)
-      : detectChord(nonNullStringChordie, { assumePerfectFifth: true }) //!----- my experimental
+      : detectChord(nonNullStringChordie, { assumePerfectFifth: true });
 
     // Initialize an object to store detected chord information
     const chordsObj: { [key: string]: ChordInfo } = {}
 
     // Iterate through detected chords and extract chord information
     for (const idx in detectedChords) {
-      const overChord = detectedChords[idx].indexOf('/'); //!----- needs rewrite for better chord info accuracy
+      const overChord = detectedChords[idx].indexOf('/'); //!----- needs rewrite for better chord info accuracy with chords over bass
       const { name, aliases, intervals, notes, quality, type } = overChord <= 0
         ? getChordData(detectedChords[idx])
         : getChordData(detectedChords[idx].slice(0, overChord));
@@ -174,8 +178,8 @@ function App() {
         delete _v.relativeNote;
       }
 
-      if (chordsObj[0]?.notes) {
-        for (const relNote of chordsObj[0].notes) {
+      if (chordsObj[activeChord]?.notes) {
+        for (const relNote of chordsObj[activeChord].notes) {
           
           // Add relativeNote properties based on detected chord's notes
           if (relNote.includes('##')) {
@@ -199,9 +203,9 @@ function App() {
   };
 
   useEffect(() => {
-    // console.log(majorKey(chords[0]?.chord), chords[0]?.chord)
-    // console.log(minorKey(chords[0]?.chord))
-    // console.log(chords[0]?.chord, chordScales(chords[0]?.chord))
+    // console.log(majorKey(chords[activeChord]?.chord), chords[activeChord]?.chord)
+    // console.log(minorKey(chords[activeChord]?.chord))
+    // console.log(chords[activeChord]?.chord, chordScales(chords[activeChord]?.chord))
   }, [chords]);
 
   return (
@@ -220,7 +224,7 @@ function App() {
               {Object.entries(v).map(([note, _v], _i) => {
                 const chordNote = showNotes || !Object.values(chords).length
                   ? _v?.relativeNote || note
-                  : chords[0]?.intervalsObj[_v?.relativeNote || note]
+                  : chords[activeChord]?.intervalsObj[_v?.relativeNote || note]
 
                 return (
                   <div
@@ -255,7 +259,7 @@ function App() {
         {Object.keys(chords).length ? (
           <ul>
             {Object.values(chords).map((v, i) => (
-              <li key={i}>Detected chord: {v.chord} {moreInfo ? (
+              <li key={i} onClick={() => setActiveChord(i)} className={`${activeChord === i ? 'active' : ''}`}>Detected chord: {v.chord} {moreInfo ? (
                 <div style={{ paddingLeft: '25px' }}>
                   <p>Name: {v.name}</p>
                   <p>Aliases: {v.aliases.join(' / ')}</p>
