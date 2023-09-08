@@ -63,7 +63,7 @@ interface ChordInfo {
   intervalsObj: { [key: string]: string };
 }
 
-interface Notes {
+interface GuitarNotes {
   [key: string]: {
     active: boolean,
     chordTone?: boolean,
@@ -72,13 +72,18 @@ interface Notes {
 }
 
 function App() {
-  const [chords, setChords] = useState<{ [key: string]: ChordInfo }>({})
-  const [notes, setNotes] = useState<{ [key: string]: Notes }>(initialNotes);
-
-  const [moreInfo, setMoreInfo] = useState(false);
+  //? --- list of detected chords
+  const [chords, setChords] = useState<{ [key: string]: ChordInfo }>({}) 
+  //? --- all guitar notes and their properties
+  const [guitarNotes, setGuitarNotes] = useState<{ [key: string]: GuitarNotes }>(initialNotes); 
+  //? --- show more chord information
+  const [showMoreChordInfo, setShowMoreChordInfo] = useState(false);
+  //? --- toggle between interval relation and notes
   const [showNotes, setShowNotes] = useState(true);
+  //? --- show all chord tones across the fretboard
   const [chordTones, setChordTones] = useState(false);
-  const [activeChord, setActiveChord] = useState(0);
+  //? --- show all chord tones across the fretboard
+  const [activeChord, setActiveChord] = useState<number>(0);
 
   const handleRadioChange = () => {
     setShowNotes((prevShowNotes) => !prevShowNotes);
@@ -102,13 +107,14 @@ function App() {
    * @param {boolean} show - Whether to show chord tones.
    */
   const showChordTones = (show?: boolean) => {
-    for (const string of Object.values(notes)) {
+    for (const string of Object.values(guitarNotes)) {
       for (const note of Object.keys(string)) {
         delete string[note].chordTone;
       }
       if (show) {
         for (const val of Object.values(chordie)) {
-          if (val) {
+          //!============ notes withing chordie should be allowed to be toggled back up ???? 
+          if (val && !string[val].active) { 
             string[val].chordTone = true;
           } 
         }
@@ -122,21 +128,21 @@ function App() {
    * @param {string} target - The target note on the string.
    */
   const handleChordUpate = (string: string, target: string) => {
-    const updatedNotes = { ...notes };
-    const currentTargetState = updatedNotes[string][target].active
+    const updatedNotes = { ...guitarNotes };
+    const currentTargetActiveState = updatedNotes[string][target].active;
 
-    // Reset all notes on the selected string to be inactive
+    if (updatedNotes[string][target].chordTone) return;
+
+    // Reset all the notes on the selected string to be inactive
     for (const note in updatedNotes[string]) {
       updatedNotes[string][note].active = false;
     }
 
-    // if (updatedNotes[string][target].chordTone) {} //? ----- whats the expected behaviour ?? should you be able to disable the note directly from chord toens ?? 
-
     // Toggle the activity status of the target note
-    updatedNotes[string][target].active = !currentTargetState;
+    updatedNotes[string][target].active = !currentTargetActiveState;
 
     // Update chordie with the selected or deselected chord tone
-    chordie[string] = !currentTargetState ? target : null;
+    chordie[string] = !currentTargetActiveState ? target : null;
 
     // Filter out null values from chordie and detect chords based on selected chord tones
     const nonNullStringChordie: string[] = Object.values(chordie).filter((v): v is string => v !== null);
@@ -198,14 +204,20 @@ function App() {
 
     // Update the display of chord tones, notes, and chord information
     showChordTones(chordTones);
-    setNotes(updatedNotes);
+    setGuitarNotes(updatedNotes);
     setChords(chordsObj);
+    // setActiveChord(activeChord < detectedChords.length - 1 ? detectedChords.length : activeChord); //! ------------ fixup to show only available chord
   };
 
   useEffect(() => {
     // console.log(majorKey(chords[activeChord]?.chord), chords[activeChord]?.chord)
     // console.log(minorKey(chords[activeChord]?.chord))
     // console.log(chords[activeChord]?.chord, chordScales(chords[activeChord]?.chord))
+    const chordsLength: number = Object.keys(chords).length;
+
+    setActiveChord((prevActiveChord) =>
+      prevActiveChord < chordsLength - 1 ? prevActiveChord : 0 //! ----------------------- fix up intervals
+    );
   }, [chords]);
 
   return (
@@ -219,7 +231,7 @@ function App() {
           ))}
         </div>
         <div className="strings">
-          {Object.entries(notes).map(([string, v], i) => (
+          {Object.entries(guitarNotes).map(([string, v], i) => (
             <div className="string" key={i} data-string={string}>
               {Object.entries(v).map(([note, _v], _i) => {
                 const chordNote = showNotes || !Object.values(chords).length
@@ -250,8 +262,8 @@ function App() {
               type="checkbox"
               className="checkbox"
               id="myCheckbox"
-              checked={moreInfo}
-              onChange={() => setMoreInfo(!moreInfo)}
+              checked={showMoreChordInfo}
+              onChange={() => setShowMoreChordInfo(!showMoreChordInfo)}
             />
             More chord information
           </label>
@@ -259,7 +271,7 @@ function App() {
         {Object.keys(chords).length ? (
           <ul>
             {Object.values(chords).map((v, i) => (
-              <li key={i} onClick={() => setActiveChord(i)} className={`${activeChord === i ? 'active' : ''}`}>Detected chord: {v.chord} {moreInfo ? (
+              <li key={i} onClick={() => setActiveChord(i)} className={`${activeChord === i ? 'active' : ''}`}>Detected chord: {v.chord} {showMoreChordInfo ? (
                 <div style={{ paddingLeft: '25px' }}>
                   <p>Name: {v.name}</p>
                   <p>Aliases: {v.aliases.join(' / ')}</p>
