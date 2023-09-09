@@ -76,16 +76,17 @@ function App() {
   const [chords, setChords] = useState<{ [key: string]: ChordInfo }>({}) 
   //? --- all guitar notes and their properties
   const [guitarNotes, setGuitarNotes] = useState<{ [key: string]: GuitarNotes }>(initialNotes); 
+  
   //? --- show more chord information
   const [showMoreChordInfo, setShowMoreChordInfo] = useState(false);
   //? --- toggle between interval relation and notes
   const [showNotes, setShowNotes] = useState(true);
   //? --- show all chord tones across the fretboard
-  const [chordTones, setChordTones] = useState(false);
+  const [showChordTones, setShowChordTones] = useState(false);
   //? --- show all chord tones across the fretboard
   const [activeChord, setActiveChord] = useState<number>(0);
 
-  const handleRadioChange = () => {
+  const handleShowNotes= () => {
     setShowNotes((prevShowNotes) => !prevShowNotes);
   };
 
@@ -93,12 +94,12 @@ function App() {
    * Handles the change of checkbox to show chord tones.
    * @param {boolean} update - Whether to update chord tones.
    */
-  const handleShowNotes = (update?: boolean) => {
+  const handleShowChordTones = (update?: boolean) => {
     if (update) {
-      setChordTones((prevChordTones) => !prevChordTones); 
-      showChordTones(!chordTones);
+      setShowChordTones((prevChordTones) => !prevChordTones); 
+      updateChordTones(!showChordTones);
     } else {
-      showChordTones(chordTones);
+      updateChordTones(showChordTones);
     }
   };
 
@@ -106,7 +107,7 @@ function App() {
    * Handles updating the notes state based on chord tones.
    * @param {boolean} show - Whether to show chord tones.
    */
-  const showChordTones = (show?: boolean) => {
+  const updateChordTones = (show?: boolean) => {
     for (const string of Object.values(guitarNotes)) {
       for (const note of Object.keys(string)) {
         delete string[note].chordTone;
@@ -184,26 +185,27 @@ function App() {
         delete _v.relativeNote;
       }
 
-      if (chordsObj[activeChord]?.notes) {
-        for (const relNote of chordsObj[activeChord].notes) {
-          
-          // Add relativeNote properties based on detected chord's notes
-          if (relNote.includes('##')) {
-            val[convertDouble(relNote, '##')].relativeNote = relNote;
-          }
-          if (relNote.includes('bb')) {
-            val[convertDouble(relNote, 'bb')].relativeNote = relNote; //! ---- needs more testing
-          }
+      if (Object.keys(chordsObj).length) {
+        for (const chordObj of Object.values(chordsObj)) {
+          for (const relNote of chordObj.notes) {
 
-          if (enharmonicMap[relNote]) {
-            val[enharmonicMap[relNote]].relativeNote = relNote;
+            // Add relativeNote properties based on detected chord's notes
+            if (relNote.includes('##')) {
+              val[convertDouble(relNote, '##')].relativeNote = relNote;
+            }
+            if (relNote.includes('bb')) {
+              val[convertDouble(relNote, 'bb')].relativeNote = relNote; //! ---- needs more testing
+            }
+
+            if (enharmonicMap[relNote]) {
+              val[enharmonicMap[relNote]].relativeNote = relNote;
+            }
           }
         }
       }
-    }
+    } 
 
-    // Update the display of chord tones, notes, and chord information
-    showChordTones(chordTones);
+    updateChordTones(showChordTones);
     setGuitarNotes(updatedNotes);
     setChords(chordsObj);
     // setActiveChord(activeChord < detectedChords.length - 1 ? detectedChords.length : activeChord); //! ------------ fixup to show only available chord
@@ -216,7 +218,7 @@ function App() {
     const chordsLength: number = Object.keys(chords).length;
 
     setActiveChord((prevActiveChord) =>
-      prevActiveChord < chordsLength - 1 ? prevActiveChord : 0 //! ----------------------- fix up intervals
+      prevActiveChord < chordsLength ? prevActiveChord : 0 //! ----------------------- fix up intervals
     );
   }, [chords]);
 
@@ -236,8 +238,7 @@ function App() {
               {Object.entries(v).map(([note, _v], _i) => {
                 const chordNote = showNotes || !Object.values(chords).length
                   ? _v?.relativeNote || note
-                  : chords[activeChord]?.intervalsObj[_v?.relativeNote || note]
-
+                  : chords[activeChord]?.intervalsObj[_v?.relativeNote || note] || chords[activeChord]?.intervalsObj[note]
                 return (
                   <div
                     className={`note ${_v.active || _v.chordTone ? 'active' : ''} ${isMobile ? 'mobile' : ''}`}
@@ -294,7 +295,7 @@ function App() {
               type="radio"
               value="notes"
               checked={showNotes}
-              onChange={handleRadioChange}
+              onChange={handleShowNotes}
             />
             Show notes
           </label>
@@ -304,7 +305,7 @@ function App() {
               disabled={!Object.keys(chords).length}
               value="intervals"
               checked={!showNotes}
-              onChange={handleRadioChange}
+              onChange={handleShowNotes}
             />
             Show Intervals
           </label>
@@ -313,8 +314,8 @@ function App() {
               type="checkbox"
               className="checkbox"
               id="myCheckbox"
-              checked={chordTones}
-              onChange={() => handleShowNotes(true)}
+              checked={showChordTones}
+              onChange={() => handleShowChordTones(true)}
             />
             Show chord tones
           </label>
