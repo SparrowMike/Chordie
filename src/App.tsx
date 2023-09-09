@@ -10,30 +10,23 @@ import { detect as detectChord } from "@tonaljs/chord-detect";
 // import { majorKey, minorKey } from '@tonaljs/key';
 
 import { initialGuitarNotes, initialChordie, initialChordPreferences } from './utils/defaults';
-import { enharmonicMap, initialNotes, chordie, chromaticSharp } from './utils/defaults';
-import { GuitarNotes, ChordInfo } from './types/interfaces';
+import { deepCopy } from './utils/utils';
 import {enharmonicMap, chromaticSharp} from './utils/constants';
 
 import { GuitarNotes, ChordInfo, Chordie } from './types/interfaces';
 
 
 function App() {
+  const [chordie, setChordie] = useState<Chordie>(deepCopy(initialChordie))
   const [chords, setChords] = useState<{ [key: string]: ChordInfo }>({})
+  const [guitarNotes, setGuitarNotes] = useState<{ [key: string]: GuitarNotes }>(deepCopy(initialGuitarNotes));
   const [chordPreferences, setChordPreferences] = useState(initialChordPreferences);
 
-  //? --- list of detected chords
-  const [chords, setChords] = useState<{ [key: string]: ChordInfo }>({}) 
-  //? --- all guitar notes and their properties
-  const [guitarNotes, setGuitarNotes] = useState<{ [key: string]: GuitarNotes }>(initialNotes); 
-  
-  //? --- show more chord information
-  const [showMoreChordInfo, setShowMoreChordInfo] = useState(false);
-  //? --- toggle between interval relation and notes
-  const [showNotes, setShowNotes] = useState(true);
-  //? --- show all chord tones across the fretboard
-  const [showChordTones, setShowChordTones] = useState(false);
-  //? --- show all chord tones across the fretboard
-  const [activeChord, setActiveChord] = useState<number>(0);
+  const handleFullReset = () => {
+    setChordie(initialChordie);
+    setChords({});
+    setGuitarNotes(initialGuitarNotes);
+  }
 
   const handleShowNotes = () => {
     setChordPreferences(prevPreferences => ({
@@ -83,9 +76,8 @@ function App() {
    * @param {string} target - The target note on the string.
    */
   const handleChordUpdate = (string: string, target: string) => {
-  const handleChordUpate = (string: string, target: string) => {
-    const updatedNotes = { ...guitarNotes };
-    const currentTargetActiveState = updatedNotes[string][target].active;
+    const chordieTemp = deepCopy(chordie)
+    const guitarNotesTemp = deepCopy(guitarNotes)
     const currentTargetActiveState = guitarNotesTemp[string][target].active;
 
     if (guitarNotesTemp[string][target].chordTone) return;
@@ -284,6 +276,7 @@ function App() {
             Show chord tones
           </label>
         </div>
+        <button onClick={handleFullReset}>Reset Notes</button>
       </div>
     </div>
   )
