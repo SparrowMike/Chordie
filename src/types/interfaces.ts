@@ -17,3 +17,5 @@ export interface GuitarNotes {
     relativeNote?: string
   }
 }
+
+export interface Chordie { [key: string]: string | null }

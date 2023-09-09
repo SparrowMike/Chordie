@@ -1,15 +1,25 @@
-
 /**
- * An array representing the chromatic scale with sharp notation.
+ * Initial preferences for chord visualization.
+ *
+ * This object holds the initial preferences for displaying chord information in the application.
+ * Each property represents a specific preference setting:
+ *
+ * - `showMoreChordInfo`: Controls whether detailed chord information is initially visible (true) or hidden (false).
+ * - `showNotes`: Determines if musical notes are initially displayed on the chord visualization (true) or hidden (false).
+ * - `showChordTones`: Specifies whether chord tones are initially highlighted across the fretboard (true) or not (false) on the fretboard.
+ * - `activeChord`: Represents the initial index of the selected chord among detected chords.
  */
-// const chromaticScale = ['C', ['C#', 'Db'], 'D', ['D#', 'Eb'], 'E', 'F', ['F#', 'Gb'], 'G', ['G#', 'Ab'], 'A', ['A#', 'Bb'], 'B']; //? --- ['B#', 'C'] ?
-export const chromaticSharp = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-
+export const initialChordPreferences = {
+  showMoreChordInfo: false,
+  showNotes: true,
+  showChordTones: false,
+  activeChord: 0,
+};
 
 /**
  * A mapping of selected chord tones for each string.
  */
-export const chordie: { [key: string]: string | null } = {
+export const initialChordie = {
   E: null,
   A: null,
   D: null,
@@ -19,22 +29,9 @@ export const chordie: { [key: string]: string | null } = {
 }
 
 /**
- * A mapping of enharmonic equivalents.
- */
-export const enharmonicMap: { [key: string]: string } = {
-  "E#": "F",
-  "B#": "C",
-  "Ab": "G#",
-  "Bb": "A#",
-  "Db": "C#",
-  "Eb": "D#",
-  "Gb": "F#",
-}
-
-/**
  * Initial state of guitar notes with active status.
  */
-export const initialNotes = {
+export const initialGuitarNotes = {
   e: { E: { active: false }, F: { active: false }, 'F#': { active: false }, G: { active: false }, 'G#': { active: false }, A: { active: false }, 'A#': { active: false }, B: { active: false }, C: { active: false }, 'C#': { active: false }, D: { active: false }, 'D#': { active: false } },
   B: { B: { active: false }, C: { active: false }, 'C#': { active: false }, D: { active: false }, 'D#': { active: false }, E: { active: false }, F: { active: false }, 'F#': { active: false }, G: { active: false }, 'G#': { active: false }, A: { active: false }, 'A#': { active: false } },
   G: { G: { active: false }, 'G#': { active: false }, A: { active: false }, 'A#': { active: false }, B: { active: false }, C: { active: false }, 'C#': { active: false }, D: { active: false }, 'D#': { active: false }, E: { active: false }, F: { active: false }, 'F#': { active: false } },
