@@ -5,13 +5,13 @@
 
 import { useState, useEffect } from 'react'
 import { isMobile } from 'react-device-detect';
-import { get as getChordData } from '@tonaljs/chord'; //? ----- tbc { chordScales }
+import { get as getChordData, getChord as getChordDataSymbol } from '@tonaljs/chord'; //? ----- tbc { chordScales }
 import { detect as detectChord } from "@tonaljs/chord-detect";
 // import { majorKey, minorKey } from '@tonaljs/key';
 
 import { initialGuitarNotes, initialChordie, initialChordPreferences } from './utils/defaults';
 import { deepCopy } from './utils/utils';
-import {enharmonicMap, chromaticSharp} from './utils/constants';
+import { enharmonicMap, chromaticSharp } from './utils/constants';
 
 import { GuitarNotes, ChordInfo, Chordie } from './types/interfaces';
 
@@ -71,6 +71,37 @@ function App() {
   }
 
   /**
+   * Extracts chord properties from chord data.
+   *
+   * @param {string} chordData - The chord data string to extract properties from.
+   * @param {number} overChord - The index at which the chord is "over" (splitting point).
+   * @param {string[]} chromaticSharp - An array of chromatic sharp notes (e.g., ["C", "C#", "D", ...]).
+   *
+   * @returns {[string, string, string]} - An array containing three strings:
+   *   - The extracted alias (between the root and overChord).
+   *   - The extracted root note (determined based on the chromaticSharp notes).
+   *   - The extracted bass note (after the splitting point).
+   */
+  const extractChordQuality = (chordData: string, overChord: number): [string, string, string] => {
+    const chord = chordData.slice(0, overChord);
+    const bassNote = chordData.slice(overChord + 1);
+
+    let root = '';
+
+    for (const note of chromaticSharp) {
+      if (chord.includes(note)) {
+        root = note;
+        break;
+      }
+    }
+
+    const alias = chordData.slice(root.length, overChord);
+
+    return [alias, root, bassNote];
+  }
+
+
+  /**
    * Handles the update of chord selection on the guitar fretboard.
    * @param {string} string - The string on the guitar.
    * @param {string} target - The target note on the string.
@@ -106,10 +137,11 @@ function App() {
 
     // Iterate through detected chords and extract chord information
     for (const idx in detectedChords) {
-      const overChord = detectedChords[idx].indexOf('/'); //!----- needs rewrite for better chord info accuracy with chords over bass
+      const overChord = detectedChords[idx].indexOf('/');
+
       const { name, aliases, intervals, notes, quality, type } = overChord <= 0
         ? getChordData(detectedChords[idx])
-        : getChordData(detectedChords[idx].slice(0, overChord));
+        : getChordDataSymbol(...extractChordQuality(detectedChords[idx], overChord));
 
       const intervalsObj: { [key: string]: string } = notes.reduce((obj, key, index) => {
         obj[key] = intervals[index];
@@ -137,6 +169,7 @@ function App() {
 
       if (Object.keys(chordsObj).length) {
         for (const chordObj of Object.values(chordsObj)) {
+          
           for (const relNote of chordObj.notes) {
 
             // Add relativeNote properties based on detected chord's notes
@@ -166,6 +199,7 @@ function App() {
     // console.log(majorKey(chords[activeChord]?.chord), chords[activeChord]?.chord)
     // console.log(minorKey(chords[activeChord]?.chord))
     // console.log(chords[activeChord]?.chord, chordScales(chords[activeChord]?.chord))
+
     const chordsLength: number = Object.keys(chords).length;
 
     setChordPreferences(prevPreferences => (
@@ -195,6 +229,11 @@ function App() {
                 const chordNote = chordPreferences.showNotes || !Object.values(chords).length
                   ? _v?.relativeNote || note
                   : chords[chordPreferences.activeChord]?.intervalsObj[_v?.relativeNote || note] || chords[chordPreferences.activeChord]?.intervalsObj[note]
+
+                  if (_v.active) {
+                    console.log('chordNote----', chordNote, _v.relativeNote)
+                  }
+
                 return (
                   <div
                     className={`note ${_v.active || _v.chordTone ? 'active' : ''} ${isMobile ? 'mobile' : ''}`}
