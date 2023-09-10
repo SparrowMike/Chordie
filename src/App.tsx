@@ -22,6 +22,14 @@ function App() {
   const [guitarNotes, setGuitarNotes] = useState<{ [key: string]: GuitarNotes }>(deepCopy(initialGuitarNotes));
   const [chordPreferences, setChordPreferences] = useState(initialChordPreferences);
 
+
+  const handleActiveChord = (index: number) => {
+    setChordPreferences(prevPreferences => ({ 
+      ...prevPreferences, 
+      activeChord: index 
+    }));
+  }
+
   const handleFullReset = () => {
     setChordie(initialChordie);
     setChords({});
@@ -71,6 +79,47 @@ function App() {
   }
 
   /**
+   * Extracts and updates relativeNote properties for guitarNotesTemp.
+   * @param { [key: string]: ChordInfo } detectedChords - An array of detected chords.
+   * @param { [key: string]: GuitarNotes } guitarNotesTemp - The current state of guitarNotesTemp.
+   * @returns { [key: string]: GuitarNotes } The updated guitarNotesTemp with relativeNote properties.
+   */
+  const extractRelativeNotes = (detectedChords: { [key: string]: ChordInfo }, guitarNotes: { [key: string]: GuitarNotes }) => {
+    const guitarNotesTemp = deepCopy(guitarNotes);
+
+    // Convert a note to its equivalent with a different accidental (e.g., C## to D)
+    const convertDouble = (note: string, type: string) => {
+      const target = note.replace(type, '');
+      return chromaticSharp[(chromaticSharp.indexOf(target) + 2) % chromaticSharp.length];
+    }
+
+    for (const stringNotes of Object.values(guitarNotesTemp)) {
+      // Remove relativeNote properties from guitarNotesTemp 
+      for (const note of Object.values(stringNotes)) {
+        delete note.relativeNote;
+      }
+
+      if (Object.keys(detectedChords).length) {
+        for (const relNote of detectedChords[chordPreferences.activeChord].notes) {
+
+          // Add relativeNote properties based on detected chord's notes
+          if (relNote.includes('##')) {
+            stringNotes[convertDouble(relNote, '##')].relativeNote = relNote;
+          }
+          if (relNote.includes('bb')) {
+            stringNotes[convertDouble(relNote, 'bb')].relativeNote = relNote;
+          }
+          if (enharmonicMap[relNote]) {
+            stringNotes[enharmonicMap[relNote]].relativeNote = relNote;
+          }
+        }
+      }
+    }
+
+    return guitarNotesTemp;
+  };
+
+  /**
    * Extracts chord properties from chord data.
    *
    * @param {string} chordData - The chord data string to extract properties from.
@@ -107,11 +156,12 @@ function App() {
    * @param {string} target - The target note on the string.
    */
   const handleChordUpdate = (string: string, target: string) => {
+    let guitarNotesTemp = deepCopy(guitarNotes)
+
     const chordieTemp = deepCopy(chordie)
-    const guitarNotesTemp = deepCopy(guitarNotes)
     const currentTargetActiveState = guitarNotesTemp[string][target].active;
 
-    if (guitarNotesTemp[string][target].chordTone) return;
+    if (guitarNotesTemp[string][target].chordTone) return; //! -------------- It can't just return as it will not update the fretboard 
 
     // Reset all the notes on the selected string to be inactive
     for (const note in guitarNotesTemp[string]) {
@@ -139,6 +189,9 @@ function App() {
     for (const idx in detectedChords) {
       const overChord = detectedChords[idx].indexOf('/');
 
+      //! ----------chords over don't seem to behave the way as expected, need additional work????? some are just simply blank some are there 
+      console.log(getChordDataSymbol('#sus2', 'A3', 'F4'))
+
       const { name, aliases, intervals, notes, quality, type } = overChord <= 0
         ? getChordData(detectedChords[idx])
         : getChordDataSymbol(...extractChordQuality(detectedChords[idx], overChord));
@@ -155,43 +208,11 @@ function App() {
       };
     }
 
-    // Convert a note to its equivalent with a different accidental (e.g., C## to D
-    const convertDouble = (note: string, type: string) => {
-      const target = note.replace(type, '');
-      return chromaticSharp[(chromaticSharp.indexOf(target) + 2) % chromaticSharp.length];
-    }
-
-    for (const stringNotes of Object.values(guitarNotesTemp)) {
-      // Remove relativeNote properties fromguitarNotesTemp 
-      for (const note of Object.values(stringNotes)) {
-        delete note.relativeNote;
-      }
-
-      if (Object.keys(chordsObj).length) {
-        for (const chordObj of Object.values(chordsObj)) {
-          
-          for (const relNote of chordObj.notes) {
-
-            // Add relativeNote properties based on detected chord's notes
-            if (relNote.includes('##')) {
-              stringNotes[convertDouble(relNote, '##')].relativeNote = relNote;
-            }
-            if (relNote.includes('bb')) {
-              stringNotes[convertDouble(relNote, 'bb')].relativeNote = relNote; //! ---- needs more tests with bb chords
-            }
-
-            if (enharmonicMap[relNote]) {
-              stringNotes[enharmonicMap[relNote]].relativeNote = relNote;
-            }
-          }
-        }
-      }
-    }
-
-    const guitarNotesTempUpdated = updateChordTones(guitarNotesTemp, chordPreferences.showChordTones);
+    guitarNotesTemp = extractRelativeNotes(chordsObj, guitarNotesTemp);
+    guitarNotesTemp = updateChordTones(guitarNotesTemp, chordPreferences.showChordTones);
 
     setChordie(chordieTemp);
-    setGuitarNotes(guitarNotesTempUpdated);
+    setGuitarNotes(guitarNotesTemp);
     setChords(chordsObj);
   };
 
@@ -212,6 +233,13 @@ function App() {
     ));
   }, [chords]);
 
+  useEffect(() => {
+    // This code will run after the state has been updated
+    setGuitarNotes(extractRelativeNotes(chords, guitarNotes));
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chordPreferences.activeChord]);
+
   return (
     <div className="container">
       <div className="guitar">
@@ -229,10 +257,6 @@ function App() {
                 const chordNote = chordPreferences.showNotes || !Object.values(chords).length
                   ? _v?.relativeNote || note
                   : chords[chordPreferences.activeChord]?.intervalsObj[_v?.relativeNote || note] || chords[chordPreferences.activeChord]?.intervalsObj[note]
-
-                  if (_v.active) {
-                    console.log('chordNote----', chordNote, _v.relativeNote)
-                  }
 
                 return (
                   <div
@@ -267,7 +291,7 @@ function App() {
         {Object.keys(chords).length ? (
           <ul>
             {Object.values(chords).map((v, i) => (
-              <li key={i} onClick={() => setChordPreferences(prevPreferences => ({ ...prevPreferences, activeChord: i }))} className={`${chordPreferences.activeChord === i ? 'active' : ''}`}>Detected chord: {v.chord} {chordPreferences.showMoreChordInfo ? (
+              <li key={i} onClick={() => handleActiveChord(i)} className={`${chordPreferences.activeChord === i ? 'active' : ''}`}>Detected chord: {v.chord} {chordPreferences.showMoreChordInfo ? (
                 <div style={{ paddingLeft: '25px' }}>
                   <p>Name: {v.name}</p>
                   <p>Aliases: {v.aliases.join(' / ')}</p>
