@@ -1,5 +1,6 @@
 
 export interface ChordInfo {
+  empty: boolean;
   chord: string;
   name: string;
   aliases: string[];

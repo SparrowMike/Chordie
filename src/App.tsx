@@ -24,9 +24,9 @@ function App() {
 
 
   const handleActiveChord = (index: number) => {
-    setChordPreferences(prevPreferences => ({ 
-      ...prevPreferences, 
-      activeChord: index 
+    setChordPreferences(prevPreferences => ({
+      ...prevPreferences,
+      activeChord: index
     }));
   }
 
@@ -39,7 +39,7 @@ function App() {
   const handleShowNotes = () => {
     setChordPreferences(prevPreferences => ({
       ...prevPreferences,
-      showNotes: !prevPreferences.showNotes 
+      showNotes: !prevPreferences.showNotes
     }));
   };
 
@@ -133,7 +133,8 @@ function App() {
    *   - The extracted root note (determined based on the chromaticSharp notes).
    *   - The extracted bass note (after the splitting point).
    */
-  const extractChordQuality = (chordData: string, overChord: number): [string, string, string] => {
+  const extractChordQuality = (chordData: string): [string, string, string] => {
+    const overChord = chordData.indexOf('/');
     const chord = chordData.slice(0, overChord);
     const bassNote = chordData.slice(overChord + 1);
 
@@ -150,7 +151,6 @@ function App() {
     return [alias, root, bassNote];
   }
 
-
   /**
    * Handles the update of chord selection on the guitar fretboard.
    * @param {string} string - The string on the guitar.
@@ -161,7 +161,7 @@ function App() {
 
     const chordieTemp = deepCopy(chordie)
     const currentTargetActiveState = guitarNotesTemp[string][target].active;
-    
+
     if (guitarNotesTemp[string][target].chordTone) return;
 
     // Reset all the notes on the selected string to be inactive
@@ -188,13 +188,9 @@ function App() {
 
     // Iterate through detected chords and extract chord information
     for (const idx in detectedChords) {
-      const overChord = detectedChords[idx].indexOf('/');
-
-      //! ----------chords over don't seem to behave the way as expected, need additional work????? some are just simply blank some are there 
-
-      const { name, aliases, intervals, notes, quality, type } = overChord <= 0
-        ? getChordData(detectedChords[idx])
-        : getChordDataSymbol(...extractChordQuality(detectedChords[idx], overChord));
+      const { empty, name, aliases, intervals, notes, quality, type } = detectedChords[idx].includes('/')
+        ? getChordDataSymbol(...extractChordQuality(detectedChords[idx]))
+        : getChordData(detectedChords[idx]);
 
       const intervalsObj: { [key: string]: string } = notes.reduce((obj, key, index) => {
         obj[key] = intervals[index];
@@ -204,7 +200,7 @@ function App() {
       // Store the extracted chord information in chordsObj
       chordsObj[idx] = {
         chord: detectedChords[idx],
-        name, aliases, intervals, notes, quality, type, intervalsObj
+        empty, name, aliases, intervals, notes, quality, type, intervalsObj
       };
     }
 
@@ -238,9 +234,7 @@ function App() {
   }, [chordPreferences.activeChord]);
 
   useEffect(() => {
-    if (chordPreferences.showChordTones) {
-      setGuitarNotes(updateChordTones(guitarNotes, chordPreferences.showChordTones));
-    }
+    setGuitarNotes(updateChordTones(guitarNotes, chordPreferences.showChordTones));
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chordie, chordPreferences.showChordTones])
@@ -295,13 +289,19 @@ function App() {
         </div>
         {Object.keys(chords).length ? (
           <ul>
-            {Object.values(chords).map((v, i) => (
-              <li key={i} onClick={() => handleActiveChord(i)} className={`${chordPreferences.activeChord === i ? 'active' : ''}`}>Detected chord: {v.chord} {chordPreferences.showMoreChordInfo ? (
+            {Object.values(chords).map((chord, i) => (
+              <li key={i} onClick={() => handleActiveChord(i)} className={`${chordPreferences.activeChord === i ? 'active' : ''}`}>Detected chord: {chord.chord} {chordPreferences.showMoreChordInfo ? (
                 <div style={{ paddingLeft: '25px' }}>
-                  <p>Name: {v.name}</p>
-                  <p>Aliases: {v.aliases.join(' / ')}</p>
-                  <p>Intervals: {v.intervals.join(' / ')}</p>
-                  <p>Notes: {v.notes.join(' / ')}</p>
+                  {chord.empty ? (
+                    <p>No available data</p>
+                  ) : (
+                    <>
+                      <p>Name: {chord.name}</p>
+                      <p>Aliases: {chord.aliases.join(' / ')}</p>
+                      <p>Intervals: {chord.intervals.join(' / ')}</p>
+                      <p>Notes: {chord.notes.join(' / ')}</p>
+                    </>
+                  )}
                 </div>
               ) : ''}
               </li>
@@ -326,7 +326,7 @@ function App() {
           <label>
             <input
               type="radio"
-              disabled={!Object.keys(chords).length}
+              disabled={!Object.keys(chords).length || chords[chordPreferences.activeChord].empty}
               value="intervals"
               checked={!chordPreferences.showNotes}
               onChange={handleShowNotes}
