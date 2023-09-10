@@ -61,8 +61,10 @@ function App() {
    * Handles updating the notes state based on chord tones.
    * @param {boolean} show - Whether to show chord tones.
    */
-  const updateChordTones = (notes: { [key: string]: GuitarNotes }, show?: boolean) => {
-    for (const string of Object.values(notes)) {
+  const updateChordTones = (guitarNotes: { [key: string]: GuitarNotes }, show?: boolean) => {
+    const guitarNotesTemp = deepCopy(guitarNotes);
+
+    for (const string of Object.values(guitarNotesTemp)) {
       for (const note of Object.keys(string)) {
         delete string[note].chordTone;
       }
@@ -75,7 +77,7 @@ function App() {
       }
     }
 
-    return notes;
+    return guitarNotesTemp;
   }
 
   /**
@@ -140,7 +142,6 @@ function App() {
     for (const note of chromaticSharp) {
       if (chord.includes(note)) {
         root = note;
-        break;
       }
     }
 
@@ -160,8 +161,8 @@ function App() {
 
     const chordieTemp = deepCopy(chordie)
     const currentTargetActiveState = guitarNotesTemp[string][target].active;
-
-    if (guitarNotesTemp[string][target].chordTone) return; //! -------------- It can't just return as it will not update the fretboard 
+    
+    if (guitarNotesTemp[string][target].chordTone) return;
 
     // Reset all the notes on the selected string to be inactive
     for (const note in guitarNotesTemp[string]) {
@@ -190,7 +191,6 @@ function App() {
       const overChord = detectedChords[idx].indexOf('/');
 
       //! ----------chords over don't seem to behave the way as expected, need additional work????? some are just simply blank some are there 
-      console.log(getChordDataSymbol('#sus2', 'A3', 'F4'))
 
       const { name, aliases, intervals, notes, quality, type } = overChord <= 0
         ? getChordData(detectedChords[idx])
@@ -209,7 +209,6 @@ function App() {
     }
 
     guitarNotesTemp = extractRelativeNotes(chordsObj, guitarNotesTemp);
-    guitarNotesTemp = updateChordTones(guitarNotesTemp, chordPreferences.showChordTones);
 
     setChordie(chordieTemp);
     setGuitarNotes(guitarNotesTemp);
@@ -222,7 +221,6 @@ function App() {
     // console.log(chords[activeChord]?.chord, chordScales(chords[activeChord]?.chord))
 
     const chordsLength: number = Object.keys(chords).length;
-
     setChordPreferences(prevPreferences => (
       {
         ...prevPreferences,
@@ -234,11 +232,18 @@ function App() {
   }, [chords]);
 
   useEffect(() => {
-    // This code will run after the state has been updated
     setGuitarNotes(extractRelativeNotes(chords, guitarNotes));
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chordPreferences.activeChord]);
+
+  useEffect(() => {
+    if (chordPreferences.showChordTones) {
+      setGuitarNotes(updateChordTones(guitarNotes, chordPreferences.showChordTones));
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chordie, chordPreferences.showChordTones])
 
   return (
     <div className="container">
@@ -281,7 +286,7 @@ function App() {
             <input
               type="checkbox"
               className="checkbox"
-              id="myCheckbox"
+              id="chord-information"
               checked={chordPreferences.showMoreChordInfo}
               onChange={() => setChordPreferences(prevPreferences => ({ ...prevPreferences, showMoreChordInfo: !prevPreferences.showMoreChordInfo }))}
             />
@@ -332,7 +337,7 @@ function App() {
             <input
               type="checkbox"
               className="checkbox"
-              id="myCheckbox"
+              id="show-chord-tones"
               checked={chordPreferences.showChordTones}
               onChange={() => handleShowChordTones(true)}
             />
