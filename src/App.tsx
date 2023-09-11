@@ -8,7 +8,7 @@ import { isMobile } from 'react-device-detect';
 import { get as getChordData, getChord as getChordDataSymbol, chordScales } from '@tonaljs/chord'; //? ----- tbc { chordScales }
 import { detect as detectChord } from "@tonaljs/chord-detect";
 // import { majorKey, minorKey } from '@tonaljs/key';
-import { detect as detectScale, get as getScale } from '@tonaljs/scale';
+import { get as getScale } from '@tonaljs/scale'; // Or detect as detectScale
 
 import { initialGuitarNotes, initialChordie, initialPreferences } from './utils/defaults';
 import { deepCopy } from './utils/utils';
