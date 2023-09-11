@@ -215,7 +215,7 @@ body {
 	}
 
 	.notes {
-		padding: 25px;
+		padding: 2.5rem;
 
 		&, ul li {
 			font-size: 1.8rem;
@@ -224,6 +224,25 @@ body {
 			.active {
 				text-decoration: underline;
 			}
+		}
+	}
+
+	.options {
+		padding: 25px; 
+		display: flex;
+		flex-direction: column;
+		font-size: 2.0rem;
+	}
+
+	.scales {
+		display: flex;
+    flex-wrap: wrap;
+		padding: 2.5rem;
+		cursor: pointer;
+	
+		div {
+			font-size: 2rem;
+    	padding: 4px 6px;
 		}
 	}
 }

@@ -1,5 +1,6 @@
 
 export interface ChordInfo {
+  tonic: string | null;
   empty: boolean;
   chord: string;
   name: string;
@@ -14,8 +15,10 @@ export interface ChordInfo {
 export interface GuitarNotes {
   [key: string]: {
     active: boolean,
+    octave: string,
+    interval?: string,
     chordTone?: boolean,
-    relativeNote?: string
+    relativeNote?: string,
   }
 }
 
