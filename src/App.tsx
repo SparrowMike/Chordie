@@ -259,7 +259,7 @@ function App() {
       // console.log(detectScale(chords[preferences.activeChord].notes))
       // console.log(chordScales(chords[preferences.activeChord]?.chord))
 
-      setScales(chordScales(chords[preferences.activeChord].chord))
+      setScales(chordScales(chords[preferences.activeChord].chord.split('/')[0]))
     }
 
 
