@@ -91,7 +91,7 @@ export const initialGuitarNotes = {
   },
   A: {
     A: { active: false, octave: '3' },
-    'A#': { active: false, octave: 'A3' },
+    'A#': { active: false, octave: '3' },
     B: { active: false, octave: '3' },
     C: { active: false, octave: '4' },
     'C#': { active: false, octave: '4' },

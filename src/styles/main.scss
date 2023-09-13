@@ -55,6 +55,10 @@ body {
 				position: relative;
 
 
+				.fret-silver {
+					z-index: 9;
+				}
+
 				&:not(:last-child) .fret-silver {
 					position: absolute;
 					right: 0;

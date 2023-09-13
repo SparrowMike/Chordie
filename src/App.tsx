@@ -32,7 +32,6 @@ function App() {
   }
 
   const handleUpdateScale = (scale: string) => {
-    //! ------- should rewrite and use `updateChordTones` fn instead to handle similar case base on different object key
     let guitarNotesTemp = deepCopy(guitarNotes);
 
     const scaleData = getScale(`${chords[preferences.activeChord].tonic} ${scale}`);
@@ -52,9 +51,34 @@ function App() {
       }
     }
 
-    guitarNotesTemp = extractRelativeNotes(scaleData.notes, scaleData.intervals, guitarNotesTemp)
+    guitarNotesTemp = extractRelativeNotes(scaleData.notes, scaleData.intervals, guitarNotesTemp);
 
-    setGuitarNotes(guitarNotesTemp)
+    return guitarNotesTemp;
+  }
+
+
+  /**
+   * Handles updating the notes state based on chord tones.
+   * @param {boolean} show - Whether to show chord tones.
+   */
+  const updateChordTones = (guitarNotes: { [key: string]: GuitarNotes }, show?: boolean) => {
+    const guitarNotesTemp = deepCopy(guitarNotes);
+
+    for (const string of Object.values(guitarNotesTemp)) {
+      for (const note of Object.values(string)) {
+        delete note.chordTone;
+      }
+      
+      if (show) {
+        for (const note of Object.values(chordie)) {
+          if (note && !string[note].active) {
+            string[note].chordTone = true;
+          }
+        }
+      }
+    }
+
+    return guitarNotesTemp;
   }
 
   const handleFullReset = () => {
@@ -84,30 +108,6 @@ function App() {
 
     updateChordTones(guitarNotes, newShowChordTones);
   };
-
-  /**
-   * Handles updating the notes state based on chord tones.
-   * @param {boolean} show - Whether to show chord tones.
-   */
-  const updateChordTones = (guitarNotes: { [key: string]: GuitarNotes }, show?: boolean) => {
-    const guitarNotesTemp = deepCopy(guitarNotes);
-
-    for (const string of Object.values(guitarNotesTemp)) {
-      for (const note of Object.values(string)) {
-        delete note.chordTone;
-      }
-      
-      if (show) {
-        for (const note of Object.values(chordie)) {
-          if (note && !string[note].active) {
-            string[note].chordTone = true;
-          }
-        }
-      }
-    }
-
-    return guitarNotesTemp;
-  }
 
   /**
    * Extracts and updates relativeNote properties for guitarNotesTemp.
@@ -241,7 +241,7 @@ function App() {
       };
     }
 
-    if (Object.keys(chords).length) {
+    if (Object.keys(chordsObj).length) {
       const { notes, intervals } = chordsObj[preferences.activeChord];
       guitarNotesTemp = extractRelativeNotes(notes, intervals, guitarNotesTemp);
     }
@@ -307,7 +307,6 @@ function App() {
               {Object.entries(v).map(([note, _v], _i) => {
                 const chordNote = preferences.showNotes || !Object.values(chords).length
                   ? _v?.relativeNote || note
-                  // : chords[preferences.activeChord]?.intervalsObj[_v?.relativeNote || note] || chords[preferences.activeChord]?.intervalsObj[note]
                   : _v?.interval
 
                 return (
@@ -412,7 +411,7 @@ function App() {
       </div>
       {preferences.showScales &&
         <div className="scales">{scales?.map((scale, idx) => (
-          <div onClick={() => handleUpdateScale(scale)} key={idx}>{scale}</div>
+          <div onClick={() => setGuitarNotes(handleUpdateScale(scale))} key={idx}>{scale}</div>
         ))}</div>
       }
     </div>
