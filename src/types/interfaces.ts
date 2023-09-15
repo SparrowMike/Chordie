@@ -1,3 +1,4 @@
+import { ChangeEvent } from 'react';
 
 export interface ChordInfo {
   tonic: string | null;
@@ -23,3 +24,11 @@ export interface GuitarNotes {
 }
 
 export interface Chordie { [key: string]: string | null }
+
+export interface ToggleOptionProps {
+  checked: boolean;
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  label: string;
+  type?: string,
+  [key: string]: unknown;  // This will allow other properties like 'disabled', 'id', etc.
+}
