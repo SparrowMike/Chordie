@@ -8,7 +8,8 @@
 		"build": "tsc && vite build",
 		"lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
 		"prettier": "prettier --write '**/*.{js,jsx,tsx,ts,scss,md,json}'",
-		"preview": "vite preview"
+		"preview": "vite preview",
+		"prepare": "husky install"
 	},
 	"gitHooks": {
 		"pre-commit": "lint-staged"
@@ -40,6 +41,7 @@
 		"eslint": "^8.45.0",
 		"eslint-plugin-react-hooks": "^4.6.0",
 		"eslint-plugin-react-refresh": "^0.4.3",
+		"husky": "^8.0.3",
 		"prettier": "^3.0.3",
 		"sass": "^1.66.1",
 		"typescript": "^5.0.2",
