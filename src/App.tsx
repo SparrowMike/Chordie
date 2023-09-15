@@ -11,17 +11,16 @@ import { useAtom } from 'jotai';
 import { preferencesAtom } from './controller/atoms';
 
 function App() {
-  const [preferences] = useAtom(preferencesAtom);
+	const [preferences] = useAtom(preferencesAtom);
 
-
-  return (
-    <div className="container">
-      <Fretboard />
-      <ChordsInfo />
-      <Preference />
-      {preferences.showScales && <Scales />}
-    </div>
-  )
+	return (
+		<div className="container">
+			<Fretboard />
+			<ChordsInfo />
+			<Preference />
+			{preferences.showScales && <Scales />}
+		</div>
+	);
 }
 
 export default App;
