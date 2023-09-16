@@ -1,4 +1,4 @@
-import { Chordie, GuitarNotes } from '../types/interfaces';
+import { ChordInfo, Chordie, GuitarNotes } from '../types/interfaces';
 import { enharmonicMap, chromaticSharp } from './constants';
 
 /**
@@ -89,4 +89,20 @@ export const extractRelativeNotes = (
 	}
 
 	return guitarNotesTemp;
+};
+
+/**
+ * Checks if a chord with the specified activeChord exists in the chords object.
+ *
+ * @param {Object.<string, ChordInfo>} chords - The object containing chord information, where keys are chord names.
+ * @param {number} activeChord - The index of the active chord to check.
+ * @returns {boolean} `true` if the activeChord exists in the chords object; otherwise, `false`.
+ */
+export const checkChords = (
+	chords: { [key: string]: ChordInfo },
+	activeChord: number
+) => {
+	if (!Object.keys(chords).length) return false;
+	if (!chords[activeChord]) return false;
+	return true;
 };

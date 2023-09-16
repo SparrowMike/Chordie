@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { isMobile } from 'react-device-detect';
-
 import { useAtom } from 'jotai';
 import {
 	chordieAtom,
@@ -20,6 +19,7 @@ import { detect as detectChord } from '@tonaljs/chord-detect';
 // import { majorKey, minorKey } from '@tonaljs/key';
 
 import {
+	checkChords,
 	deepCopy,
 	extractRelativeNotes,
 	updateChordTones,
@@ -133,9 +133,7 @@ export const Fretboard = () => {
 			};
 		}
 
-		if (Object.keys(chordsObj).length) {
-			// console.log(chordsObj[preferences.activeChord])
-
+		if (checkChords(chordsObj, preferences.activeChord)) {
 			const { notes, intervals } = chordsObj[preferences.activeChord];
 			guitarNotesTemp = extractRelativeNotes(notes, intervals, guitarNotesTemp);
 		}
@@ -146,7 +144,7 @@ export const Fretboard = () => {
 	};
 
 	useEffect(() => {
-		if (Object.keys(chords).length) {
+		if (checkChords(chords, preferences.activeChord)) {
 			setScales(
 				chordScales(chords[preferences.activeChord].chord.split('/')[0])
 			);
@@ -154,8 +152,6 @@ export const Fretboard = () => {
 
 		const chordsLength: number = Object.keys(chords).length;
 		setPreferences({ type: 'SET_ACTIVE_CHORD_RESET', chordsLength });
-
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [chords]);
 
 	useEffect(() => {
@@ -163,16 +159,12 @@ export const Fretboard = () => {
 			const { notes, intervals } = chords[preferences.activeChord];
 			setGuitarNotes(extractRelativeNotes(notes, intervals, guitarNotes));
 		}
-
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [preferences.activeChord]);
 
 	useEffect(() => {
 		setGuitarNotes(
 			updateChordTones(chordie, guitarNotes, preferences.showChordTones)
 		);
-
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [chordie, preferences.showChordTones]);
 
 	return (

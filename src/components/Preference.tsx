@@ -5,6 +5,7 @@ import {
 	chordsAtom,
 } from './../controller/atoms';
 import { ToggleOptionProps } from '../types/interfaces';
+import { checkChords } from '../utils/utils';
 
 const ToggleOption: React.FC<ToggleOptionProps> = ({
 	checked,
@@ -43,7 +44,8 @@ export const Preference = () => {
 			/>
 			<ToggleOption
 				disabled={
-					!Object.keys(chords).length || chords[preferences.activeChord].empty
+					!checkChords(chords, preferences.activeChord) ||
+					chords[preferences.activeChord].empty
 				}
 				checked={!preferences.showNotes}
 				onChange={handleShowNotes}
