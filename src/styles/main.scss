@@ -28,8 +28,8 @@ body {
 	// z-index: -1;
 
 	.guitar {
-		$fret-width: .5rem;
-		$fret-max-width: .5vw;
+		$fret-width: 0.5rem;
+		$fret-max-width: 0.5vw;
 		$nut-width: 1.2rem;
 		$nut-max-width: 1vw;
 
@@ -38,7 +38,7 @@ body {
 		position: relative;
 		max-width: fit-content;
 		background-image: url(https://plus.unsplash.com/premium_photo-1675782999354-2f2711e437a5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80);
-    background-size: cover;
+		background-size: cover;
 
 		.frets {
 			height: 100%;
@@ -47,13 +47,12 @@ body {
 			z-index: 99;
 			pointer-events: none;
 			width: 100%;
-			
+
 			.fret {
 				width: 10vw;
-				max-width: 7.5rem;	
+				max-width: 7.5rem;
 				display: flex;
 				position: relative;
-
 
 				.fret-silver {
 					z-index: 9;
@@ -89,10 +88,10 @@ body {
 				}
 
 				&:nth-child(4):after,
-				&:nth-child(6):after, 
-				&:nth-child(8):after, 
+				&:nth-child(6):after,
+				&:nth-child(8):after,
 				&:nth-child(10):after {
-					content:'';
+					content: '';
 					position: absolute;
 					width: 2.4rem;
 					max-width: 2vw;
@@ -104,13 +103,13 @@ body {
 					left: 50%;
 					top: 50%;
 				}
-				
+
 				&:nth-child(6):after {
 					top: 30%;
 				}
 
 				&:nth-child(6):before {
-					content:'';
+					content: '';
 					position: absolute;
 					width: 2.4rem;
 					max-width: 2vw;
@@ -126,7 +125,6 @@ body {
 		}
 
 		.strings {
-
 			.string {
 				width: 100%;
 				max-width: fit-content;
@@ -135,7 +133,7 @@ body {
 				display: flex;
 				flex-wrap: nowrap;
 				position: relative;
-	
+
 				&::after {
 					content: '';
 					position: absolute;
@@ -147,15 +145,15 @@ body {
 					z-index: 99;
 					pointer-events: none;
 				}
-	
+
 				@for $i from 1 through 6 {
 					&:nth-child(#{$i})::after {
-						height: $i * .05rem;
-						max-height: $i * .05vw;
-						box-shadow: 0px $i * -1.25px 8px 1px rgba(0,0,0,1);
+						height: $i * 0.05rem;
+						max-height: $i * 0.05vw;
+						box-shadow: 0px $i * -1.25px 8px 1px rgba(0, 0, 0, 1);
 					}
 				}
-	
+
 				.note {
 					color: black;
 					height: 5vw;
@@ -168,29 +166,28 @@ body {
 					align-items: center;
 					position: relative;
 					cursor: pointer;
-	
+
 					&:first-child {
 						width: 6vw;
 						max-width: 5rem;
 
 						h4 {
-							font-size: clamp(.8rem, 1.6vw, 1.8rem);
+							font-size: clamp(0.8rem, 1.6vw, 1.8rem);
 						}
-
 					}
-	
+
 					h4 {
 						opacity: 0;
 						z-index: 9999;
 						font-size: clamp(1rem, 1.8vw, 2.2rem);
 						font-weight: 600;
 					}
-	
+
 					&:not(.mobile):hover h4,
 					&.active h4 {
 						opacity: 1;
 					}
-	
+
 					&:not(.mobile):hover::after,
 					&.active::after {
 						content: '';
@@ -205,9 +202,9 @@ body {
 						background-color: orange;
 						z-index: 999;
 						border: 3px solid black;
-						box-shadow: -6px -3px 8px 3px rgba(0,0,0,.6);
+						box-shadow: -6px -3px 8px 3px rgba(0, 0, 0, 0.6);
 					}
-	
+
 					&:hover:first-child::after,
 					&.active:first-child::after {
 						height: 50%;
@@ -221,7 +218,8 @@ body {
 	.notes {
 		padding: 2.5rem;
 
-		&, ul li {
+		&,
+		ul li {
 			font-size: 1.8rem;
 			list-style: none;
 
@@ -232,21 +230,21 @@ body {
 	}
 
 	.options {
-		padding: 25px; 
+		padding: 25px;
 		display: flex;
 		flex-direction: column;
-		font-size: 2.0rem;
+		font-size: 2rem;
 	}
 
 	.scales {
 		display: flex;
-    flex-wrap: wrap;
+		flex-wrap: wrap;
 		padding: 2.5rem;
 		cursor: pointer;
-	
+
 		div {
 			font-size: 2rem;
-    	padding: 4px 6px;
+			padding: 4px 6px;
 		}
 	}
 }
