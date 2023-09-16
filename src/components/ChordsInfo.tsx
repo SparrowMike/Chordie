@@ -1,33 +1,16 @@
 import { useAtom } from 'jotai';
 import {
-	chordieAtom,
 	chordsAtom,
-	guitarNotesAtom,
 	preferencesAtom,
-	scalesAtom,
+	handleFullResetAtom,
+	updatePreferencesAtom,
 } from './../controller/atoms';
-import { initialGuitarNotes, initialChordie } from './../utils/defaults';
 
 export const ChordsInfo = () => {
-	const [, setChordie] = useAtom(chordieAtom);
-	const [chords, setChords] = useAtom(chordsAtom);
-	const [, setGuitarNotes] = useAtom(guitarNotesAtom);
-	const [preferences, setPreferences] = useAtom(preferencesAtom);
-	const [, setScales] = useAtom(scalesAtom);
-
-	const handleActiveChord = (index: number) => {
-		setPreferences((prevPreferences) => ({
-			...prevPreferences,
-			activeChord: index,
-		}));
-	};
-
-	const handleFullReset = () => {
-		setChordie(initialChordie);
-		setChords({});
-		setGuitarNotes(initialGuitarNotes);
-		setScales([]);
-	};
+	const [chords] = useAtom(chordsAtom);
+	const [preferences] = useAtom(preferencesAtom);
+	const [, setPreferences] = useAtom(updatePreferencesAtom);
+	const [, handleFullReset] = useAtom(handleFullResetAtom);
 
 	return (
 		<div className="notes">
@@ -40,10 +23,7 @@ export const ChordsInfo = () => {
 						id="chord-information"
 						checked={preferences.showMoreChordInfo}
 						onChange={() =>
-							setPreferences((prevPreferences) => ({
-								...prevPreferences,
-								showMoreChordInfo: !prevPreferences.showMoreChordInfo,
-							}))
+							setPreferences({ type: 'TOGGLE_SHOW_MORE_CHORD_INFO' })
 						}
 					/>
 					More chord information
@@ -51,11 +31,13 @@ export const ChordsInfo = () => {
 			</div>
 			{Object.keys(chords).length ? (
 				<ul>
-					{Object.values(chords).map((chord, i) => (
+					{Object.values(chords).map((chord, index) => (
 						<li
-							key={i}
-							onClick={() => handleActiveChord(i)}
-							className={`${preferences.activeChord === i ? 'active' : ''}`}
+							key={index}
+							onClick={() =>
+								setPreferences({ type: 'SET_ACTIVE_CHORD', index })
+							}
+							className={`${preferences.activeChord === index ? 'active' : ''}`}
 						>
 							Detected chord: {chord.chord}{' '}
 							{preferences.showMoreChordInfo ? (

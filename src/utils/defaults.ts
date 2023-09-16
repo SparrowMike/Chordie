@@ -1,3 +1,5 @@
+import { Preferences } from '../types/interfaces';
+
 /**
  * Initial preferences for chord visualization.
  *
@@ -9,7 +11,7 @@
  * - `showChordTones`: Specifies whether chord tones are initially highlighted across the fretboard (true) or not (false) on the fretboard.
  * - `activeChord`: Represents the initial index of the selected chord among detected chords.
  */
-export const initialPreferences = {
+export const initialPreferences: Preferences = {
 	showMoreChordInfo: false,
 	showNotes: true,
 	showChordTones: false,

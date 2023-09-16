@@ -8,6 +8,7 @@ import {
 	guitarNotesAtom,
 	preferencesAtom,
 	scalesAtom,
+	updatePreferencesAtom,
 } from './../controller/atoms';
 
 import {
@@ -31,8 +32,9 @@ export const Fretboard = () => {
 	const [chordie, setChordie] = useAtom(chordieAtom);
 	const [chords, setChords] = useAtom(chordsAtom);
 	const [guitarNotes, setGuitarNotes] = useAtom(guitarNotesAtom);
-	const [preferences, setPreferences] = useAtom(preferencesAtom);
+	const [preferences] = useAtom(preferencesAtom);
 	const [, setScales] = useAtom(scalesAtom);
+	const [, setPreferences] = useAtom(updatePreferencesAtom);
 
 	/**
 	 * Extracts chord properties from chord data.
@@ -132,6 +134,8 @@ export const Fretboard = () => {
 		}
 
 		if (Object.keys(chordsObj).length) {
+			// console.log(chordsObj[preferences.activeChord])
+
 			const { notes, intervals } = chordsObj[preferences.activeChord];
 			guitarNotesTemp = extractRelativeNotes(notes, intervals, guitarNotesTemp);
 		}
@@ -149,13 +153,7 @@ export const Fretboard = () => {
 		}
 
 		const chordsLength: number = Object.keys(chords).length;
-		setPreferences((prevPreferences) => ({
-			...prevPreferences,
-			activeChord:
-				prevPreferences.activeChord < chordsLength
-					? prevPreferences.activeChord
-					: 0,
-		}));
+		setPreferences({ type: 'SET_ACTIVE_CHORD_RESET', chordsLength });
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [chords]);

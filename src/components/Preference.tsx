@@ -1,12 +1,9 @@
-import { updateChordTones } from '../utils/utils';
 import { useAtom } from 'jotai';
 import {
-	chordieAtom,
-	chordsAtom,
-	guitarNotesAtom,
 	preferencesAtom,
+	updatePreferencesAtom,
+	chordsAtom,
 } from './../controller/atoms';
-
 import { ToggleOptionProps } from '../types/interfaces';
 
 const ToggleOption: React.FC<ToggleOptionProps> = ({
@@ -23,21 +20,17 @@ const ToggleOption: React.FC<ToggleOptionProps> = ({
 );
 
 export const Preference = () => {
-	const [preferences, setPreferences] = useAtom(preferencesAtom);
+	const [preferences] = useAtom(preferencesAtom);
 	const [chords] = useAtom(chordsAtom);
-	const [chordie] = useAtom(chordieAtom);
-	const [guitarNotes] = useAtom(guitarNotesAtom);
-
-	const handleToggle = (key: keyof typeof preferences) => {
-		setPreferences((prev) => ({ ...prev, [key]: !prev[key] }));
-	};
+	const [, setPreferences] = useAtom(updatePreferencesAtom);
 
 	const handleShowChordTones = () => {
-		handleToggle('showChordTones');
-		updateChordTones(chordie, guitarNotes, !preferences.showChordTones);
+		setPreferences({ type: 'TOGGLE_PREFERENCE', key: 'showChordTones' });
 	};
 
-	const handleShowNotes = () => handleToggle('showNotes');
+	const handleShowNotes = () => {
+		setPreferences({ type: 'TOGGLE_PREFERENCE', key: 'showNotes' });
+	};
 
 	return (
 		<div className="options">
@@ -66,7 +59,9 @@ export const Preference = () => {
 			<ToggleOption
 				id="show-scales"
 				checked={preferences.showScales}
-				onChange={() => handleToggle('showScales')}
+				onChange={() =>
+					setPreferences({ type: 'TOGGLE_PREFERENCE', key: 'showScales' })
+				}
 				label="Show Scales"
 			/>
 		</div>
