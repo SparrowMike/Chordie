@@ -54,9 +54,7 @@ export const extractRelativeNotes = (
 	// Convert a note to its equivalent with a different accidental (e.g., C## to D)
 	const convertDouble = (note: string, type: string) => {
 		const target = note.replace(type, '');
-		return chromaticSharp[
-			(chromaticSharp.indexOf(target) + 2) % chromaticSharp.length
-		];
+		return chromaticSharp[(chromaticSharp.indexOf(target) + 2) % chromaticSharp.length];
 	};
 
 	for (const stringNotes of Object.values(guitarNotesTemp)) {
@@ -98,10 +96,7 @@ export const extractRelativeNotes = (
  * @param {number} activeChord - The index of the active chord to check.
  * @returns {boolean} `true` if the activeChord exists in the chords object; otherwise, `false`.
  */
-export const checkChords = (
-	chords: { [key: string]: ChordInfo },
-	activeChord: number
-) => {
+export const checkChords = (chords: { [key: string]: ChordInfo }, activeChord: number) => {
 	if (!Object.keys(chords).length) return false;
 	if (!chords[activeChord]) return false;
 	return true;

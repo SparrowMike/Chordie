@@ -5,9 +5,7 @@ import jotaiReactRefresh from 'jotai/babel/plugin-react-refresh';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-	plugins: [
-		react({ babel: { plugins: [jotaiDebugLabel, jotaiReactRefresh] } }),
-	],
+	plugins: [react({ babel: { plugins: [jotaiDebugLabel, jotaiReactRefresh] } })],
 	css: {
 		modules: {
 			generateScopedName: '[local]--[hash:base64:5]',

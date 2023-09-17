@@ -1,14 +1,9 @@
 import { useAtom } from 'jotai';
-import {
-	scalesAtom,
-	updateGuitarNotesWithScaleAtom,
-} from './../controller/atoms';
+import { scalesAtom, updateGuitarNotesWithScaleAtom } from './../controller/atoms';
 
 export const Scales = () => {
 	const [scales] = useAtom(scalesAtom);
-	const [, updateGuitarNotesWithScale] = useAtom(
-		updateGuitarNotesWithScaleAtom
-	);
+	const [, updateGuitarNotesWithScale] = useAtom(updateGuitarNotesWithScaleAtom);
 
 	const handleUpdateScale = (scale: string) => {
 		updateGuitarNotesWithScale(scale);

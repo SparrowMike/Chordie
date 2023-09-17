@@ -1,9 +1,5 @@
 import { useAtom } from 'jotai';
-import {
-	preferencesAtom,
-	updatePreferencesAtom,
-	chordsAtom,
-} from './../controller/atoms';
+import { preferencesAtom, updatePreferencesAtom, chordsAtom } from './../controller/atoms';
 import { ToggleOptionProps } from '../types/interfaces';
 import { checkChords } from '../utils/utils';
 
@@ -33,6 +29,10 @@ export const Preference = () => {
 		setPreferences({ type: 'TOGGLE_PREFERENCE', key: 'showNotes' });
 	};
 
+	const handleShowScales = () => {
+		setPreferences({ type: 'TOGGLE_PREFERENCE', key: 'showScales' });
+	};
+
 	return (
 		<div className="options">
 			<h2>Chord Options</h2>
@@ -44,8 +44,7 @@ export const Preference = () => {
 			/>
 			<ToggleOption
 				disabled={
-					!checkChords(chords, preferences.activeChord) ||
-					chords[preferences.activeChord].empty
+					!checkChords(chords, preferences.activeChord) || chords[preferences.activeChord].empty
 				}
 				checked={!preferences.showNotes}
 				onChange={handleShowNotes}
@@ -61,9 +60,7 @@ export const Preference = () => {
 			<ToggleOption
 				id="show-scales"
 				checked={preferences.showScales}
-				onChange={() =>
-					setPreferences({ type: 'TOGGLE_PREFERENCE', key: 'showScales' })
-				}
+				onChange={handleShowScales}
 				label="Show Scales"
 			/>
 		</div>

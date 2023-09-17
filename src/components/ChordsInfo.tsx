@@ -22,9 +22,7 @@ export const ChordsInfo = () => {
 						className="checkbox"
 						id="chord-information"
 						checked={preferences.showMoreChordInfo}
-						onChange={() =>
-							setPreferences({ type: 'TOGGLE_SHOW_MORE_CHORD_INFO' })
-						}
+						onChange={() => setPreferences({ type: 'TOGGLE_SHOW_MORE_CHORD_INFO' })}
 					/>
 					More chord information
 				</label>
@@ -34,9 +32,7 @@ export const ChordsInfo = () => {
 					{Object.values(chords).map((chord, index) => (
 						<li
 							key={index}
-							onClick={() =>
-								setPreferences({ type: 'SET_ACTIVE_CHORD', index })
-							}
+							onClick={() => setPreferences({ type: 'SET_ACTIVE_CHORD', index })}
 							className={`${preferences.activeChord === index ? 'active' : ''}`}
 						>
 							Detected chord: {chord.chord}{' '}
