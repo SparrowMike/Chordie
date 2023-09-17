@@ -245,6 +245,10 @@ body {
 		div {
 			font-size: 2rem;
 			padding: 4px 6px;
+
+			&.active {
+				color: orange;
+			}
 		}
 	}
 }

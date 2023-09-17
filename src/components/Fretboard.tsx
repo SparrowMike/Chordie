@@ -69,7 +69,9 @@ export const Fretboard = () => {
 		const chordieTemp = deepCopy(chordie);
 		const currentTargetActiveState = guitarNotesTemp[string][target].active;
 
-		const { activeChord } = preferences;
+		let { activeChord } = preferences;
+		if (activeChord && activeChord === null) return;
+
 		if (guitarNotesTemp[string][target].chordTone) return;
 
 		// Reset all the notes on the selected string to be inactive
@@ -127,16 +129,19 @@ export const Fretboard = () => {
 			};
 		}
 
-		if (checkChords(chordsObj, activeChord)) {
-			const { notes, intervals } = chordsObj[activeChord];
-			guitarNotesTemp = extractRelativeNotes(notes, intervals, guitarNotesTemp);
-		}
-
-		if (activeChord >= Object.keys(chordsObj).length) {
+		if (!activeChord || activeChord >= Object.keys(chordsObj).length) {
+			activeChord = 0;
 			setPreferences({ type: 'SET_ACTIVE_CHORD', index: 0 });
 		}
 
-		setScale(activeChord, chordsObj);
+		if (activeChord) {
+			if (checkChords(chordsObj, activeChord)) {
+				const { notes, intervals } = chordsObj[activeChord];
+				guitarNotesTemp = extractRelativeNotes(notes, intervals, guitarNotesTemp);
+			}
+
+			setScale(activeChord, chordsObj);
+		}
 
 		setChordie(chordieTemp);
 		setGuitarNotes(guitarNotesTemp);
@@ -145,6 +150,7 @@ export const Fretboard = () => {
 
 	useEffect(() => {
 		if (Object.keys(chords).length) {
+			if (preferences.activeChord === null) return;
 			const { notes, intervals } = chords[preferences.activeChord];
 			setGuitarNotes(extractRelativeNotes(notes, intervals, guitarNotes));
 		}

@@ -2,7 +2,7 @@ import { atom } from 'jotai';
 
 import { initialChordie, initialGuitarNotes, initialPreferences } from '../utils/defaults';
 
-import { deepCopy, extractRelativeNotes, checkChords } from '../utils/utils';
+import { deepCopy, extractRelativeNotes, checkChords, handleChordToneReset } from '../utils/utils';
 
 import { get as getScale } from '@tonaljs/scale'; // Or detect as detectScale
 import { chordScales } from '@tonaljs/chord';
@@ -41,42 +41,47 @@ export const handleFullResetAtom = atom(null, (_, set) => {
  * @type {(scale: string) => void}
  * @param {string} scale - The selected scale.
  */
-export const updateGuitarNotesWithScaleAtom = atom(null, (get, set, scale: string) => {
+export const updateGuitarNotesWithScaleAtom = atom(null, (get, set, scale?: string) => {
 	const guitarNotes = get(guitarNotesAtom);
 	const chords = get(chordsAtom);
 	const preferences = get(preferencesAtom);
 
 	const { activeChord } = preferences;
-	let target = chords[activeChord].tonic;
+	if (activeChord === null) return;
+
+	const targetChord = chords[activeChord];
+	if (targetChord === null) return;
 
 	//! -------------- some slash chords come with blank chord informations
 	//! -------------- extracting tonic is required to get the scales
+	let target = targetChord.tonic;
 	if (!target) {
 		for (const note of chromaticSharp) {
-			if (chords[activeChord].chord.split('/')[0].includes(note)) {
+			if (targetChord.chord.split('/')[0].includes(note)) {
 				target = note;
 			}
 		}
 	}
 
-	let guitarNotesTemp = deepCopy(guitarNotes);
 	const scaleData = getScale(`${target} ${scale}`);
-	for (const string of Object.values(guitarNotesTemp)) {
-		for (const note of Object.values(string)) {
-			delete note.chordTone;
-		}
+	let guitarNotesTemp = handleChordToneReset(deepCopy(guitarNotes));
 
-		for (const idx in scaleData.notes) {
-			const note = scaleData.notes[idx];
-			if (string[note]) {
-				string[note].chordTone = true;
-			} else {
-				string[enharmonicMap[note]].chordTone = true;
+	if (scale) {
+		for (const string of Object.values(guitarNotesTemp)) {
+			for (const idx in scaleData.notes) {
+				const note = scaleData.notes[idx];
+				if (string[note]) {
+					string[note].chordTone = true;
+				} else {
+					string[enharmonicMap[note]].chordTone = true;
+				}
 			}
 		}
 	}
 
-	guitarNotesTemp = extractRelativeNotes(scaleData.notes, scaleData.intervals, guitarNotesTemp);
+	if (scaleData) {
+		guitarNotesTemp = extractRelativeNotes(scaleData.notes, scaleData.intervals, guitarNotesTemp);
+	}
 
 	set(guitarNotesAtom, guitarNotesTemp);
 });
@@ -118,6 +123,17 @@ export const updatePreferencesAtom = atom(null, (get, set, action: PreferencesAc
 		case 'SET_ACTIVE_CHORD':
 			set(updateScalesAtom, action.index);
 			updatedPreferences.activeChord = action.index;
+			set(guitarNotesAtom, handleChordToneReset(get(guitarNotesAtom))); //? clear the fretboard from non chord notes
+			updatedPreferences.activeScale = null;
+			break;
+		case 'SET_ACTIVE_SCALE':
+			if (action.index === preferences.activeScale) {
+				updatedPreferences.activeScale = null; //? toggle on/off active scale
+				set(updateGuitarNotesWithScaleAtom);
+				break;
+			}
+
+			updatedPreferences.activeScale = action.index;
 			break;
 		case 'TOGGLE_PREFERENCE':
 			const { key } = action;
