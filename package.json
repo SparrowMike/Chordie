@@ -12,7 +12,8 @@
 		"prepare": "husky install"
 	},
 	"gitHooks": {
-		"pre-commit": "lint-staged"
+		"pre-commit": "lint-staged",
+		"pre-push": "bun run build"
 	},
 	"lint-staged": {
 		"*.{js,jsx,scss,md,json}": [
