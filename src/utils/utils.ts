@@ -11,22 +11,40 @@ import { enharmonicMap, chromaticSharp } from './constants';
 export const deepCopy = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
 
 /**
- * Handles updating the notes state based on chord tones.
- * @param {boolean} show - Whether to show chord tones.
+ * Resets the chordTone property for each note in the provided guitar notes object.
+ *
+ * @function
+ * @name handleChordToneReset
+ * @param {{ [key: string]: GuitarNotes }} guitarNotes - An object representing guitar notes by string.
+ * @returns {{ [key: string]: GuitarNotes }} - Updated guitar notes object with chordTone properties removed.
+ */
+export const handleChordToneReset = (guitarNotes: { [key: string]: GuitarNotes }) => {
+	for (const string of Object.values(guitarNotes)) {
+		for (const note of Object.values(string)) {
+			delete note.chordTone;
+		}
+	}
+
+	return guitarNotes;
+};
+
+/**
+ * Handles updating the guitar notes state based on chord tones.
+ *
+ * @param {Chordie} chordie - The chord data.
+ * @param {{ [key: string]: GuitarNotes }} guitarNotes - An object representing guitar notes by string.
+ * @param {boolean} [show] - Optional flag to determine if chord tones should be shown.
+ * @returns {{ [key: string]: GuitarNotes }} - Updated guitar notes state with chord tones adjusted.
  */
 export const updateChordTones = (
 	chordie: Chordie,
 	guitarNotes: { [key: string]: GuitarNotes },
 	show?: boolean
 ) => {
-	const guitarNotesTemp = deepCopy(guitarNotes);
+	const guitarNotesTemp = handleChordToneReset(deepCopy(guitarNotes));
 
-	for (const string of Object.values(guitarNotesTemp)) {
-		for (const note of Object.values(string)) {
-			delete note.chordTone;
-		}
-
-		if (show) {
+	if (show) {
+		for (const string of Object.values(guitarNotesTemp)) {
 			for (const note of Object.values(chordie)) {
 				if (note && !string[note].active) {
 					string[note].chordTone = true;
@@ -50,13 +68,10 @@ export const extractRelativeNotes = (
 	guitarNotes: { [key: string]: GuitarNotes }
 ) => {
 	const guitarNotesTemp = deepCopy(guitarNotes);
-
 	// Convert a note to its equivalent with a different accidental (e.g., C## to D)
 	const convertDouble = (note: string, type: string) => {
 		const target = note.replace(type, '');
-		return chromaticSharp[
-			(chromaticSharp.indexOf(target) + 2) % chromaticSharp.length
-		];
+		return chromaticSharp[(chromaticSharp.indexOf(target) + 2) % chromaticSharp.length];
 	};
 
 	for (const stringNotes of Object.values(guitarNotesTemp)) {
@@ -79,7 +94,7 @@ export const extractRelativeNotes = (
 				stringNotes[convertedNote].relativeNote = relNote;
 				stringNotes[convertedNote].interval = interval;
 			} else if (relNote.includes('bb')) {
-				const convertedNote = convertDouble(relNote, 'bb'); //? ------- confirm compatibility
+				const convertedNote = convertDouble(relNote, 'bb'); //! ------- confirm compatibility
 				stringNotes[convertedNote].relativeNote = relNote;
 				stringNotes[convertedNote].interval = interval;
 			} else {
@@ -98,10 +113,7 @@ export const extractRelativeNotes = (
  * @param {number} activeChord - The index of the active chord to check.
  * @returns {boolean} `true` if the activeChord exists in the chords object; otherwise, `false`.
  */
-export const checkChords = (
-	chords: { [key: string]: ChordInfo },
-	activeChord: number
-) => {
+export const checkChords = (chords: { [key: string]: ChordInfo }, activeChord: number) => {
 	if (!Object.keys(chords).length) return false;
 	if (!chords[activeChord]) return false;
 	return true;

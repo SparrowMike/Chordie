@@ -6,24 +6,16 @@ import {
 	chordsAtom,
 	guitarNotesAtom,
 	preferencesAtom,
-	scalesAtom,
 	updatePreferencesAtom,
+	updateScalesAtom,
 } from './../controller/atoms';
 
-import {
-	get as getChordData,
-	getChord as getChordDataSymbol,
-	chordScales,
-} from '@tonaljs/chord'; //? ----- tbc { chordScales }
+import { get as getChordData, getChord as getChordDataSymbol } from '@tonaljs/chord'; //? ----- tbc { chordScales }
 import { detect as detectChord } from '@tonaljs/chord-detect';
+
 // import { majorKey, minorKey } from '@tonaljs/key';
 
-import {
-	checkChords,
-	deepCopy,
-	extractRelativeNotes,
-	updateChordTones,
-} from '../utils/utils';
+import { checkChords, deepCopy, extractRelativeNotes, updateChordTones } from '../utils/utils';
 import { chromaticSharp } from '../utils/constants';
 
 import { ChordInfo } from '../types/interfaces';
@@ -33,8 +25,8 @@ export const Fretboard = () => {
 	const [chords, setChords] = useAtom(chordsAtom);
 	const [guitarNotes, setGuitarNotes] = useAtom(guitarNotesAtom);
 	const [preferences] = useAtom(preferencesAtom);
-	const [, setScales] = useAtom(scalesAtom);
 	const [, setPreferences] = useAtom(updatePreferencesAtom);
+	const [, setScale] = useAtom(updateScalesAtom);
 
 	/**
 	 * Extracts chord properties from chord data.
@@ -77,6 +69,9 @@ export const Fretboard = () => {
 		const chordieTemp = deepCopy(chordie);
 		const currentTargetActiveState = guitarNotesTemp[string][target].active;
 
+		let { activeChord } = preferences;
+		if (activeChord && activeChord === null) return;
+
 		if (guitarNotesTemp[string][target].chordTone) return;
 
 		// Reset all the notes on the selected string to be inactive
@@ -105,10 +100,11 @@ export const Fretboard = () => {
 
 		// Iterate through detected chords and extract chord information
 		for (const idx in detectedChords) {
-			const { tonic, empty, name, aliases, intervals, notes, quality, type } =
-				detectedChords[idx].includes('/')
-					? getChordDataSymbol(...extractChordQuality(detectedChords[idx]))
-					: getChordData(detectedChords[idx]); //! ------ getChordDataSymbol('madd9', 'F5', 'A#4') ------- some chords just won't work
+			const { tonic, empty, name, aliases, intervals, notes, quality, type } = detectedChords[
+				idx
+			].includes('/')
+				? getChordDataSymbol(...extractChordQuality(detectedChords[idx]))
+				: getChordData(detectedChords[idx]); //! ------ getChordDataSymbol('madd9', 'F5', 'A#4') ------- some chords just won't work
 
 			const intervalsObj: { [key: string]: string } = notes.reduce(
 				(obj, key, index) => {
@@ -133,9 +129,18 @@ export const Fretboard = () => {
 			};
 		}
 
-		if (checkChords(chordsObj, preferences.activeChord)) {
-			const { notes, intervals } = chordsObj[preferences.activeChord];
-			guitarNotesTemp = extractRelativeNotes(notes, intervals, guitarNotesTemp);
+		if (!activeChord || activeChord >= Object.keys(chordsObj).length) {
+			activeChord = 0;
+			setPreferences({ type: 'SET_ACTIVE_CHORD', index: 0 });
+		}
+
+		if (activeChord) {
+			if (checkChords(chordsObj, activeChord)) {
+				const { notes, intervals } = chordsObj[activeChord];
+				guitarNotesTemp = extractRelativeNotes(notes, intervals, guitarNotesTemp);
+			}
+
+			setScale(activeChord, chordsObj);
 		}
 
 		setChordie(chordieTemp);
@@ -144,27 +149,15 @@ export const Fretboard = () => {
 	};
 
 	useEffect(() => {
-		if (checkChords(chords, preferences.activeChord)) {
-			setScales(
-				chordScales(chords[preferences.activeChord].chord.split('/')[0])
-			);
-		}
-
-		const chordsLength: number = Object.keys(chords).length;
-		setPreferences({ type: 'SET_ACTIVE_CHORD_RESET', chordsLength });
-	}, [chords]);
-
-	useEffect(() => {
 		if (Object.keys(chords).length) {
+			if (preferences.activeChord === null) return;
 			const { notes, intervals } = chords[preferences.activeChord];
 			setGuitarNotes(extractRelativeNotes(notes, intervals, guitarNotes));
 		}
 	}, [preferences.activeChord]);
 
 	useEffect(() => {
-		setGuitarNotes(
-			updateChordTones(chordie, guitarNotes, preferences.showChordTones)
-		);
+		setGuitarNotes(updateChordTones(chordie, guitarNotes, preferences.showChordTones));
 	}, [chordie, preferences.showChordTones]);
 
 	return (
@@ -189,9 +182,9 @@ export const Fretboard = () => {
 
 							return (
 								<div
-									className={`note ${
-										_v.active || _v.chordTone ? 'active' : ''
-									} ${isMobile ? 'mobile' : ''}`}
+									className={`note ${_v.active || _v.chordTone ? 'active' : ''} ${
+										isMobile ? 'mobile' : ''
+									}`}
 									key={_i}
 									onClick={() => handleChordUpdate(string, note)}
 									data-note={chordNote}

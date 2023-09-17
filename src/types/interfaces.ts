@@ -36,16 +36,18 @@ export interface ToggleOptionProps {
 }
 
 export interface Preferences {
-	[key: string]: boolean | number | string;
+	[key: string]: boolean | number | string | null;
 	showMoreChordInfo: boolean;
 	showNotes: boolean;
 	showChordTones: boolean;
 	showScales: boolean;
-	activeChord: number;
+	activeChord: number | null;
+	activeScale: number | null;
 }
 
 export type PreferencesAction =
 	| { type: 'TOGGLE_SHOW_MORE_CHORD_INFO' }
 	| { type: 'SET_ACTIVE_CHORD'; index: number }
+	| { type: 'SET_ACTIVE_SCALE'; index: number }
 	| { type: 'TOGGLE_PREFERENCE'; key: keyof Preferences }
 	| { type: 'SET_ACTIVE_CHORD_RESET'; chordsLength?: number };

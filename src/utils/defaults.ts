@@ -15,8 +15,9 @@ export const initialPreferences: Preferences = {
 	showMoreChordInfo: false,
 	showNotes: true,
 	showChordTones: false,
-	activeChord: 0,
 	showScales: false,
+	activeChord: null,
+	activeScale: null,
 };
 
 /**
