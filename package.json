@@ -9,10 +9,11 @@
 		"lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
 		"prettier": "prettier --write '**/*.{js,jsx,tsx,ts,scss,md,json}'",
 		"preview": "vite preview",
-		"prepare": "husky install"
+		"postinstall": "husky install && chmod +x .husky/*"
 	},
 	"gitHooks": {
-		"pre-commit": "lint-staged"
+		"pre-commit": "lint-staged",
+		"pre-push": "bun run build"
 	},
 	"lint-staged": {
 		"*.{js,jsx,scss,md,json}": [
