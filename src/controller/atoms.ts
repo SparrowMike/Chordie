@@ -77,9 +77,7 @@ export const updateGuitarNotesWithScaleAtom = atom(null, (get, set, scale?: stri
 				}
 			}
 		}
-	}
 
-	if (scaleData) {
 		guitarNotesTemp = extractRelativeNotes(scaleData.notes, scaleData.intervals, guitarNotesTemp);
 	}
 
@@ -124,11 +122,11 @@ export const updatePreferencesAtom = atom(null, (get, set, action: PreferencesAc
 			set(updateScalesAtom, action.index);
 			updatedPreferences.activeChord = action.index;
 			set(guitarNotesAtom, handleChordToneReset(get(guitarNotesAtom))); //? clear the fretboard from non chord notes
-			updatedPreferences.activeScale = null;
+			updatedPreferences.activeScale = null; //? toggle on/off active scale
 			break;
 		case 'SET_ACTIVE_SCALE':
 			if (action.index === preferences.activeScale) {
-				updatedPreferences.activeScale = null; //? toggle on/off active scale
+				updatedPreferences.activeScale = null;
 				set(updateGuitarNotesWithScaleAtom);
 				break;
 			}
@@ -138,6 +136,10 @@ export const updatePreferencesAtom = atom(null, (get, set, action: PreferencesAc
 		case 'TOGGLE_PREFERENCE':
 			const { key } = action;
 			updatedPreferences[key] = !preferences[key];
+
+			if (key === 'showChordTones' && updatedPreferences[key]) {
+				updatedPreferences.activeScale = null;
+			}
 			break;
 		default:
 			console.error('updatePreferenceAtom missing action.type');

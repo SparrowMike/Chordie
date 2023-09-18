@@ -103,8 +103,9 @@ export const Fretboard = () => {
 			const { tonic, empty, name, aliases, intervals, notes, quality, type } = detectedChords[
 				idx
 			].includes('/')
-				? getChordDataSymbol(...extractChordQuality(detectedChords[idx]))
-				: getChordData(detectedChords[idx]); //! ------ getChordDataSymbol('madd9', 'F5', 'A#4') ------- some chords just won't work
+				? //! ------ getChordDataSymbol('madd9', 'F5', 'A#4') ------- some chords just won't work
+				  getChordDataSymbol(...extractChordQuality(detectedChords[idx]))
+				: getChordData(detectedChords[idx]);
 
 			const intervalsObj: { [key: string]: string } = notes.reduce(
 				(obj, key, index) => {
@@ -129,12 +130,12 @@ export const Fretboard = () => {
 			};
 		}
 
-		if (!activeChord || activeChord >= Object.keys(chordsObj).length) {
+		if ((activeChord ?? -1) >= Object.keys(chordsObj).length) {
 			activeChord = 0;
 			setPreferences({ type: 'SET_ACTIVE_CHORD', index: 0 });
 		}
 
-		if (activeChord) {
+		if (activeChord !== null) {
 			if (checkChords(chordsObj, activeChord)) {
 				const { notes, intervals } = chordsObj[activeChord];
 				guitarNotesTemp = extractRelativeNotes(notes, intervals, guitarNotesTemp);

@@ -44,8 +44,9 @@ export const Preference = () => {
 			/>
 			<ToggleOption
 				disabled={
-					preferences.activeChord !== null &&
-					(!checkChords(chords, preferences.activeChord) || chords[preferences.activeChord].empty)
+					!checkChords(chords, preferences.activeChord ?? -1) ||
+					chords[preferences.activeChord ?? -1]?.empty ||
+					false
 				}
 				checked={!preferences.showNotes}
 				onChange={handleShowNotes}
