@@ -13,6 +13,7 @@ export const enharmonicMap: { [key: string]: string } = {
 	Ab: 'G#',
 	Bb: 'A#',
 	Db: 'C#',
+	Fb: 'D#',
 	Eb: 'D#',
 	Gb: 'F#',
 	Cb: 'B',

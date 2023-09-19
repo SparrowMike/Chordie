@@ -118,3 +118,33 @@ export const checkChords = (chords: { [key: string]: ChordInfo }, activeChord: n
 	if (!chords[activeChord]) return false;
 	return true;
 };
+
+/**
+ * Extracts chord properties from chord data.
+ *
+ * @param {string} chordData - The chord data string to extract properties from.
+ * @param {number} overChord - The index at which the chord is "over" (splitting point).
+ * @param {string[]} chromaticSharp - An array of chromatic sharp notes (e.g., ["C", "C#", "D", ...]).
+ *
+ * @returns {[string, string, string]} - An array containing three strings:
+ *   - The extracted alias (between the root and overChord).
+ *   - The extracted root note (determined based on the chromaticSharp notes).
+ *   - The extracted bass note (after the splitting point).
+ */
+export const extractChordQuality = (chordData: string): [string, string, string] => {
+	const overChord = chordData.indexOf('/');
+	const chord = chordData.slice(0, overChord);
+	const bassNote = chordData.slice(overChord + 1);
+
+	let root = '';
+
+	for (const note of chromaticSharp) {
+		if (chord.includes(note)) {
+			root = note;
+		}
+	}
+
+	const alias = chordData.slice(root.length, overChord);
+
+	return [alias, root, bassNote];
+};

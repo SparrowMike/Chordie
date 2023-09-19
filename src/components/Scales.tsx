@@ -19,7 +19,7 @@ export const Scales = () => {
 
 	return (
 		<div className="scales">
-			{scales?.map((scale, idx) => (
+			{scales?.slice(0, 8)?.map((scale, idx) => (
 				<div
 					onClick={() => handleUpdateScale(scale, idx)}
 					key={idx}

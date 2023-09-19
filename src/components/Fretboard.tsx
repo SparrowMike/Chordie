@@ -15,8 +15,13 @@ import { detect as detectChord } from '@tonaljs/chord-detect';
 
 // import { majorKey, minorKey } from '@tonaljs/key';
 
-import { checkChords, deepCopy, extractRelativeNotes, updateChordTones } from '../utils/utils';
-import { chromaticSharp } from '../utils/constants';
+import {
+	checkChords,
+	deepCopy,
+	extractRelativeNotes,
+	updateChordTones,
+	extractChordQuality,
+} from '../utils/utils';
 
 import { ChordInfo } from '../types/interfaces';
 
@@ -27,36 +32,6 @@ export const Fretboard = () => {
 	const [preferences] = useAtom(preferencesAtom);
 	const [, setPreferences] = useAtom(updatePreferencesAtom);
 	const [, setScale] = useAtom(updateScalesAtom);
-
-	/**
-	 * Extracts chord properties from chord data.
-	 *
-	 * @param {string} chordData - The chord data string to extract properties from.
-	 * @param {number} overChord - The index at which the chord is "over" (splitting point).
-	 * @param {string[]} chromaticSharp - An array of chromatic sharp notes (e.g., ["C", "C#", "D", ...]).
-	 *
-	 * @returns {[string, string, string]} - An array containing three strings:
-	 *   - The extracted alias (between the root and overChord).
-	 *   - The extracted root note (determined based on the chromaticSharp notes).
-	 *   - The extracted bass note (after the splitting point).
-	 */
-	const extractChordQuality = (chordData: string): [string, string, string] => {
-		const overChord = chordData.indexOf('/');
-		const chord = chordData.slice(0, overChord);
-		const bassNote = chordData.slice(overChord + 1);
-
-		let root = '';
-
-		for (const note of chromaticSharp) {
-			if (chord.includes(note)) {
-				root = note;
-			}
-		}
-
-		const alias = chordData.slice(root.length, overChord);
-
-		return [alias, root, bassNote];
-	};
 
 	/**
 	 * Handles the update of chord selection on the guitar fretboard.
@@ -103,9 +78,13 @@ export const Fretboard = () => {
 			const { tonic, empty, name, aliases, intervals, notes, quality, type } = detectedChords[
 				idx
 			].includes('/')
-				? //! ------ getChordDataSymbol('madd9', 'F5', 'A#4') ------- some chords just won't work
-				  getChordDataSymbol(...extractChordQuality(detectedChords[idx]))
+				? getChordDataSymbol(...extractChordQuality(detectedChords[idx]))
 				: getChordData(detectedChords[idx]);
+			//! ------ getChordDataSymbol('madd9', 'F5', 'A#4') ------- some chords just won't work
+
+			//! alternative to above would be to ignore slash chords ?
+			// const [ alias, root, bassNote ] = extractChordQuality(detectedChords[idx]);
+			// console.log(getChordData(root+ alias))
 
 			const intervalsObj: { [key: string]: string } = notes.reduce(
 				(obj, key, index) => {
@@ -130,7 +109,8 @@ export const Fretboard = () => {
 			};
 		}
 
-		if ((activeChord ?? -1) >= Object.keys(chordsObj).length) {
+		const chordsLenght = Object.keys(chordsObj).length;
+		if (chordsLenght === 1 || (activeChord ?? -1) >= chordsLenght) {
 			activeChord = 0;
 			setPreferences({ type: 'SET_ACTIVE_CHORD', index: 0 });
 		}
