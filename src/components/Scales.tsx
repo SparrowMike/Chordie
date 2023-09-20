@@ -23,7 +23,7 @@ export const Scales = () => {
 				<div
 					onClick={() => handleUpdateScale(scale, idx)}
 					key={idx}
-					className={idx === preferences.activeScale ? 'active' : ''}
+					className={`${idx === preferences.activeScale ? 'active' : ''}`}
 				>
 					{scale}
 				</div>

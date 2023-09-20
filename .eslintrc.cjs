@@ -8,7 +8,7 @@ module.exports = {
   ],
   ignorePatterns: ['dist', '.eslintrc.cjs'],
   parser: '@typescript-eslint/parser',
-  plugins: ['react-refresh'],
+  plugins: ['react-refresh','prettier-plugin-tailwindcss'],
   rules: {
     'no-case-declarations': 'off',
     'react-hooks/exhaustive-deps': 'off',
