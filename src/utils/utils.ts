@@ -80,11 +80,6 @@ export const extractRelativeNotes = (
 			delete note.interval;
 		}
 
-		// if (!notes.length) {
-		// 	console.log('no interval available');
-		// 	return;
-		// }
-
 		notes.forEach((relNote, idx) => {
 			// Add relativeNote properties based on detected chord's notes
 			const interval = intervals[idx];

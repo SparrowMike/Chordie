@@ -83,23 +83,12 @@ export const updateChordsAndScales = atom(null, (get, set) => {
 		// const [ alias, root, bassNote ] = extractChordQuality(detectedChords[idx]);
 		// console.log(getChordData(root+ alias))
 
-		// const intervalsObj: { [key: string]: string } = triggered.notes.reduce(
-		// 	(obj, key, index) => {
-		// 		obj[key] = triggered.intervals[index];
-		// 		return obj;
-		// 	},
-		// 	{} as { [key: string]: string }
-		// );
-
 		// Store the extracted chord information in chordsObj
 		chordsObj[idx] = {
 			chord: detectedChords[idx],
 			...triggered,
-			// intervalsObj,
 		};
 	}
-	console.log(chordsObj);
-
 	const chordsLenght = Object.keys(chordsObj).length;
 	if (chordsLenght === 1 || (activeChord ?? -1) >= chordsLenght) {
 		activeChord = 0;
@@ -237,8 +226,14 @@ export const updatePreferencesAtom = atom(null, (get, set, action: PreferencesAc
 
 			set(updateScalesAtom, action.index);
 			updatedPreferences.activeChord = action.index;
-			set(guitarNotesAtom, handleChordToneReset(guitarNotes)); //? clear the fretboard from non chord notes
+
+			//! ------- justification unclear chords.length performs reset before populating
+			// set(guitarNotesAtom, handleChordToneReset(guitarNotes)); //? clear the fretboard from non chord notes
 			updatedPreferences.activeScale = null; //? toggle on/off active scale
+
+			// if (Object.keys(chords).length && chords[action.index].empty) {
+			// 	updatedPreferences.showNotes = true; //!------- force change when no intervals?
+			// }
 
 			if (Object.keys(chords).length) {
 				const { notes, intervals } = chords[action.index];
