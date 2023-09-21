@@ -13,8 +13,6 @@ export const deepCopy = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
 /**
  * Resets the chordTone property for each note in the provided guitar notes object.
  *
- * @function
- * @name handleChordToneReset
  * @param {{ [key: string]: GuitarNotes }} guitarNotes - An object representing guitar notes by string.
  * @returns {{ [key: string]: GuitarNotes }} - Updated guitar notes object with chordTone properties removed.
  */
@@ -58,9 +56,10 @@ export const updateChordTones = (
 
 /**
  * Extracts and updates relativeNote properties for guitarNotesTemp.
- * @param { [key: string]: ChordInfo } detectedChords - An array of detected chords.
- * @param { [key: string]: GuitarNotes } guitarNotesTemp - The current state of guitarNotesTemp.
- * @returns { [key: string]: GuitarNotes } The updated guitarNotesTemp with relativeNote properties.
+ * @param {string[]} notes - An array of detected chords.
+ * @param {string[]} intervals - An array of intervals.
+ * @param {Object.<string, GuitarNotes>} guitarNotes - The current state of guitarNotesTemp.
+ * @returns {Object.<string, GuitarNotes>} The updated guitarNotesTemp with relativeNote properties.
  */
 export const extractRelativeNotes = (
 	notes: string[],
@@ -80,6 +79,11 @@ export const extractRelativeNotes = (
 			delete note.relativeNote;
 			delete note.interval;
 		}
+
+		// if (!notes.length) {
+		// 	console.log('no interval available');
+		// 	return;
+		// }
 
 		notes.forEach((relNote, idx) => {
 			// Add relativeNote properties based on detected chord's notes
