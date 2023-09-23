@@ -18,12 +18,12 @@ export const Scales = () => {
 	};
 
 	return (
-		<div className="scales">
+		<div className='scales flex flex-wrap gap-2'>
 			{scales?.slice(0, 8)?.map((scale, idx) => (
 				<div
 					onClick={() => handleUpdateScale(scale, idx)}
 					key={idx}
-					className={`${idx === preferences.activeScale ? 'active' : ''}`}
+					className={`text-xl ${idx === preferences.activeScale ? 'active' : ''}`}
 				>
 					{scale}
 				</div>

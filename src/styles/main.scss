@@ -1,45 +1,50 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 * {
-	margin: 0;
-	padding: 0;
-	box-sizing: border-box;
 	-webkit-tap-highlight-color: transparent;
 }
-
 *::selection {
 	background-color: transparent;
 	color: inherit;
 }
 
-html {
-	font-size: 62.5%;
+:root {
+	--neo-bg: #dedede;
+	--neo-shadow-dark: #b2b2b2;
+	--neo-shadow-light: #ffffff;
 }
 
 body {
 	background-color: black;
 }
 
+.box {
+	@apply m-5 w-6/12 rounded-2xl bg-neo-bg p-5 shadow-neo;
+}
+
 // [data-note='F#'] {
 // 	background-color: purple;
 // }
 
-.container {
+body {
 	color: white;
+	max-width: 100%;
 	// perspective: 100vw;
 	// transform-style: preserve-3d;
 	// z-index: -1;
 
 	.guitar {
-		$fret-width: 0.5rem;
-		$fret-max-width: 0.5vw;
-		$nut-width: 1.2rem;
+		$fret-width: 10vw;
+		// $fret-max-width: 90px;
+		$fret-silver-width: 3px;
+		$fret-max-silver-width: 0.5vw;
+		$nut-width: 1rem;
 		$nut-max-width: 1vw;
 
+		padding: 0;
 		transform: rotateX(5deg);
-		margin: 25px;
 		position: relative;
 		max-width: fit-content;
 		background-image: url(https://plus.unsplash.com/premium_photo-1675782999354-2f2711e437a5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80);
@@ -54,8 +59,8 @@ body {
 			width: 100%;
 
 			.fret {
-				width: 10vw;
-				max-width: 7.5rem;
+				width: $fret-width;
+				max-width: 7rem;
 				display: flex;
 				position: relative;
 
@@ -80,8 +85,8 @@ body {
 				&:not(:first-child) .fret-silver {
 					position: absolute;
 					right: 0;
-					width: $fret-width;
-					max-width: $fret-max-width;
+					width: $fret-silver-width;
+					max-width: $fret-max-silver-width;
 					height: 100%;
 					transform: translateX(50%);
 					border-radius: 100px;
@@ -163,7 +168,7 @@ body {
 					color: black;
 					height: 5vw;
 					max-height: 5rem;
-					width: 10vw;
+					width: $fret-width;
 					max-width: 7.5rem;
 					display: inline-block;
 					display: flex;
@@ -177,14 +182,14 @@ body {
 						max-width: 5rem;
 
 						h4 {
-							font-size: clamp(0.8rem, 1.6vw, 1.8rem);
+							font-size: clamp(0.4rem, 1vw, 1.5rem);
 						}
 					}
 
 					h4 {
 						opacity: 0;
 						z-index: 9999;
-						font-size: clamp(1rem, 1.8vw, 2.2rem);
+						font-size: clamp(0.6rem, 1vw, 1.5rem);
 						font-weight: 600;
 					}
 
@@ -196,8 +201,7 @@ body {
 					&:not(.mobile):hover::after,
 					&.active::after {
 						content: '';
-						height: 70%;
-						width: 49.63%;
+						height: 80%;
 						color: white;
 						border-radius: 50%;
 						position: absolute;
@@ -208,52 +212,34 @@ body {
 						z-index: 999;
 						border: 3px solid black;
 						box-shadow: -6px -3px 8px 3px rgba(0, 0, 0, 0.6);
+						aspect-ratio: 1/1;
+
+						@media screen and (max-width: 768px) {
+							height: 100%;
+						}
 					}
 
 					&:hover:first-child::after,
 					&.active:first-child::after {
-						height: 50%;
-						width: 50%;
+						height: 70%;
+
+						@media screen and (max-width: 768px) {
+							height: 90%;
+						}
 					}
 				}
 			}
 		}
 	}
 
-	.notes {
-		padding: 2.5rem;
-
-		&,
-		ul li {
-			font-size: 1.8rem;
-			list-style: none;
-
-			.active {
-				text-decoration: underline;
-			}
-		}
-	}
-
 	.options {
-		padding: 25px;
 		display: flex;
 		flex-direction: column;
-		font-size: 2rem;
 	}
 
 	.scales {
-		display: flex;
-		flex-wrap: wrap;
-		padding: 2.5rem;
-		cursor: pointer;
-
-		div {
-			font-size: 2rem;
-			padding: 4px 6px;
-
-			&.active {
-				color: orange;
-			}
+		.active {
+			color: orange;
 		}
 	}
 }

@@ -26,19 +26,19 @@ export const Fretboard = () => {
 	}, [chordie, preferences.showChordTones]);
 
 	return (
-		<div className="guitar">
-			<div className="frets">
+		<div className='guitar'>
+			<div className='frets'>
 				{Array(12)
 					.fill(0)
 					.map((_, i) => (
-						<div className="fret" key={i} data-fret={i}>
-							<div className="fret-silver"></div>
+						<div className='fret' key={i} data-fret={i}>
+							<div className='fret-silver'></div>
 						</div>
 					))}
 			</div>
-			<div className="strings">
+			<div className='strings'>
 				{Object.entries(guitarNotes).map(([string, v], i) => (
-					<div className="string" key={i} data-string={string}>
+					<div className='string' key={i} data-string={string}>
 						{Object.entries(v).map(([note, _v], _i) => {
 							const intervalsAvailable = !chords[preferences.activeChord ?? -1]?.intervals?.length;
 							const chordNote =
