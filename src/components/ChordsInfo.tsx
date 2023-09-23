@@ -35,7 +35,7 @@ export const ChordsInfo = () => {
 							onClick={() => setPreferences({ type: 'SET_ACTIVE_CHORD', index })}
 							className={`${preferences.activeChord === index ? 'active' : ''}`}
 						>
-							Detected chord: {chord.chord}{' '}
+							Detected chord: {chord.name || chord.chord}
 							{preferences.showMoreChordInfo ? (
 								<div style={{ paddingLeft: '25px' }}>
 									{chord.empty ? (

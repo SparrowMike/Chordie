@@ -10,7 +10,6 @@ export interface ChordInfo {
 	notes: string[];
 	quality: string;
 	type: string;
-	intervalsObj: { [key: string]: string };
 }
 
 export interface GuitarNotes {

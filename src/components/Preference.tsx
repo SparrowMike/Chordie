@@ -37,7 +37,12 @@ export const Preference = () => {
 		<div className="options">
 			<h2>Chord Options</h2>
 			<ToggleOption
-				checked={preferences.showNotes}
+				checked={
+					preferences.showNotes ||
+					(Object.keys(chords).length && !chords[preferences.activeChord ?? -1].intervals.length)
+						? true
+						: false
+				}
 				onChange={handleShowNotes}
 				label="Show notes"
 				type="radio"
