@@ -36,17 +36,23 @@ body {
 	// z-index: -1;
 
 	.guitar {
-		$fret-width: 10vw;
-		// $fret-max-width: 90px;
-		$fret-silver-width: 3px;
-		$fret-max-silver-width: 0.5vw;
-		$nut-width: 1rem;
-		$nut-max-width: 1vw;
+		--fret-width: 100px;
+		--fret-zero-width: 70px;
+		--fret-silver-width: 3px;
+		--nut-width: 1rem;
+		--inlay: 2.4rem;
+
+		@media screen and (max-width: 768px) {
+			--fret-width: 50px;
+			--fret-zero-width: 30px;
+			--nut-width: 0.5rem;
+			--inlay: 1.5rem;
+		}
 
 		padding: 0;
 		transform: rotateX(5deg);
 		position: relative;
-		max-width: fit-content;
+		width: fit-content;
 		background-image: url(https://plus.unsplash.com/premium_photo-1675782999354-2f2711e437a5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80);
 		background-size: cover;
 
@@ -59,8 +65,7 @@ body {
 			width: 100%;
 
 			.fret {
-				width: $fret-width;
-				max-width: 7rem;
+				width: var(--fret-width);
 				display: flex;
 				position: relative;
 
@@ -78,40 +83,39 @@ body {
 
 				&:first-child .fret-silver {
 					background-color: wheat;
-					width: $nut-width;
-					max-width: $nut-max-width;
+					width: var(--nut-width);
 				}
 
 				&:not(:first-child) .fret-silver {
 					position: absolute;
 					right: 0;
-					width: $fret-silver-width;
-					max-width: $fret-max-silver-width;
+					width: var(--fret-silver-width);
 					height: 100%;
 					transform: translateX(50%);
 					border-radius: 100px;
 				}
 
 				&:first-child {
-					width: 6vw;
-					max-width: 5rem;
+					width: var(--fret-zero-width);
+				}
+
+				&:after,
+				&:before {
+					left: 50%;
+					content: '';
+					position: absolute;
+					width: var(--inlay);
+					transform: translate(-50%, -50%);
+					border-radius: 50%;
+					aspect-ratio: 1/1;
 				}
 
 				&:nth-child(4):after,
 				&:nth-child(6):after,
 				&:nth-child(8):after,
 				&:nth-child(10):after {
-					content: '';
-					position: absolute;
-					width: 2.4rem;
-					max-width: 2vw;
-					height: 2.4rem;
-					max-height: 2vw;
-					background-image: url(https://plus.unsplash.com/premium_photo-1667668224582-84f16f7dedd0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1309&q=80);
-					transform: translate(-50%, -50%);
-					border-radius: 50%;
-					left: 50%;
 					top: 50%;
+					background-image: url(https://plus.unsplash.com/premium_photo-1667668224582-84f16f7dedd0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1309&q=80);
 				}
 
 				&:nth-child(6):after {
@@ -119,17 +123,8 @@ body {
 				}
 
 				&:nth-child(6):before {
-					content: '';
-					position: absolute;
-					width: 2.4rem;
-					max-width: 2vw;
-					height: 2.4rem;
-					max-height: 2vw;
-					background-image: url(https://plus.unsplash.com/premium_photo-1667668224582-84f16f7dedd0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1309&q=80);
-					transform: translate(-50%, -50%);
-					border-radius: 50%;
-					left: 50%;
 					top: 70%;
+					background-image: url(https://plus.unsplash.com/premium_photo-1667668224582-84f16f7dedd0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1309&q=80);
 				}
 			}
 		}
@@ -159,37 +154,28 @@ body {
 				@for $i from 1 through 6 {
 					&:nth-child(#{$i})::after {
 						height: $i * 0.05rem;
-						max-height: $i * 0.05vw;
 						box-shadow: 0px $i * -1.25px 8px 1px rgba(0, 0, 0, 1);
 					}
 				}
 
 				.note {
 					color: black;
-					height: 5vw;
-					max-height: 5rem;
-					width: $fret-width;
-					max-width: 7.5rem;
+					width: var(--fret-width);
 					display: inline-block;
 					display: flex;
 					justify-content: center;
 					align-items: center;
 					position: relative;
 					cursor: pointer;
+					aspect-ratio: 1/1;
 
 					&:first-child {
-						width: 6vw;
-						max-width: 5rem;
-
-						h4 {
-							font-size: clamp(0.4rem, 1vw, 1.5rem);
-						}
+						width: var(--fret-zero-width);
 					}
 
 					h4 {
 						opacity: 0;
 						z-index: 9999;
-						font-size: clamp(0.6rem, 1vw, 1.5rem);
 						font-weight: 600;
 					}
 
@@ -213,19 +199,11 @@ body {
 						border: 3px solid black;
 						box-shadow: -6px -3px 8px 3px rgba(0, 0, 0, 0.6);
 						aspect-ratio: 1/1;
-
-						@media screen and (max-width: 768px) {
-							height: 100%;
-						}
 					}
 
 					&:hover:first-child::after,
 					&.active:first-child::after {
 						height: 70%;
-
-						@media screen and (max-width: 768px) {
-							height: 90%;
-						}
 					}
 				}
 			}
