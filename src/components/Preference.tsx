@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai';
 import { preferencesAtom, updatePreferencesAtom, chordsAtom } from './../controller/atoms';
-import { ToggleOptionProps } from '../types/interfaces';
+import { PreferencesAction, ToggleOptionProps } from '../types/interfaces';
 import { checkChords } from '../utils/utils';
 
 const ToggleOption: React.FC<ToggleOptionProps> = ({
@@ -10,8 +10,8 @@ const ToggleOption: React.FC<ToggleOptionProps> = ({
 	type = 'checkbox',
 	...props
 }) => (
-	<label>
-		<input type={type} checked={checked} onChange={onChange} {...props} />
+	<label className='flex items-center gap-2 text-xl accent-yellow-600'>
+		<input className='h-4 w-4' type={type} checked={checked} onChange={onChange} {...props} />
 		{label}
 	</label>
 );
@@ -21,21 +21,14 @@ export const Preference = () => {
 	const [chords] = useAtom(chordsAtom);
 	const [, setPreferences] = useAtom(updatePreferencesAtom);
 
-	const handleShowChordTones = () => {
-		setPreferences({ type: 'TOGGLE_PREFERENCE', key: 'showChordTones' });
-	};
-
-	const handleShowNotes = () => {
-		setPreferences({ type: 'TOGGLE_PREFERENCE', key: 'showNotes' });
-	};
-
-	const handleShowScales = () => {
-		setPreferences({ type: 'TOGGLE_PREFERENCE', key: 'showScales' });
+	const handleSetPreferences = <T extends PreferencesAction>(pref: T) => {
+		setPreferences(pref);
 	};
 
 	return (
-		<div className="options">
-			<h2>Chord Options</h2>
+		<div className='options my-5'>
+			<h2 className='text-2xl'>Chord Options</h2>
+
 			<ToggleOption
 				checked={
 					preferences.showNotes ||
@@ -43,9 +36,9 @@ export const Preference = () => {
 						? true
 						: false
 				}
-				onChange={handleShowNotes}
-				label="Show notes"
-				type="radio"
+				onChange={() => handleSetPreferences({ type: 'TOGGLE_PREFERENCE', key: 'showNotes' })}
+				label='Show notes'
+				type='radio'
 			/>
 			<ToggleOption
 				disabled={
@@ -54,21 +47,27 @@ export const Preference = () => {
 					false
 				}
 				checked={!preferences.showNotes}
-				onChange={handleShowNotes}
-				label="Show Intervals"
-				type="radio"
+				onChange={() => handleSetPreferences({ type: 'TOGGLE_PREFERENCE', key: 'showNotes' })}
+				label='Show Intervals'
+				type='radio'
 			/>
 			<ToggleOption
-				id="show-chord-tones"
+				id='show-chord-tones'
 				checked={preferences.showChordTones}
-				onChange={handleShowChordTones}
-				label="Show chord tones"
+				onChange={() => handleSetPreferences({ type: 'TOGGLE_PREFERENCE', key: 'showChordTones' })}
+				label='Show chord tones'
 			/>
 			<ToggleOption
-				id="show-scales"
+				id='chord-information'
+				checked={preferences.showMoreChordInfo}
+				onChange={() => handleSetPreferences({ type: 'TOGGLE_SHOW_MORE_CHORD_INFO' })}
+				label='More chord information'
+			/>
+			<ToggleOption
+				id='show-scales'
 				checked={preferences.showScales}
-				onChange={handleShowScales}
-				label="Show Scales"
+				onChange={() => handleSetPreferences({ type: 'TOGGLE_PREFERENCE', key: 'showScales' })}
+				label='Show Scales'
 			/>
 		</div>
 	);

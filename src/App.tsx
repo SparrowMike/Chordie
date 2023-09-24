@@ -1,7 +1,3 @@
-/**
- * Guitar Chord Visualization App
- */
-
 import { Preference } from './components/Preference';
 import { ChordsInfo } from './components/ChordsInfo';
 import { Scales } from './components/Scales';
@@ -14,7 +10,7 @@ function App() {
 	const [preferences] = useAtom(preferencesAtom);
 
 	return (
-		<div className="container">
+		<div className='App p-1 sm:p-5'>
 			<Fretboard />
 			<ChordsInfo />
 			<Preference />

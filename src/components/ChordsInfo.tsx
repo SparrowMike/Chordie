@@ -13,33 +13,26 @@ export const ChordsInfo = () => {
 	const [, handleFullReset] = useAtom(handleFullResetAtom);
 
 	return (
-		<div className="notes">
-			<button onClick={handleFullReset}>Reset Notes</button>
-			<div style={{ padding: '10px 0' }}>
-				<label>
-					<input
-						type="checkbox"
-						className="checkbox"
-						id="chord-information"
-						checked={preferences.showMoreChordInfo}
-						onChange={() => setPreferences({ type: 'TOGGLE_SHOW_MORE_CHORD_INFO' })}
-					/>
-					More chord information
-				</label>
-			</div>
+		<div className='notes my-5'>
+			<button className='my-2 rounded-2xl bg-yellow-600 px-2 py-1' onClick={handleFullReset}>
+				Reset Notes
+			</button>
+			<h2 className='text-2xl'>Detected chords:</h2>
 			{Object.keys(chords).length ? (
-				<ul>
+				<ul className='flex flex-wrap'>
 					{Object.values(chords).map((chord, index) => (
 						<li
 							key={index}
 							onClick={() => setPreferences({ type: 'SET_ACTIVE_CHORD', index })}
-							className={`${preferences.activeChord === index ? 'active' : ''}`}
+							className={`border-2 border-transparent p-2 text-xl ${
+								preferences.activeChord === index ? 'rounded-lg border-yellow-600' : ''
+							}`}
 						>
-							Detected chord: {chord.name || chord.chord}
+							<div className='chord'>{chord.name || chord.chord}</div>
 							{preferences.showMoreChordInfo ? (
-								<div style={{ paddingLeft: '25px' }}>
+								<div className='ml-4'>
 									{chord.empty ? (
-										<p>No available data</p>
+										<p className=''>No available data</p>
 									) : (
 										<>
 											<p>Name: {chord.name}</p>
@@ -56,7 +49,7 @@ export const ChordsInfo = () => {
 					))}
 				</ul>
 			) : (
-				<div>No chords available.</div>
+				<div className='text-l'>No chords available.</div>
 			)}
 		</div>
 	);
