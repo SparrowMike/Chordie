@@ -1,8 +1,6 @@
-import { useEffect } from 'react';
 import { isMobile } from 'react-device-detect';
 import { useAtom } from 'jotai';
 import {
-	chordieAtom,
 	chordsAtom,
 	guitarNotesAtom,
 	preferencesAtom,
@@ -11,19 +9,11 @@ import {
 
 // import { majorKey, minorKey } from '@tonaljs/key';
 
-import { updateChordTones } from '../utils/utils';
-
 export const Fretboard = () => {
-	const [chordie] = useAtom(chordieAtom);
 	const [chords] = useAtom(chordsAtom);
-	const [guitarNotes, setGuitarNotes] = useAtom(guitarNotesAtom);
+	const [guitarNotes] = useAtom(guitarNotesAtom);
 	const [preferences] = useAtom(preferencesAtom);
 	const [, setChordie] = useAtom(updateChordieAtom);
-
-	useEffect(() => {
-		//! --------- this should be moved
-		setGuitarNotes(updateChordTones(chordie, guitarNotes, preferences.showChordTones));
-	}, [chordie, preferences.showChordTones]);
 
 	return (
 		<div className='overflow-x-auto'>

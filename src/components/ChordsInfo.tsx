@@ -28,7 +28,7 @@ export const ChordsInfo = () => {
 								preferences.activeChord === index ? 'rounded-lg border-yellow-600' : ''
 							}`}
 						>
-							<div className='chord'>{chord.name || chord.chord}</div>
+							<div className='chord'>{chord.chord || chord.name}</div>
 							{preferences.showMoreChordInfo ? (
 								<div className='ml-4'>
 									{chord.empty ? (

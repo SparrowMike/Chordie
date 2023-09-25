@@ -8,6 +8,7 @@ import {
 	checkChords,
 	handleChordToneReset,
 	extractChordQuality,
+	updateChordTones,
 } from '../utils/utils';
 
 import { get as getChordData, getChord as getChordDataSymbol } from '@tonaljs/chord'; //? ----- tbc { chordScales }
@@ -90,7 +91,7 @@ export const updateChordsAndScales = atom(null, (get, set) => {
 		};
 	}
 	const chordsLenght = Object.keys(chordsObj).length;
-	if (chordsLenght === 1 || (activeChord ?? -1) >= chordsLenght) {
+	if (chordsLenght >= 1 || (activeChord ?? -1) >= chordsLenght) {
 		activeChord = 0;
 		set(updatePreferencesAtom, { type: 'SET_ACTIVE_CHORD', index: 0 });
 	}
@@ -104,7 +105,10 @@ export const updateChordsAndScales = atom(null, (get, set) => {
 		set(updateScalesAtom, activeChord, chordsObj);
 	}
 
-	set(guitarNotesAtom, guitarNotes);
+	set(
+		guitarNotesAtom,
+		preferences.showChordTones ? updateChordTones(chordie, guitarNotes) : guitarNotes
+	);
 	set(chordsAtom, chordsObj);
 });
 
@@ -227,8 +231,6 @@ export const updatePreferencesAtom = atom(null, (get, set, action: PreferencesAc
 			set(updateScalesAtom, action.index);
 			updatedPreferences.activeChord = action.index;
 
-			//! ------- justification unclear chords.length performs reset before populating
-			// set(guitarNotesAtom, handleChordToneReset(guitarNotes)); //? clear the fretboard from non chord notes
 			updatedPreferences.activeScale = null; //? toggle on/off active scale
 
 			// if (Object.keys(chords).length && chords[action.index].empty) {
@@ -253,9 +255,15 @@ export const updatePreferencesAtom = atom(null, (get, set, action: PreferencesAc
 			const { key } = action;
 			updatedPreferences[key] = !preferences[key];
 
-			if (key === 'showChordTones' && updatedPreferences[key]) {
-				updatedPreferences.activeScale = null;
+			if (key === 'showChordTones') {
+				if (updatedPreferences[key]) {
+					updatedPreferences.activeScale = null;
+					set(guitarNotesAtom, updateChordTones(get(chordieAtom), get(guitarNotesAtom)));
+				} else {
+					set(guitarNotesAtom, handleChordToneReset(get(guitarNotesAtom)));
+				}
 			}
+
 			break;
 		default:
 			console.error('updatePreferenceAtom missing action.type');

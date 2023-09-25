@@ -31,22 +31,15 @@ export const handleChordToneReset = (guitarNotes: { [key: string]: GuitarNotes }
  *
  * @param {Chordie} chordie - The chord data.
  * @param {{ [key: string]: GuitarNotes }} guitarNotes - An object representing guitar notes by string.
- * @param {boolean} [show] - Optional flag to determine if chord tones should be shown.
  * @returns {{ [key: string]: GuitarNotes }} - Updated guitar notes state with chord tones adjusted.
  */
-export const updateChordTones = (
-	chordie: Chordie,
-	guitarNotes: { [key: string]: GuitarNotes },
-	show?: boolean
-) => {
+export const updateChordTones = (chordie: Chordie, guitarNotes: { [key: string]: GuitarNotes }) => {
 	const guitarNotesTemp = handleChordToneReset(deepCopy(guitarNotes));
 
-	if (show) {
-		for (const string of Object.values(guitarNotesTemp)) {
-			for (const note of Object.values(chordie)) {
-				if (note && !string[note].active) {
-					string[note].chordTone = true;
-				}
+	for (const string of Object.values(guitarNotesTemp)) {
+		for (const note of Object.values(chordie)) {
+			if (note && !string[note].active) {
+				string[note].chordTone = true;
 			}
 		}
 	}
