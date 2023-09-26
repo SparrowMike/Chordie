@@ -30,75 +30,18 @@ body {
 
 body {
 	color: white;
-	max-width: 100%;
-	// perspective: 100vw;
-	// transform-style: preserve-3d;
-	// z-index: -1;
 
 	.guitar {
-		--fret-width: 100px;
-		--fret-zero-width: 70px;
-		--fret-silver-width: 3px;
-		--nut-width: 1rem;
-		--inlay: 2.4rem;
+		--inlay: 1.8rem;
 
 		@media screen and (max-width: 768px) {
-			--fret-width: 50px;
-			--fret-zero-width: 30px;
-			--nut-width: 0.5rem;
 			--inlay: 1.5rem;
 		}
 
-		padding: 0;
-		transform: rotateX(5deg);
-		position: relative;
-		width: fit-content;
 		background-image: url(https://plus.unsplash.com/premium_photo-1675782999354-2f2711e437a5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80);
-		background-size: cover;
 
 		.frets {
-			height: 100%;
-			position: absolute;
-			display: flex;
-			z-index: 99;
-			pointer-events: none;
-			width: 100%;
-
 			.fret {
-				width: var(--fret-width);
-				display: flex;
-				position: relative;
-
-				.fret-silver {
-					z-index: 9;
-				}
-
-				&:not(:last-child) .fret-silver {
-					position: absolute;
-					right: 0;
-					background-color: black;
-					height: 100%;
-					transform: translateX(50%);
-				}
-
-				&:first-child .fret-silver {
-					background-color: wheat;
-					width: var(--nut-width);
-				}
-
-				&:not(:first-child) .fret-silver {
-					position: absolute;
-					right: 0;
-					width: var(--fret-silver-width);
-					height: 100%;
-					transform: translateX(50%);
-					border-radius: 100px;
-				}
-
-				&:first-child {
-					width: var(--fret-zero-width);
-				}
-
 				&:after,
 				&:before {
 					left: 50%;
@@ -131,14 +74,6 @@ body {
 
 		.strings {
 			.string {
-				width: 100%;
-				max-width: fit-content;
-				height: auto;
-				color: #fff;
-				display: flex;
-				flex-wrap: nowrap;
-				position: relative;
-
 				&::after {
 					content: '';
 					position: absolute;
@@ -147,7 +82,7 @@ body {
 					width: 100%;
 					background-color: white;
 					transform: translateY(-50%);
-					z-index: 99;
+					z-index: 20;
 					pointer-events: none;
 				}
 
@@ -159,26 +94,6 @@ body {
 				}
 
 				.note {
-					color: black;
-					width: var(--fret-width);
-					display: inline-block;
-					display: flex;
-					justify-content: center;
-					align-items: center;
-					position: relative;
-					cursor: pointer;
-					aspect-ratio: 1/1;
-
-					&:first-child {
-						width: var(--fret-zero-width);
-					}
-
-					h4 {
-						opacity: 0;
-						z-index: 9999;
-						font-weight: 600;
-					}
-
 					&:not(.mobile):hover h4,
 					&.active h4 {
 						opacity: 1;
@@ -187,7 +102,7 @@ body {
 					&:not(.mobile):hover::after,
 					&.active::after {
 						content: '';
-						height: 80%;
+						height: 90%;
 						color: white;
 						border-radius: 50%;
 						position: absolute;
@@ -195,7 +110,7 @@ body {
 						left: 50%;
 						transform: translate(-50%, -50%);
 						background-color: orange;
-						z-index: 999;
+						z-index: 20;
 						border: 3px solid black;
 						box-shadow: -4px -4px 8px 3px rgba(0, 0, 0, 0.6);
 						aspect-ratio: 1/1;
@@ -203,21 +118,10 @@ body {
 
 					&:hover:first-child::after,
 					&.active:first-child::after {
-						height: 70%;
+						height: 80%;
 					}
 				}
 			}
-		}
-	}
-
-	.options {
-		display: flex;
-		flex-direction: column;
-	}
-
-	.scales {
-		.active {
-			color: orange;
 		}
 	}
 }

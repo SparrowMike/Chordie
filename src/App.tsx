@@ -10,7 +10,7 @@ function App() {
 	const [preferences] = useAtom(preferencesAtom);
 
 	return (
-		<div className='App p-1 sm:p-5'>
+		<div className='App space-y-5 p-2 sm:p-5'>
 			<Fretboard />
 			<ChordsInfo />
 			<Preference />
