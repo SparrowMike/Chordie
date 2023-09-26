@@ -17,19 +17,25 @@ export const Fretboard = () => {
 
 	return (
 		<div className='overflow-x-auto'>
-			<div className='guitar'>
-				<div className='frets'>
+			<div className='guitar relative z-0 w-fit bg-cover p-0'>
+				<div className='frets pointer-events-none absolute flex h-full w-full'>
 					{Array(12)
 						.fill(0)
-						.map((_, i) => (
-							<div className='fret' key={i} data-fret={i}>
-								<div className='fret-silver'></div>
+						.map((_, index) => (
+							<div className='fret relative flex w-12 first:w-9' key={index} data-fret={index}>
+								<div
+									className={`${
+										index === 0 ? 'w-2 bg-slate-200' : 'w-[2px] rounded-3xl bg-black'
+									} fret-silver absolute right-0 z-10 h-full translate-x-1/2 ${
+										index === 11 ? 'hidden' : ''
+									}`}
+								></div>
 							</div>
 						))}
 				</div>
 				<div className='strings'>
 					{Object.entries(guitarNotes).map(([string, v], i) => (
-						<div className='string' key={i} data-string={string}>
+						<div className='string relative flex h-10' key={i} data-string={string}>
 							{Object.entries(v).map(([note, _v], _i) => {
 								const intervalsAvailable =
 									!chords[preferences.activeChord ?? -1]?.intervals?.length;
@@ -40,14 +46,14 @@ export const Fretboard = () => {
 
 								return (
 									<div
-										className={`note ${_v.active || _v.chordTone ? 'active' : ''} ${
-											isMobile ? 'mobile' : ''
-										}`}
+										className={`note first:10 relative z-30 flex aspect-square w-12 cursor-pointer items-center justify-center text-black first:w-9 ${
+											_v.active || _v.chordTone ? 'active' : ''
+										} ${isMobile ? 'mobile' : ''} ${_i === 0 ? '' : ''}`}
 										key={_i}
 										onClick={() => setChordie(string, note)}
 										data-note={chordNote}
 									>
-										<h4>{chordNote}</h4>
+										<h4 className={`z-30 font-medium opacity-0`}>{chordNote}</h4>
 									</div>
 								);
 							})}

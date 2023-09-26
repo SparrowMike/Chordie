@@ -144,6 +144,7 @@ export const updateChordieAtom = atom(null, (get, set, string: string, target: s
 
 /**
  * Atom that updates the guitar notes with a selected scale.
+ *
  * @type {(scale: string) => void}
  * @param {string} scale - The selected scale.
  */
@@ -195,7 +196,6 @@ export const updateGuitarNotesWithScaleAtom = atom(null, (get, set, scale?: stri
  *
  * @param {number} activeChordIndex - The index of the active chord.
  * @param {Object.<string, ChordInfo>} [chords] - Optional chords data.
- * @returns {void}
  */
 export const updateScalesAtom = atom(
 	null,
@@ -213,6 +213,7 @@ export const updateScalesAtom = atom(
 
 /**
  * Atom that updates user preferences based on the provided action.
+ *
  * @type {(action: PreferencesAction) => void}
  * @param {import('../types/interfaces').PreferencesAction} action - The action to perform.
  */

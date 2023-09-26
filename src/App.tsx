@@ -10,7 +10,7 @@ function App() {
 	const [preferences] = useAtom(preferencesAtom);
 
 	return (
-		<div className='App p-1 sm:p-5'>
+		<div className='App h-screen space-y-5 overflow-y-scroll bg-black p-2 text-white sm:p-5'>
 			<Fretboard />
 			<ChordsInfo />
 			<Preference />

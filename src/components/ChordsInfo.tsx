@@ -13,7 +13,7 @@ export const ChordsInfo = () => {
 	const [, handleFullReset] = useAtom(handleFullResetAtom);
 
 	return (
-		<div className='notes my-5'>
+		<div className='notes '>
 			<button className='my-2 rounded-2xl bg-yellow-600 px-2 py-1' onClick={handleFullReset}>
 				Reset Notes
 			</button>
