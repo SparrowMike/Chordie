@@ -22,10 +22,10 @@ export const Fretboard = () => {
 					{Array(12)
 						.fill(0)
 						.map((_, index) => (
-							<div className='fret relative flex w-12 first:w-10' key={index} data-fret={index}>
+							<div className='fret relative flex w-12 first:w-9' key={index} data-fret={index}>
 								<div
 									className={`${
-										index === 0 ? 'w-2 bg-slate-200' : 'w-1 rounded-3xl bg-black'
+										index === 0 ? 'w-2 bg-slate-200' : 'w-[2px] rounded-3xl bg-black'
 									} fret-silver absolute right-0 z-10 h-full translate-x-1/2 ${
 										index === 11 ? 'hidden' : ''
 									}`}
@@ -46,7 +46,7 @@ export const Fretboard = () => {
 
 								return (
 									<div
-										className={`note relative z-30 flex aspect-square w-12 cursor-pointer items-center justify-center text-black first:w-10 ${
+										className={`note first:10 relative z-30 flex aspect-square w-12 cursor-pointer items-center justify-center text-black first:w-9 ${
 											_v.active || _v.chordTone ? 'active' : ''
 										} ${isMobile ? 'mobile' : ''} ${_i === 0 ? '' : ''}`}
 										key={_i}

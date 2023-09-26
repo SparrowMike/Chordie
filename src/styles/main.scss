@@ -16,10 +16,6 @@
 	--neo-shadow-light: #ffffff;
 }
 
-body {
-	background-color: black;
-}
-
 .box {
 	@apply m-5 w-6/12 rounded-2xl bg-neo-bg p-5 shadow-neo;
 }
@@ -28,98 +24,94 @@ body {
 // 	background-color: purple;
 // }
 
-body {
-	color: white;
+.guitar {
+	--inlay: 1.8rem;
 
-	.guitar {
-		--inlay: 1.8rem;
+	@media screen and (max-width: 768px) {
+		--inlay: 1.5rem;
+	}
 
-		@media screen and (max-width: 768px) {
-			--inlay: 1.5rem;
+	background-image: url(https://plus.unsplash.com/premium_photo-1675782999354-2f2711e437a5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80);
+
+	.frets {
+		.fret {
+			&:after,
+			&:before {
+				left: 50%;
+				content: '';
+				position: absolute;
+				width: var(--inlay);
+				transform: translate(-50%, -50%);
+				border-radius: 50%;
+				aspect-ratio: 1/1;
+			}
+
+			&:nth-child(4):after,
+			&:nth-child(6):after,
+			&:nth-child(8):after,
+			&:nth-child(10):after {
+				top: 50%;
+				background-image: url(https://plus.unsplash.com/premium_photo-1667668224582-84f16f7dedd0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1309&q=80);
+			}
+
+			&:nth-child(6):after {
+				top: 30%;
+			}
+
+			&:nth-child(6):before {
+				top: 70%;
+				background-image: url(https://plus.unsplash.com/premium_photo-1667668224582-84f16f7dedd0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1309&q=80);
+			}
 		}
+	}
 
-		background-image: url(https://plus.unsplash.com/premium_photo-1675782999354-2f2711e437a5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80);
+	.strings {
+		.string {
+			&::after {
+				content: '';
+				position: absolute;
+				left: 0;
+				top: 50%;
+				width: 100%;
+				background-color: white;
+				transform: translateY(-50%);
+				z-index: 20;
+				pointer-events: none;
+			}
 
-		.frets {
-			.fret {
-				&:after,
-				&:before {
-					left: 50%;
+			@for $i from 1 through 6 {
+				&:nth-child(#{$i})::after {
+					height: $i * 0.05rem;
+					box-shadow: 0px $i * -1.25px 8px 1px rgba(0, 0, 0, 1);
+				}
+			}
+
+			.note {
+				&:not(.mobile):hover h4,
+				&.active h4 {
+					opacity: 1;
+				}
+
+				&:not(.mobile):hover::after,
+				&.active::after {
 					content: '';
-					position: absolute;
-					width: var(--inlay);
-					transform: translate(-50%, -50%);
+					height: 90%;
+					color: white;
 					border-radius: 50%;
+					position: absolute;
+					top: 50%;
+					left: 50%;
+					transform: translate(-50%, -50%);
+					background-color: orange;
+					z-index: 20;
+					border: 3px solid black;
+					box-shadow: -4px -4px 8px 3px rgba(0, 0, 0, 0.6);
 					aspect-ratio: 1/1;
 				}
 
-				&:nth-child(4):after,
-				&:nth-child(6):after,
-				&:nth-child(8):after,
-				&:nth-child(10):after {
-					top: 50%;
-					background-image: url(https://plus.unsplash.com/premium_photo-1667668224582-84f16f7dedd0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1309&q=80);
-				}
-
-				&:nth-child(6):after {
-					top: 30%;
-				}
-
-				&:nth-child(6):before {
-					top: 70%;
-					background-image: url(https://plus.unsplash.com/premium_photo-1667668224582-84f16f7dedd0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1309&q=80);
-				}
-			}
-		}
-
-		.strings {
-			.string {
-				&::after {
-					content: '';
-					position: absolute;
-					left: 0;
-					top: 50%;
-					width: 100%;
-					background-color: white;
-					transform: translateY(-50%);
-					z-index: 20;
-					pointer-events: none;
-				}
-
-				@for $i from 1 through 6 {
-					&:nth-child(#{$i})::after {
-						height: $i * 0.05rem;
-						box-shadow: 0px $i * -1.25px 8px 1px rgba(0, 0, 0, 1);
-					}
-				}
-
-				.note {
-					&:not(.mobile):hover h4,
-					&.active h4 {
-						opacity: 1;
-					}
-
-					&:not(.mobile):hover::after,
-					&.active::after {
-						content: '';
-						height: 90%;
-						color: white;
-						border-radius: 50%;
-						position: absolute;
-						top: 50%;
-						left: 50%;
-						transform: translate(-50%, -50%);
-						background-color: orange;
-						z-index: 20;
-						border: 3px solid black;
-						box-shadow: -4px -4px 8px 3px rgba(0, 0, 0, 0.6);
-						aspect-ratio: 1/1;
-					}
-
-					&:hover:first-child::after,
-					&.active:first-child::after {
-						height: 80%;
-					}
+				&:hover:first-child::after,
+				&.active:first-child::after {
+					height: 80%;
 				}
 			}
 		}
