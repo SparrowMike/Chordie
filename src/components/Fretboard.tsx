@@ -15,14 +15,21 @@ export const Fretboard = () => {
 	const [preferences] = useAtom(preferencesAtom);
 	const [, setChordie] = useAtom(updateChordieAtom);
 
+	// const FRET_SIZE = 'w-12'
+	// const FRET_ZERO_SIZE = 'w-12'
+
 	return (
 		<div className='overflow-x-auto'>
-			<div className='guitar relative z-0 w-fit bg-cover p-0'>
+			<div className='guitar relative w-fit bg-cover p-0'>
 				<div className='frets pointer-events-none absolute flex h-full w-full'>
 					{Array(12)
 						.fill(0)
 						.map((_, index) => (
-							<div className='fret relative flex w-12 first:w-9' key={index} data-fret={index}>
+							<div
+								className='fret relative flex w-12 min-w-[3rem] first:min-w-[2.25rem]'
+								key={index}
+								data-fret={index}
+							>
 								<div
 									className={`${
 										index === 0 ? 'w-2 bg-slate-200' : 'w-[2px] rounded-3xl bg-black'
@@ -35,7 +42,7 @@ export const Fretboard = () => {
 				</div>
 				<div className='strings'>
 					{Object.entries(guitarNotes).map(([string, v], i) => (
-						<div className='string relative flex h-10' key={i} data-string={string}>
+						<div className='string relative flex h-10 w-fit' key={i} data-string={string}>
 							{Object.entries(v).map(([note, _v], _i) => {
 								const intervalsAvailable =
 									!chords[preferences.activeChord ?? -1]?.intervals?.length;
@@ -46,7 +53,7 @@ export const Fretboard = () => {
 
 								return (
 									<div
-										className={`note first:10 relative z-30 flex aspect-square w-12 cursor-pointer items-center justify-center text-black first:w-9 ${
+										className={`note group relative z-30 flex min-w-[3rem] cursor-pointer items-center justify-center text-black first:min-w-[2.25rem] ${
 											_v.active || _v.chordTone ? 'active' : ''
 										} ${isMobile ? 'mobile' : ''} ${_i === 0 ? '' : ''}`}
 										key={_i}
@@ -59,7 +66,7 @@ export const Fretboard = () => {
 							})}
 						</div>
 					))}
-				</div>{' '}
+				</div>
 			</div>
 		</div>
 	);
