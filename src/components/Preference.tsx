@@ -26,7 +26,7 @@ export const Preference = () => {
 	};
 
 	return (
-		<div className='options flex flex-col'>
+		<div className='options flex flex-col p-4 pt-0'>
 			<h2 className='text-2xl'>Chord Options</h2>
 
 			<ToggleOption

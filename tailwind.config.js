@@ -3,6 +3,9 @@ export default {
 	content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
 	theme: {
 		extend: {
+			transitionProperty: {
+				height: 'height',
+			},
 			colors: {
 				'neo-bg': '#dedede',
 				'neo-shadow-dark': '#b2b2b2',
@@ -13,6 +16,9 @@ export default {
 					'colors.neo-shadow-light'
 				)}`,
 			}),
+			transitionDuration: {
+				DEFAULT: '300ms',
+			},
 		},
 	},
 	plugins: [],
