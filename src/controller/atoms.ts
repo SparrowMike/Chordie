@@ -40,9 +40,9 @@ export const scalesAtom = atom<string[] | undefined>([]);
  * @type {() => void}
  */
 export const handleFullResetAtom = atom(null, (_, set) => {
-	set(chordieAtom, initialChordie);
+	set(chordieAtom, deepCopy(initialChordie));
 	set(chordsAtom, {});
-	set(guitarNotesAtom, initialGuitarNotes);
+	set(guitarNotesAtom, deepCopy(initialGuitarNotes));
 	set(scalesAtom, []);
 });
 

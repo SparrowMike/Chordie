@@ -15,7 +15,7 @@ export interface ChordInfo {
 export interface GuitarNotes {
 	[key: string]: {
 		active: boolean;
-		octave: string;
+		octave: number;
 		interval?: string;
 		chordTone?: boolean;
 		relativeNote?: string;

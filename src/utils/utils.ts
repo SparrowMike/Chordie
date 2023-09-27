@@ -61,10 +61,6 @@ export const extractRelativeNotes = (
 ) => {
 	const guitarNotesTemp = deepCopy(guitarNotes);
 	// Convert a note to its equivalent with a different accidental (e.g., C## to D)
-	const convertDouble = (note: string, type: string) => {
-		const target = note.replace(type, '');
-		return chromaticSharp[(chromaticSharp.indexOf(target) + 2) % chromaticSharp.length];
-	};
 
 	for (const stringNotes of Object.values(guitarNotesTemp)) {
 		// Clear previous relative notes and intervals
@@ -79,14 +75,6 @@ export const extractRelativeNotes = (
 
 			if (enharmonicMap[relNote]) {
 				const convertedNote = enharmonicMap[relNote];
-				stringNotes[convertedNote].relativeNote = relNote;
-				stringNotes[convertedNote].interval = interval;
-			} else if (relNote.includes('##')) {
-				const convertedNote = convertDouble(relNote, '##');
-				stringNotes[convertedNote].relativeNote = relNote;
-				stringNotes[convertedNote].interval = interval;
-			} else if (relNote.includes('bb')) {
-				const convertedNote = convertDouble(relNote, 'bb'); //! ------- confirm compatibility
 				stringNotes[convertedNote].relativeNote = relNote;
 				stringNotes[convertedNote].interval = interval;
 			} else {
