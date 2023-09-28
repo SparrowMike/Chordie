@@ -25,7 +25,7 @@ export const ChordsInfo = () => {
 							<li
 								key={index}
 								onClick={() => setPreferences({ type: 'SET_ACTIVE_CHORD', index })}
-								className={`border-2 border-transparent p-2 text-xl ${
+								className={`w-full border-2 border-transparent p-2 text-xl sm:w-1/2 ${
 									preferences.activeChord === index ? 'rounded-lg border-yellow-600' : ''
 								}`}
 							>

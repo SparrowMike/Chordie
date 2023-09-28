@@ -10,6 +10,11 @@
 	color: inherit;
 }
 
+html,
+body {
+	background-color: black;
+}
+
 :root {
 	--neo-bg: #dedede;
 	--neo-shadow-dark: #b2b2b2;
@@ -27,7 +32,7 @@
 .guitar {
 	--inlay: 1.8rem;
 
-	@media screen and (max-width: 768px) {
+	@media screen and (max-width: 640px) {
 		--inlay: 1.5rem;
 	}
 
