@@ -1,23 +1,48 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useAtom } from 'jotai';
+import { handleFullResetAtom, chordieAtom } from './../controller/atoms';
 import { Preference } from './Preference';
 
 export const Navigation = () => {
-	const [active, setActive] = useState(false);
+	const [activeOptions, setActiveOptions] = useState(false);
+	const [blankFretboard, setBlankFretboard] = useState(true);
+	const [, handleFullReset] = useAtom(handleFullResetAtom);
+	const [chordie] = useAtom(chordieAtom);
 
 	const handleDropDown = (e: React.MouseEvent) => {
 		e.stopPropagation();
-		setActive(!active);
+		setActiveOptions(!activeOptions);
 	};
+
+	useEffect(() => {
+		for (const val of Object.values(chordie)) {
+			if (val !== null) {
+				setBlankFretboard(false);
+				break;
+			} else {
+				setBlankFretboard(true);
+			}
+		}
+	}, [chordie]);
 
 	return (
 		<div className='navigation fixed top-0 z-50 w-full bg-neutral-900'>
-			<div className='flex items-center justify-between gap-10 px-4 py-2'>
-				<h1 className=''></h1>
-				<button onClick={handleDropDown}>Options</button>
+			<div className='flex h-10 items-center justify-between px-4 py-2'>
+				{!blankFretboard && (
+					<button
+						className='rounded-2xl bg-neutral-500 px-2 shadow-sm shadow-neutral-200/60 active:translate-y-0.5 active:shadow-transparent'
+						onClick={handleFullReset}
+					>
+						Reset Notes
+					</button>
+				)}
+				<button className='ml-auto' onClick={handleDropDown}>
+					Options
+				</button>
 			</div>
 			<div
-				className={`absolute z-50 w-full overflow-hidden rounded-b-lg bg-neutral-900 shadow-xl transition-[height] ${
-					active ? 'h-52' : 'h-0'
+				className={`absolute z-50 w-full overflow-hidden rounded-b-lg bg-neutral-900  transition-[height] ${
+					activeOptions ? 'h-52' : 'h-0'
 				}`}
 			>
 				<Preference />
@@ -25,7 +50,9 @@ export const Navigation = () => {
 			<div
 				onClick={handleDropDown}
 				className={`absolute left-0 top-10 transition-all ${
-					active ? 'h-[calc(100vh-2.5rem)] w-screen backdrop-blur-[1px]' : 'backdrop-blur-[0px]'
+					activeOptions
+						? 'h-[calc(100vh-2.5rem)] w-screen backdrop-blur-[1px]'
+						: 'backdrop-blur-[0px]'
 				}`}
 			></div>
 		</div>

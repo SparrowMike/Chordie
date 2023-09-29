@@ -12,7 +12,7 @@ function App() {
 	return (
 		<div className='App relative overflow-y-scroll text-white'>
 			<Navigation />
-			<div className='max-w-4xl space-y-5 px-2 pb-5 pt-12 sm:px-5'>
+			<div className='max-w-4xl space-y-2 px-2 pb-5 pt-12 sm:px-5 sm:pt-14'>
 				<Fretboard />
 				<ChordsInfo />
 				{preferences.showScales && <Scales />}
