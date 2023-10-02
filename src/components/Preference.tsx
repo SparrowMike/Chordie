@@ -69,6 +69,12 @@ export const Preference = () => {
 				onChange={() => handleSetPreferences({ type: 'TOGGLE_PREFERENCE', key: 'showScales' })}
 				label='Show Scales'
 			/>
+			<ToggleOption
+				id='show-scales'
+				checked={preferences.highlightRoot}
+				onChange={() => handleSetPreferences({ type: 'TOGGLE_PREFERENCE', key: 'highlightRoot' })}
+				label='Highlight Root'
+			/>
 		</div>
 	);
 };

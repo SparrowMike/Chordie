@@ -18,6 +18,7 @@ export const initialPreferences: Preferences = {
 	showScales: false,
 	activeChord: null,
 	activeScale: null,
+	highlightRoot: false,
 };
 
 /**

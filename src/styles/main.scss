@@ -30,10 +30,14 @@ body {
 // }
 
 // [data-fret='0'] {
+// 	background: rgba(198, 42, 42, 0.6);
+// }
+
+// [data-fret='1'] {
 // 	background: linear-gradient(90deg, rgba(198, 42, 42, 0.6) 0%, rgba(128, 0, 128, 0.6) 100%);
 // }
 
-// @for $i from 1 through 2 {
+// @for $i from 2 through 2 {
 // 	[data-fret='#{$i}'] {
 // 		background-color: rgba(128, 0, 128, 0.6);
 // 	}

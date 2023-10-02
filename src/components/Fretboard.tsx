@@ -16,7 +16,7 @@ export const Fretboard = () => {
 	const [, setChordie] = useAtom(updateChordieAtom);
 
 	const FRET_SIZE =
-		'relative flex min-w-[3.25rem] first:min-w-[2.5rem] sm:min-w-[4.55rem] sm:first:min-w-[3.25rem]';
+		'relative flex w-[3.25rem] first:w-[2.5rem] sm:w-[4.55rem] sm:first:w-[3.25rem]';
 
 	const Frets = () => {
 		return (
@@ -27,7 +27,7 @@ export const Fretboard = () => {
 						<div className={`fret ${FRET_SIZE}`} key={index} data-fret={index}>
 							<div
 								className={`${
-									index === 0 ? 'w-2 bg-slate-200' : ' w-[2.5px] rounded-3xl bg-black sm:w-[3px] '
+									index === 0 ? 'w-2 bg-slate-200' : 'w-[2.5px] rounded-3xl bg-black sm:w-[3px]'
 								} fret-silver absolute right-0 z-10 h-full translate-x-1/2 ${
 									index === 11 ? 'hidden' : ''
 								}`}
@@ -42,7 +42,7 @@ export const Fretboard = () => {
 		return (
 			<div className='strings'>
 				{Object.entries(guitarNotes).map(([string, v], i) => (
-					<div className='string relative flex h-10 w-fit sm:h-12' key={i} data-string={string}>
+					<div className='string relative flex h-10 sm:h-12' key={i} data-string={string}>
 						{Object.entries(v).map(([note, _v], _i) => {
 							const intervalsAvailable = !chords[preferences.activeChord ?? -1]?.intervals?.length;
 							const chordNote =
@@ -60,8 +60,13 @@ export const Fretboard = () => {
 									data-note={chordNote}
 								>
 									<h4
-										className={`z-30 flex aspect-square items-center justify-center rounded-3xl border-[3px] border-neutral-800 bg-yellow-600 font-medium text-neutral-900 shadow-sm shadow-neutral-500/60 ${
-											_i === 0 ? 'h-[90%] sm:h-[80%]' : ' h-full sm:h-[90%]'
+										className={`z-30 flex aspect-square items-center justify-center rounded-3xl border-[3px] border-neutral-800 font-medium text-neutral-900 shadow-sm shadow-neutral-500/60 ${
+											_i === 0 ? 'h-[90%] sm:h-[80%]' : 'h-full sm:h-[90%]'
+										} ${
+											['1P', '8P'].some((el) => _v?.interval?.includes(el)) &&
+											preferences.highlightRoot
+												? 'bg-orange-700'
+												: 'bg-yellow-600'
 										}`}
 									>
 										{chordNote}
