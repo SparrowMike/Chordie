@@ -6,8 +6,15 @@ import { useAtom } from 'jotai';
 import { preferencesAtom } from './controller/atoms';
 import { Navigation } from './components/Navigation';
 
+import { useEffect } from 'react';
+import ReactGA from 'react-ga4';
+
 function App() {
 	const [preferences] = useAtom(preferencesAtom);
+
+	useEffect(() => {
+		ReactGA.initialize('G-T8JLT44E6N');
+	}, []);
 
 	return (
 		<div className='App relative overflow-y-scroll text-white'>
