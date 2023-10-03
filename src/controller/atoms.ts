@@ -75,19 +75,21 @@ export const updateChordsAndScales = atom(null, (get, set) => {
 
 	// Iterate through detected chords and extract chord information
 	for (const idx in detectedChords) {
-		const triggered = detectedChords[idx].includes('/')
-			? getChordDataSymbol(...extractChordQuality(detectedChords[idx]))
-			: getChordData(detectedChords[idx]);
-		//! ------ getChordDataSymbol('madd9', 'F5', 'A#4') ------- some chords just won't work
+		const [alias, root, bassNote] = extractChordQuality(detectedChords[idx]);
 
-		//! alternative to above would be to ignore slash chords ?
-		// const [ alias, root, bassNote ] = extractChordQuality(detectedChords[idx]);
-		// console.log(getChordData(root+ alias))
+		let chordInfo = detectedChords[idx].includes('/')
+			? getChordDataSymbol(alias, root, bassNote)
+			: getChordData(detectedChords[idx]);
+
+		if (chordInfo.empty) {
+			//! ------ getChordDataSymbol('madd9', 'F5', 'A#4') ------- some chords just won't work
+			chordInfo = getChordDataSymbol(alias, root);
+		}
 
 		// Store the extracted chord information in chordsObj
 		chordsObj[idx] = {
 			chord: detectedChords[idx],
-			...triggered,
+			...chordInfo,
 		};
 	}
 	const chordsLenght = Object.keys(chordsObj).length;
