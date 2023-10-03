@@ -12,13 +12,13 @@ import { Preferences } from '../types/interfaces';
  * - `activeChord`: Represents the initial index of the selected chord among detected chords.
  */
 export const initialPreferences: Preferences = {
-	showMoreChordInfo: false,
+	showMoreChordInfo: true,
 	showNotes: true,
 	showChordTones: false,
-	showScales: false,
+	showScales: true,
 	activeChord: null,
 	activeScale: null,
-	highlightRoot: false,
+	highlightRoot: true,
 };
 
 /**
