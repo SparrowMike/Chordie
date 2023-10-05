@@ -5,6 +5,7 @@
 * {
 	-webkit-tap-highlight-color: transparent;
 }
+
 *::selection {
 	background-color: transparent;
 	color: inherit;
@@ -28,58 +29,115 @@ body {
 // [data-note='F#'] {
 // 	background-color: purple;
 // }
+$transparent-color-1: rgba(0, 128, 0, 0.3);
+$transparent-color-2: rgba(255, 0, 0, 0.3);
+$transparent-color-3: rgba(0, 0, 255, 0.3);
+$transparent-color-4: rgba(255, 165, 0, 0.3);
+$transparent-color-5: rgba(128, 0, 128, 0.3);
+
+.E {
+	background: linear-gradient(90deg, $transparent-color-1 0%, $transparent-color-2);
+
+	&oga {
+		background: $transparent-color-2;
+	}
+}
+.D {
+	background: linear-gradient(90deg, $transparent-color-2 0%, $transparent-color-3);
+
+	&oga {
+		background: $transparent-color-3;
+	}
+}
+.B {
+	background: linear-gradient(90deg, $transparent-color-3 0%, $transparent-color-4);
+
+	&oga {
+		background: $transparent-color-4;
+	}
+}
+.A {
+	background: linear-gradient(90deg, $transparent-color-4 0%, $transparent-color-5);
+
+	&oga {
+		background: $transparent-color-5;
+	}
+}
+.G {
+	background: linear-gradient(90deg, $transparent-color-5 0%, $transparent-color-1);
+
+	&oga {
+		background: $transparent-color-1;
+	}
+}
+
+.t1 {
+	background: $transparent-color-1;
+}
+.t2 {
+	background: $transparent-color-5;
+}
+.t3 {
+	background: $transparent-color-2;
+}
+.t4 {
+	background: $transparent-color-4;
+}
+.t5 {
+	background: $transparent-color-1;
+}
 
 // [data-fret='0'] {
-// 	background: rgba(198, 42, 42, 0.6);
+// 	background: $transparent-color-1;
 // }
 
 // [data-fret='1'] {
-// 	background: linear-gradient(90deg, rgba(198, 42, 42, 0.6) 0%, rgba(128, 0, 128, 0.6) 100%);
+// 	background: linear-gradient(90deg, $transparent-color-1 0%, $transparent-color-2 100%);
 // }
 
 // @for $i from 2 through 2 {
 // 	[data-fret='#{$i}'] {
-// 		background-color: rgba(128, 0, 128, 0.6);
+// 		background-color: $transparent-color-2;
 // 	}
 // }
 
 // [data-fret='3'] {
-// 	background: linear-gradient(90deg, rgba(128, 0, 128, 0.6) 0%, rgba(0, 128, 105, 0.6) 100%);
+// 	background: linear-gradient(90deg, $transparent-color-2 0%, $transparent-color-3 100%);
 // }
 
 // @for $i from 4 through 4 {
 // 	[data-fret='#{$i}'] {
-// 		background-color: rgba(0, 128, 105, 0.6);
+// 		background-color: $transparent-color-3;
 // 	}
 // }
 
 // [data-fret='5'] {
-// 	background: linear-gradient(90deg, rgba(0, 128, 105, 0.6) 0%, rgba(128, 70, 0, 0.6) 100%);
+// 	background: linear-gradient(90deg, $transparent-color-3 0%, $transparent-color-4 100%);
 // }
 
 // @for $i from 6 through 7 {
 // 	[data-fret='#{$i}'] {
-// 		background-color: rgba(128, 70, 0, 0.6);
+// 		background-color: $transparent-color-4;
 // 	}
 // }
 
 // [data-fret='8'] {
-// 	background: linear-gradient(90deg, rgba(128, 70, 0, 0.6) 0%, rgba(14, 73, 176, 0.6) 100%);
+// 	background: linear-gradient(90deg, $transparent-color-4 0%, $transparent-color-5 100%);
 // }
 
 // @for $i from 9 through 9 {
 // 	[data-fret='#{$i}'] {
-// 		background-color: rgba(14, 73, 176, 0.6);
+// 		background-color: $transparent-color-5;
 // 	}
 // }
 
 // [data-fret='10'] {
-// 	background: linear-gradient(90deg, rgba(14, 73, 176, 0.6) 0%, rgba(198, 42, 42, 0.6) 100%);
+// 	background: linear-gradient(90deg, $transparent-color-5 0%, $transparent-color-1 100%);
 // }
 
 // @for $i from 11 through 12 {
 // 	[data-fret='#{$i}'] {
-// 		background-color: rgba(198, 42, 42, 0.6);
+// 		background-color: $transparent-color-1;
 // 	}
 // }
 

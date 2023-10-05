@@ -43,6 +43,7 @@ export interface Preferences {
 	activeChord: number | null;
 	activeScale: number | null;
 	highlightRoot: boolean;
+	highlightPosition: boolean;
 }
 
 export type PreferencesAction =

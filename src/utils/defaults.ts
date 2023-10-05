@@ -19,6 +19,7 @@ export const initialPreferences: Preferences = {
 	activeChord: null,
 	activeScale: null,
 	highlightRoot: true,
+	highlightPosition: false,
 };
 
 /**
@@ -122,3 +123,18 @@ export const initialGuitarNotes = {
 		'D#': { active: false, octave: 5 },
 	},
 };
+
+export const initialGuitarFrets = [
+	{ fretNumber: 0, data: '' },
+	{ fretNumber: 1, data: '' },
+	{ fretNumber: 2, data: '' },
+	{ fretNumber: 3, data: '' },
+	{ fretNumber: 4, data: '' },
+	{ fretNumber: 5, data: '' },
+	{ fretNumber: 6, data: '' },
+	{ fretNumber: 7, data: '' },
+	{ fretNumber: 8, data: '' },
+	{ fretNumber: 9, data: '' },
+	{ fretNumber: 10, data: '' },
+	{ fretNumber: 11, data: '' },
+];

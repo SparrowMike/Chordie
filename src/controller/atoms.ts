@@ -1,6 +1,11 @@
 import { atom } from 'jotai';
 
-import { initialChordie, initialGuitarNotes, initialPreferences } from '../utils/defaults';
+import {
+	initialChordie,
+	initialGuitarNotes,
+	initialPreferences,
+	initialGuitarFrets,
+} from '../utils/defaults';
 
 import {
 	deepCopy,
@@ -9,6 +14,7 @@ import {
 	handleChordToneReset,
 	extractChordQuality,
 	updateChordTones,
+	deleteRelativeNoteAndInterval,
 } from '../utils/utils';
 
 import { get as getChordData, getChord as getChordDataSymbol } from '@tonaljs/chord'; //? ----- tbc { chordScales }
@@ -30,6 +36,7 @@ import { enharmonicMap } from '../utils/constants';
 import { chromaticSharp } from '../utils/constants';
 
 export const chordieAtom = atom<Chordie>(deepCopy(initialChordie));
+export const fretsAtom = atom(deepCopy(initialGuitarFrets));
 export const chordsAtom = atom<{ [key: string]: ChordInfo }>({});
 export const guitarNotesAtom = atom<{ [key: string]: GuitarNotes }>(deepCopy(initialGuitarNotes));
 export const preferencesAtom = atom(initialPreferences);
@@ -43,7 +50,46 @@ export const handleFullResetAtom = atom(null, (_, set) => {
 	set(chordieAtom, deepCopy(initialChordie));
 	set(chordsAtom, {});
 	set(guitarNotesAtom, deepCopy(initialGuitarNotes));
+	set(fretsAtom, deepCopy(initialGuitarFrets));
 	set(scalesAtom, []);
+});
+
+/**
+ * Atom that deals with highlighting positions on the fretboard.
+ */
+export const updateFretsAtom = atom(null, (get, set) => {
+	const chords = get(chordsAtom);
+	const frets = get(fretsAtom);
+	const guitarNotes = get(guitarNotesAtom);
+
+	frets.forEach((val) => {
+		val.data = '';
+	});
+
+	if (!Object.keys(chords).length) return;
+
+	Object.entries(guitarNotes).forEach(([key, val]) => {
+		Object.entries(val).forEach(([, _v], _i) => {
+			if (_v.interval) {
+				if (['1P', '8P'].includes(_v.interval)) {
+					// console.log(_v.interval, _k, 'fret---', _i, 'string---', i, key);
+					frets[_i].data = key;
+				}
+			}
+		});
+	});
+
+	let lastVal: string;
+	for (let i = 0; i < 2; i++) {
+		frets.forEach((val) => {
+			if (val.data) lastVal = val.data;
+			if (lastVal && !val.data) val.data = lastVal + 'oga';
+		});
+	}
+
+	// console.log(frets, guitarNotes)
+
+	set(fretsAtom, frets);
 });
 
 /**
@@ -51,7 +97,6 @@ export const handleFullResetAtom = atom(null, (_, set) => {
  *
  * @param {function} updateFunction - The function to update the `chords` and `guitarNotes` state.
  */
-
 export const updateChordsAndScales = atom(null, (get, set) => {
 	const chordie = get(chordieAtom);
 	const preferences = get(preferencesAtom);
@@ -113,7 +158,12 @@ export const updateChordsAndScales = atom(null, (get, set) => {
 		guitarNotesAtom,
 		preferences.showChordTones ? updateChordTones(chordie, guitarNotes) : guitarNotes
 	);
+
 	set(chordsAtom, chordsObj);
+
+	if (preferences.highlightPosition) {
+		set(updateFretsAtom);
+	}
 });
 
 /**
@@ -245,6 +295,10 @@ export const updatePreferencesAtom = atom(null, (get, set, action: PreferencesAc
 			if (Object.keys(chords).length) {
 				const { notes, intervals } = chords[action.index];
 				set(guitarNotesAtom, extractRelativeNotes(notes, intervals, guitarNotes));
+
+				if (preferences.highlightPosition) {
+					set(updateFretsAtom);
+				}
 			}
 			break;
 		case 'SET_ACTIVE_SCALE':
@@ -260,13 +314,18 @@ export const updatePreferencesAtom = atom(null, (get, set, action: PreferencesAc
 			const { key } = action;
 			updatedPreferences[key] = !preferences[key];
 
-			if (key === 'showChordTones') {
-				if (updatedPreferences[key]) {
-					updatedPreferences.activeScale = null;
-					set(guitarNotesAtom, updateChordTones(get(chordieAtom), get(guitarNotesAtom)));
-				} else {
-					set(guitarNotesAtom, handleChordToneReset(get(guitarNotesAtom)));
-				}
+			switch (key) {
+				case 'showChordTones':
+					if (updatedPreferences[key]) {
+						updatedPreferences.activeScale = null;
+						set(guitarNotesAtom, updateChordTones(get(chordieAtom), get(guitarNotesAtom)));
+					} else {
+						set(guitarNotesAtom, handleChordToneReset(get(guitarNotesAtom)));
+					}
+					break;
+				case 'highlightPosition':
+					set(updateFretsAtom);
+					break;
 			}
 
 			break;

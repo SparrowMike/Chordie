@@ -2,6 +2,7 @@ import { isMobile } from 'react-device-detect';
 import { useAtom } from 'jotai';
 import {
 	chordsAtom,
+	fretsAtom,
 	guitarNotesAtom,
 	preferencesAtom,
 	updateChordieAtom,
@@ -11,6 +12,7 @@ import {
 
 export const Fretboard = () => {
 	const [chords] = useAtom(chordsAtom);
+	const [frets] = useAtom(fretsAtom);
 	const [guitarNotes] = useAtom(guitarNotesAtom);
 	const [preferences] = useAtom(preferencesAtom);
 	const [, setChordie] = useAtom(updateChordieAtom);
@@ -21,19 +23,23 @@ export const Fretboard = () => {
 	const Frets = () => {
 		return (
 			<div className='frets pointer-events-none absolute flex h-full w-full'>
-				{Array(12)
-					.fill(0)
-					.map((_, index) => (
-						<div className={`fret ${FRET_SIZE}`} key={index} data-fret={index}>
-							<div
-								className={`${
-									index === 0 ? 'w-2 bg-slate-200' : 'w-[2.5px] rounded-3xl bg-black sm:w-[3px]'
-								} fret-silver absolute right-0 z-10 h-full translate-x-1/2 ${
-									index === 11 ? 'hidden' : ''
-								}`}
-							></div>
-						</div>
-					))}
+				{frets.map((val) => (
+					<div
+						className={`fret ${FRET_SIZE} ${preferences.highlightPosition && val.data}`}
+						key={val.fretNumber}
+						data-fret={val.fretNumber}
+					>
+						<div
+							className={`${
+								val.fretNumber === 0
+									? 'w-2 bg-slate-200'
+									: 'w-[2.5px] rounded-3xl bg-black sm:w-[3px]'
+							} fret-silver absolute right-0 z-10 h-full translate-x-1/2 ${
+								val.fretNumber === 11 ? 'hidden' : ''
+							}`}
+						></div>
+					</div>
+				))}
 			</div>
 		);
 	};
@@ -63,8 +69,7 @@ export const Fretboard = () => {
 										className={`z-30 flex aspect-square items-center justify-center rounded-3xl border-[3px] border-neutral-800 font-medium text-neutral-900 shadow-sm shadow-neutral-500/60 ${
 											_i === 0 ? 'h-[90%] sm:h-[80%]' : 'h-full sm:h-[90%]'
 										} ${
-											['1P', '8P'].some((el) => _v?.interval?.includes(el)) &&
-											preferences.highlightRoot
+											['1P', '8P'].some((el) => _v?.interval === el) && preferences.highlightRoot
 												? 'bg-orange-700'
 												: 'bg-yellow-600'
 										}`}
