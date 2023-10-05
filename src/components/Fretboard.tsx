@@ -70,8 +70,12 @@ export const Fretboard = () => {
 											_i === 0 ? 'h-[90%] sm:h-[80%]' : 'h-full sm:h-[90%]'
 										} ${
 											['1P', '8P'].some((el) => _v?.interval === el) && preferences.highlightRoot
-												? 'bg-orange-700'
-												: 'bg-yellow-600'
+												? _v.active
+													? 'bg-orange-700'
+													: 'bg-orange-800'
+												: _v.active
+												? 'bg-yellow-500'
+												: 'bg-yellow-800'
 										}`}
 									>
 										{chordNote}
