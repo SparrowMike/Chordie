@@ -12,7 +12,7 @@ const ToggleOption: React.FC<ToggleOptionProps> = ({
 }) => (
 	<label className='flex items-center gap-2 text-xl accent-yellow-600'>
 		<input className='h-4 w-4' type={type} checked={checked} onChange={onChange} {...props} />
-		{label}
+		<p>{label}</p>
 	</label>
 );
 
@@ -74,6 +74,14 @@ export const Preference = () => {
 				checked={preferences.highlightRoot}
 				onChange={() => handleSetPreferences({ type: 'TOGGLE_PREFERENCE', key: 'highlightRoot' })}
 				label='Highlight Root'
+			/>
+			<ToggleOption
+				id='highlightPosition'
+				checked={preferences.highlightPosition}
+				onChange={() =>
+					handleSetPreferences({ type: 'TOGGLE_PREFERENCE', key: 'highlightPosition' })
+				}
+				label='Highlight Position (experimental)'
 			/>
 		</div>
 	);
