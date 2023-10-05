@@ -9,6 +9,7 @@ import {
 	handleChordToneReset,
 	extractChordQuality,
 	updateChordTones,
+	deleteRelativeNoteAndInterval,
 } from '../utils/utils';
 
 import { get as getChordData, getChord as getChordDataSymbol } from '@tonaljs/chord'; //? ----- tbc { chordScales }
