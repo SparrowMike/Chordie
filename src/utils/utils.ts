@@ -34,7 +34,7 @@ export const handleChordToneReset = (guitarNotes: { [key: string]: GuitarNotes }
  * @returns {{ [key: string]: GuitarNotes }} - Updated guitar notes state with chord tones adjusted.
  */
 export const updateChordTones = (chordie: Chordie, guitarNotes: { [key: string]: GuitarNotes }) => {
-	const guitarNotesTemp = handleChordToneReset(deepCopy(guitarNotes));
+	const guitarNotesTemp = handleChordToneReset({ ...guitarNotes });
 
 	for (const string of Object.values(guitarNotesTemp)) {
 		for (const note of Object.values(chordie)) {
@@ -48,7 +48,25 @@ export const updateChordTones = (chordie: Chordie, guitarNotes: { [key: string]:
 };
 
 /**
- * Extracts and updates relativeNote properties for guitarNotesTemp.
+ * Deletes relativeNote and interval properties from a given GuitarNotes object.
+ * @param {Object.<string, GuitarNotes>} guitarNotes - The GuitarNotes object to update.
+ * @returns {Object.<string, GuitarNotes>} The updated GuitarNotes object with properties removed.
+ */
+export const deleteRelativeNoteAndInterval = (guitarNotes: { [key: string]: GuitarNotes }) => {
+	const guitarNotesTemp = { ...guitarNotes };
+
+	for (const stringNotes of Object.values(guitarNotesTemp)) {
+		for (const note of Object.values(stringNotes)) {
+			delete note.relativeNote;
+			delete note.interval;
+		}
+	}
+
+	return guitarNotesTemp;
+};
+
+/**
+ * Adds relativeNote and interval properties based on detected chords.
  * @param {string[]} notes - An array of detected chords.
  * @param {string[]} intervals - An array of intervals.
  * @param {Object.<string, GuitarNotes>} guitarNotes - The current state of guitarNotesTemp.
@@ -59,18 +77,13 @@ export const extractRelativeNotes = (
 	intervals: string[],
 	guitarNotes: { [key: string]: GuitarNotes }
 ) => {
-	const guitarNotesTemp = deepCopy(guitarNotes);
-	// Convert a note to its equivalent with a different accidental (e.g., C## to D)
+	const guitarNotesTemp = { ...guitarNotes };
 
-	for (const stringNotes of Object.values(guitarNotesTemp)) {
-		// Clear previous relative notes and intervals
-		for (const note of Object.values(stringNotes)) {
-			delete note.relativeNote;
-			delete note.interval;
-		}
+	// Clear previous relative notes and intervals using the separate function
+	deleteRelativeNoteAndInterval(guitarNotesTemp);
 
-		notes.forEach((relNote, idx) => {
-			// Add relativeNote properties based on detected chord's notes
+	notes.forEach((relNote, idx) => {
+		for (const stringNotes of Object.values(guitarNotesTemp)) {
 			const interval = intervals[idx];
 
 			if (enharmonicMap[relNote]) {
@@ -80,8 +93,8 @@ export const extractRelativeNotes = (
 			} else {
 				stringNotes[relNote].interval = interval;
 			}
-		});
-	}
+		}
+	});
 
 	return guitarNotesTemp;
 };

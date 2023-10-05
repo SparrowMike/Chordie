@@ -82,7 +82,7 @@ export const updateChordsAndScales = atom(null, (get, set) => {
 			: getChordData(detectedChords[idx]);
 
 		if (chordInfo.empty) {
-			//! ------ getChordDataSymbol('madd9', 'F5', 'A#4') ------- some chords just won't work
+			//? ------ getChordDataSymbol('madd9', 'F5', 'A#4') ------- some chords just won't work
 			chordInfo = getChordDataSymbol(alias, root);
 		}
 
@@ -102,6 +102,8 @@ export const updateChordsAndScales = atom(null, (get, set) => {
 		if (checkChords(chordsObj, activeChord)) {
 			const { notes, intervals } = chordsObj[activeChord];
 			guitarNotes = extractRelativeNotes(notes, intervals, guitarNotes);
+		} else {
+			guitarNotes = deleteRelativeNoteAndInterval(guitarNotes);
 		}
 
 		set(updateScalesAtom, activeChord, chordsObj);
