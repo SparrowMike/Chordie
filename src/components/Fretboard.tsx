@@ -60,15 +60,15 @@ export const Fretboard = () => {
 								<div
 									className={`note relative z-30 flex cursor-pointer items-center justify-center text-black opacity-0 ${FRET_SIZE} ${
 										isMobile ? '' : 'hover:opacity-100'
-									} ${_v.active || _v.chordTone ? 'opacity-100' : ''}`}
+									} ${_v.active || _v.chordTone || _i === 0 ? 'opacity-100' : ''}`}
 									key={_i}
 									onClick={() => setChordie(string, note)}
 									data-note={chordNote}
 								>
 									<h4
 										className={`z-30 flex aspect-square items-center justify-center rounded-3xl border-[3px] border-neutral-800 font-medium text-neutral-900 shadow-sm shadow-neutral-500/60 ${
-											_i === 0 ? 'h-[90%] sm:h-[80%]' : 'h-full sm:h-[90%]'
-										} ${
+											!_v.active ? 'bg-transparent text-white backdrop-blur' : ''
+										} ${_i === 0 ? 'h-[90%] sm:h-[80%]' : 'h-full sm:h-[90%]'} ${
 											['1P', '8P'].some((el) => _v?.interval === el) && preferences.highlightRoot
 												? _v.active
 													? 'bg-orange-700'

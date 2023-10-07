@@ -42,7 +42,7 @@ export const Navigation = () => {
 			</div>
 			<div
 				className={`absolute z-50 w-full overflow-hidden rounded-b-lg bg-neutral-900  transition-[height] ${
-					activeOptions ? 'h-[15rem]' : 'h-0'
+					activeOptions ? 'h-[17rem]' : 'h-0'
 				}`}
 			>
 				<Preference />
