@@ -34,6 +34,9 @@ export interface ToggleOptionProps {
 	[key: string]: unknown; // This will allow other properties like 'disabled', 'id', etc.
 }
 
+export interface GuitarTunings {
+	[key: string]: { string: string; note: string; octave: number }[];
+}
 export interface Preferences {
 	[key: string]: boolean | number | string | null;
 	showMoreChordInfo: boolean;
@@ -44,6 +47,7 @@ export interface Preferences {
 	activeScale: number | null;
 	highlightRoot: boolean;
 	highlightPosition: boolean;
+	guitarTuning: string;
 }
 
 export type PreferencesAction =
@@ -51,4 +55,5 @@ export type PreferencesAction =
 	| { type: 'SET_ACTIVE_CHORD'; index: number }
 	| { type: 'SET_ACTIVE_SCALE'; index: number }
 	| { type: 'TOGGLE_PREFERENCE'; key: keyof Preferences }
-	| { type: 'SET_ACTIVE_CHORD_RESET'; chordsLength?: number };
+	| { type: 'SET_ACTIVE_CHORD_RESET'; chordsLength?: number }
+	| { type: 'SET_GUITAR_TUNING'; guitarTuning: string };

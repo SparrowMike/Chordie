@@ -2,6 +2,7 @@ import { useAtom } from 'jotai';
 import { preferencesAtom, updatePreferencesAtom, chordsAtom } from './../controller/atoms';
 import { PreferencesAction, ToggleOptionProps } from '../types/interfaces';
 import { checkChords } from '../utils/utils';
+import { guitarTunings } from '../utils/constants';
 
 const ToggleOption: React.FC<ToggleOptionProps> = ({
 	checked,
@@ -83,6 +84,24 @@ export const Preference = () => {
 				}
 				label='Highlight Position (experimental)'
 			/>
+
+			<label className='flex items-center gap-2 text-xl text-white'>
+				<select
+					value={preferences.guitarTuning}
+					onChange={(event) =>
+						handleSetPreferences({ type: 'SET_GUITAR_TUNING', guitarTuning: event.target.value })
+					}
+					className='h-8 rounded-md border border-gray-600 bg-gray-800'
+				>
+					{Object.keys(guitarTunings).map((val, idx) => {
+						return (
+							<option key={idx} value={val}>
+								{val}
+							</option>
+						);
+					})}
+				</select>
+			</label>
 		</div>
 	);
 };

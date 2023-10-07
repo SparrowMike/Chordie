@@ -1,24 +1,17 @@
 import { atom } from 'jotai';
 
-import {
-	initialChordie,
-	initialGuitarNotes,
-	initialPreferences,
-	initialGuitarFrets,
-} from '../utils/defaults';
+import { initialChordie, initialPreferences, initialGuitarFrets } from '../utils/defaults';
 
 import {
 	deepCopy,
 	extractRelativeNotes,
 	checkChords,
 	handleChordToneReset,
-	extractChordQuality,
 	updateChordTones,
 	deleteRelativeNoteAndInterval,
+	initializeGuitarFretboard,
+	extractChordInformation,
 } from '../utils/utils';
-
-import { get as getChordData, getChord as getChordDataSymbol } from '@tonaljs/chord'; //? ----- tbc { chordScales }
-import { detect as detectChord } from '@tonaljs/chord-detect';
 
 import { get as getScale } from '@tonaljs/scale'; // Or detect as detectScale
 import { chordScales } from '@tonaljs/chord';
@@ -38,7 +31,9 @@ import { chromaticSharp } from '../utils/constants';
 export const chordieAtom = atom<Chordie>(deepCopy(initialChordie));
 export const fretsAtom = atom(deepCopy(initialGuitarFrets));
 export const chordsAtom = atom<{ [key: string]: ChordInfo }>({});
-export const guitarNotesAtom = atom<{ [key: string]: GuitarNotes }>(deepCopy(initialGuitarNotes));
+export const guitarNotesAtom = atom<{ [key: string]: GuitarNotes }>(
+	initializeGuitarFretboard('Standard Tuning')
+);
 export const preferencesAtom = atom(initialPreferences);
 export const scalesAtom = atom<string[] | undefined>([]);
 
@@ -46,10 +41,12 @@ export const scalesAtom = atom<string[] | undefined>([]);
  * Atom that handles a full reset of various state atoms.
  * @type {() => void}
  */
-export const handleFullResetAtom = atom(null, (_, set) => {
+export const handleFullResetAtom = atom(null, (get, set) => {
+	const preference = get(preferencesAtom);
+
 	set(chordieAtom, deepCopy(initialChordie));
 	set(chordsAtom, {});
-	set(guitarNotesAtom, deepCopy(initialGuitarNotes));
+	set(guitarNotesAtom, initializeGuitarFretboard(preference.guitarTuning));
 	set(fretsAtom, deepCopy(initialGuitarFrets));
 	set(scalesAtom, []);
 });
@@ -98,7 +95,7 @@ export const updateFretsAtom = atom(null, (get, set) => {
  * @param {function} updateFunction - The function to update the `chords` and `guitarNotes` state.
  */
 export const updateChordsAndScales = atom(null, (get, set) => {
-	const chordie = get(chordieAtom);
+	const chordie = get({ ...chordieAtom });
 	const preferences = get(preferencesAtom);
 
 	let guitarNotes = get(guitarNotesAtom);
@@ -106,37 +103,8 @@ export const updateChordsAndScales = atom(null, (get, set) => {
 
 	if (activeChord && activeChord === null) return;
 
-	const nonNullStringChordie: string[] = Object.values(chordie).filter(
-		(v): v is string => v !== null
-	);
+	const chordsObj = extractChordInformation(chordie);
 
-	const toneJsDetectChord = detectChord(nonNullStringChordie);
-	const detectedChords = toneJsDetectChord.length
-		? toneJsDetectChord
-		: detectChord(nonNullStringChordie, { assumePerfectFifth: true });
-
-	// Initialize an object to store detected chord information
-	const chordsObj: { [key: string]: ChordInfo } = {};
-
-	// Iterate through detected chords and extract chord information
-	for (const idx in detectedChords) {
-		const [alias, root, bassNote] = extractChordQuality(detectedChords[idx]);
-
-		let chordInfo = detectedChords[idx].includes('/')
-			? getChordDataSymbol(alias, root, bassNote)
-			: getChordData(detectedChords[idx]);
-
-		if (chordInfo.empty) {
-			//? ------ getChordDataSymbol('madd9', 'F5', 'A#4') ------- some chords just won't work
-			chordInfo = getChordDataSymbol(alias, root);
-		}
-
-		// Store the extracted chord information in chordsObj
-		chordsObj[idx] = {
-			chord: detectedChords[idx],
-			...chordInfo,
-		};
-	}
 	const chordsLenght = Object.keys(chordsObj).length;
 	if (chordsLenght >= 1 || (activeChord ?? -1) >= chordsLenght) {
 		activeChord = 0;
@@ -176,7 +144,7 @@ export const updateChordsAndScales = atom(null, (get, set) => {
  */
 export const updateChordieAtom = atom(null, (get, set, string: string, target: string) => {
 	const guitarNotes = get(guitarNotesAtom);
-	const chordie = deepCopy(get(chordieAtom));
+	const chordie = get({ ...chordieAtom });
 
 	if (guitarNotes[string][target].chordTone) return;
 
@@ -276,6 +244,11 @@ export const updatePreferencesAtom = atom(null, (get, set, action: PreferencesAc
 	const updatedPreferences: Preferences = deepCopy(preferences);
 
 	switch (action.type) {
+		case 'SET_GUITAR_TUNING':
+			updatedPreferences.guitarTuning = action.guitarTuning;
+
+			set(guitarNotesAtom, initializeGuitarFretboard(action.guitarTuning, get(chordieAtom)));
+			break;
 		case 'TOGGLE_SHOW_MORE_CHORD_INFO':
 			updatedPreferences.showMoreChordInfo = !preferences.showMoreChordInfo;
 			break;

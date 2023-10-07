@@ -1,5 +1,7 @@
 import { ChordInfo, Chordie, GuitarNotes } from '../types/interfaces';
-import { enharmonicMap, chromaticSharp } from './constants';
+import { guitarTunings, enharmonicMap, chromaticSharp } from './constants';
+import { get as getChordData, getChord as getChordDataSymbol } from '@tonaljs/chord'; //? ----- tbc { chordScales }
+import { detect as detectChord } from '@tonaljs/chord-detect';
 
 /**
  * Creates a deep copy of an object or array using JSON serialization and parsing.
@@ -9,6 +11,93 @@ import { enharmonicMap, chromaticSharp } from './constants';
  * @returns {T} A new object or array that is a deep copy of the input.
  */
 export const deepCopy = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
+
+/**
+ * Retrieves available chords from a chord dictionary and extracts chord information.
+ *
+ * @param {Object} chordDictionary - A dictionary containing chord data with keys and values.
+ * @returns {Object} An object containing information about the detected chords.
+ */
+export const extractChordInformation = (chordie: { [key: string]: null | string }) => {
+	const nonNullStringChordie: string[] = Object.values(chordie).filter(
+		(v): v is string => v !== null
+	);
+
+	const toneJsDetectChord = detectChord(nonNullStringChordie);
+	const detectedChords = toneJsDetectChord.length
+		? toneJsDetectChord
+		: detectChord(nonNullStringChordie, { assumePerfectFifth: true });
+
+	// Initialize an object to store detected chord information
+	const chordsObj: { [key: string]: ChordInfo } = {};
+
+	// Iterate through detected chords and extract chord information
+	for (const idx in detectedChords) {
+		const [alias, root, bassNote] = extractChordQuality(detectedChords[idx]);
+
+		let chordInfo = detectedChords[idx].includes('/')
+			? getChordDataSymbol(alias, root, bassNote)
+			: getChordData(detectedChords[idx]);
+
+		if (chordInfo.empty) {
+			//? ------ getChordDataSymbol('madd9', 'F5', 'A#4') ------- some chords just won't work
+			chordInfo = getChordDataSymbol(alias, root);
+		}
+
+		chordsObj[idx] = {
+			chord: detectedChords[idx],
+			...chordInfo,
+		};
+	}
+
+	return chordsObj;
+};
+
+/**
+ * Initializes a guitar fretboard for a given tuning.
+ *
+ * @param {string} tuning - The name of the guitar tuning.
+ * @returns {Object} An object representing the initialized fretboard.
+ */
+export const initializeGuitarFretboard = (
+	tuning: string,
+	chordie?: { [key: string]: string | null }
+) => {
+	const fretboard: { [key: string]: GuitarNotes } = {};
+	const fretboardLength = 12; //? should probablt be a global var, similar approach alos used in freatbord component
+
+	const notes = chromaticSharp.concat(chromaticSharp);
+
+	guitarTunings[tuning].forEach((value) => {
+		const startingNote = notes.indexOf(value.note.toUpperCase());
+		const stringNotes = notes.slice(startingNote, startingNote + fretboardLength);
+		let octave = value.octave;
+		stringNotes.forEach((note, idx) => {
+			if (note.toUpperCase() === 'C' && idx >= 1) {
+				octave++;
+			}
+			fretboard[value.string] = {
+				...fretboard[value.string],
+				[note]: { active: false, octave: octave },
+			};
+		});
+	});
+
+	if (chordie) {
+		Object.entries(chordie).forEach(([key, val]) => {
+			if (val) {
+				console.log(key, val, fretboard[key]);
+				Object.entries(fretboard[key]).forEach(([_k, _v]) => {
+					if (_k === val) {
+						_v.active = true;
+					}
+				});
+			}
+		});
+	}
+
+	return fretboard;
+};
 
 /**
  * Resets the chordTone property for each note in the provided guitar notes object.
