@@ -75,12 +75,7 @@ export const Fretboard = () => {
 								>
 									<h4
 										className={`z-30 flex aspect-square items-center justify-center rounded-3xl border-[3px] border-neutral-800 font-medium text-neutral-900 shadow-sm shadow-neutral-500/60 
-										${
-											fretIdx === 0 && !_v.active && !_v.chordTone
-												? // ? 'bg-transparent !text-white !backdrop-blur'
-												  '!bg-transparent !text-white !backdrop-blur'
-												: ''
-										} 
+										${fretIdx === 0 && !_v.active && !_v.chordTone ? '!bg-transparent !text-white !backdrop-blur' : ''} 
 										${fretIdx === 0 ? 'h-[90%] sm:h-[80%]' : 'h-full sm:h-[90%]'} 
 										${highlightRoot}`}
 									>
