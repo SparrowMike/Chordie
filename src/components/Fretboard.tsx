@@ -49,34 +49,40 @@ export const Fretboard = () => {
 			<div className='strings'>
 				{Object.entries(guitarNotes).map(([string, v], i) => (
 					<div className='string relative flex h-10 sm:h-12' key={i} data-string={string}>
-						{Object.entries(v).map(([note, _v], _i) => {
+						{Object.entries(v).map(([note, _v], fretIdx) => {
 							const intervalsAvailable = !chords[preferences.activeChord ?? -1]?.intervals?.length;
 							const chordNote =
 								preferences.showNotes || intervalsAvailable || !Object.values(chords).length
 									? _v?.relativeNote || note
 									: _v?.interval;
+							const highlightRoot =
+								['1P', '8P'].some((el) => _v?.interval === el) && preferences.highlightRoot
+									? _v.active
+										? 'bg-orange-700'
+										: 'bg-orange-800'
+									: _v.active
+									? 'bg-yellow-500'
+									: 'bg-yellow-800';
 
 							return (
 								<div
 									className={`note relative z-30 flex cursor-pointer items-center justify-center text-black opacity-0 ${FRET_SIZE} ${
 										isMobile ? '' : 'hover:opacity-100'
-									} ${_v.active || _v.chordTone || _i === 0 ? 'opacity-100' : ''}`}
-									key={_i}
+									} ${_v.active || _v.chordTone || fretIdx === 0 ? 'opacity-100' : ''}`}
+									key={fretIdx}
 									onClick={() => setChordie(string, note)}
 									data-note={chordNote}
 								>
 									<h4
-										className={`z-30 flex aspect-square items-center justify-center rounded-3xl border-[3px] border-neutral-800 font-medium text-neutral-900 shadow-sm shadow-neutral-500/60 ${
-											!_v.active ? 'bg-transparent text-white backdrop-blur' : ''
-										} ${_i === 0 ? 'h-[90%] sm:h-[80%]' : 'h-full sm:h-[90%]'} ${
-											['1P', '8P'].some((el) => _v?.interval === el) && preferences.highlightRoot
-												? _v.active
-													? 'bg-orange-700'
-													: 'bg-orange-800'
-												: _v.active
-												? 'bg-yellow-500'
-												: 'bg-yellow-800'
-										}`}
+										className={`z-30 flex aspect-square items-center justify-center rounded-3xl border-[3px] border-neutral-800 font-medium text-neutral-900 shadow-sm shadow-neutral-500/60 
+										${
+											fretIdx === 0 && !_v.active && !_v.chordTone
+												? // ? 'bg-transparent !text-white !backdrop-blur'
+												  '!bg-transparent !text-white !backdrop-blur'
+												: ''
+										} 
+										${fretIdx === 0 ? 'h-[90%] sm:h-[80%]' : 'h-full sm:h-[90%]'} 
+										${highlightRoot}`}
 									>
 										{chordNote}
 									</h4>

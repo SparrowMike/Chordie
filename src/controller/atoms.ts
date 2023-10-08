@@ -70,7 +70,7 @@ export const updateFretsAtom = atom(null, (get, set) => {
 			if (_v.interval) {
 				if (['1P', '8P'].includes(_v.interval)) {
 					// console.log(_v.interval, _k, 'fret---', _i, 'string---', i, key);
-					frets[_i].data = key;
+					frets[_i].data = 'S' + key.split(' ')[0][0];
 				}
 			}
 		});
