@@ -35,35 +35,35 @@ $transparent-color-3: rgba(0, 0, 255, 0.3);
 $transparent-color-4: rgba(255, 165, 0, 0.3);
 $transparent-color-5: rgba(128, 0, 128, 0.3);
 
-.E {
+.S6 {
 	background: linear-gradient(90deg, $transparent-color-1 0%, $transparent-color-2);
 
 	&oga {
 		background: $transparent-color-2;
 	}
 }
-.D {
+.S4 {
 	background: linear-gradient(90deg, $transparent-color-2 0%, $transparent-color-3);
 
 	&oga {
 		background: $transparent-color-3;
 	}
 }
-.B {
+.S2 {
 	background: linear-gradient(90deg, $transparent-color-3 0%, $transparent-color-4);
 
 	&oga {
 		background: $transparent-color-4;
 	}
 }
-.A {
+.S5 {
 	background: linear-gradient(90deg, $transparent-color-4 0%, $transparent-color-5);
 
 	&oga {
 		background: $transparent-color-5;
 	}
 }
-.G {
+.S3 {
 	background: linear-gradient(90deg, $transparent-color-5 0%, $transparent-color-1);
 
 	&oga {

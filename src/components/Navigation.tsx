@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useAtom } from 'jotai';
 import { handleFullResetAtom, chordieAtom } from './../controller/atoms';
 import { Preference } from './Preference';
 
 export const Navigation = () => {
 	const [activeOptions, setActiveOptions] = useState(false);
-	const [blankFretboard, setBlankFretboard] = useState(true);
 	const [, handleFullReset] = useAtom(handleFullResetAtom);
 	const [chordie] = useAtom(chordieAtom);
 
@@ -14,21 +13,10 @@ export const Navigation = () => {
 		setActiveOptions(!activeOptions);
 	};
 
-	useEffect(() => {
-		for (const val of Object.values(chordie)) {
-			if (val !== null) {
-				setBlankFretboard(false);
-				break;
-			} else {
-				setBlankFretboard(true);
-			}
-		}
-	}, [chordie]);
-
 	return (
 		<div className='navigation fixed top-0 z-50 w-full bg-neutral-900'>
 			<div className='flex h-10 items-center justify-between px-4 py-2'>
-				{!blankFretboard && (
+				{Object.values(chordie).filter((el) => el).length > 0 && (
 					<button
 						className='rounded-2xl bg-neutral-500 px-2 shadow-sm shadow-neutral-200/60 active:translate-y-0.5 active:shadow-transparent'
 						onClick={handleFullReset}

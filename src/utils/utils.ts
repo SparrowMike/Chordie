@@ -64,7 +64,7 @@ export const initializeGuitarFretboard = (
 	chordie?: { [key: string]: string | null }
 ) => {
 	const fretboard: { [key: string]: GuitarNotes } = {};
-	const fretboardLength = 12; //? should probablt be a global var, similar approach alos used in freatbord component
+	const fretboardLength = 12; //? should probably be a global var, similar approach also used in freatbord component
 
 	const notes = chromaticSharp.concat(chromaticSharp);
 
