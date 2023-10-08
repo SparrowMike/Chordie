@@ -144,7 +144,7 @@ export const updateChordsAndScales = atom(null, (get, set) => {
  */
 export const updateChordieAtom = atom(null, (get, set, string: string, target: string) => {
 	const guitarNotes = get(guitarNotesAtom);
-	const chordie = get({ ...chordieAtom });
+	const chordie = deepCopy(get(chordieAtom));
 
 	if (guitarNotes[string][target].chordTone) return;
 
