@@ -246,8 +246,11 @@ export const updatePreferencesAtom = atom(null, (get, set, action: PreferencesAc
 	switch (action.type) {
 		case 'SET_GUITAR_TUNING':
 			updatedPreferences.guitarTuning = action.guitarTuning;
+			const chordie = get(chordieAtom);
+			const newGuitarNotes = initializeGuitarFretboard(action.guitarTuning, chordie);
 
-			set(guitarNotesAtom, initializeGuitarFretboard(action.guitarTuning, get(chordieAtom)));
+			set(guitarNotesAtom, newGuitarNotes);
+			set(updateChordsAndScales);
 			break;
 		case 'TOGGLE_SHOW_MORE_CHORD_INFO':
 			updatedPreferences.showMoreChordInfo = !preferences.showMoreChordInfo;
