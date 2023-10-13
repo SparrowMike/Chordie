@@ -91,7 +91,7 @@ export const Preference = () => {
 					onChange={(event) =>
 						handleSetPreferences({ type: 'SET_GUITAR_TUNING', guitarTuning: event.target.value })
 					}
-					className='h-8 rounded-md border border-gray-600 bg-gray-800'
+					className='h-8 w-full rounded-md border border-gray-600 bg-gray-800'
 				>
 					{Object.keys(guitarTunings).map((val, idx) => {
 						return (

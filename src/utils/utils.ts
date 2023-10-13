@@ -86,7 +86,6 @@ export const initializeGuitarFretboard = (
 	if (chordie) {
 		Object.entries(chordie).forEach(([key, val]) => {
 			if (val) {
-				console.log(key, val, fretboard[key]);
 				Object.entries(fretboard[key]).forEach(([_k, _v]) => {
 					if (_k === val) {
 						_v.active = true;

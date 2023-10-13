@@ -32,7 +32,7 @@ export const chordieAtom = atom<Chordie>(deepCopy(initialChordie));
 export const fretsAtom = atom(deepCopy(initialGuitarFrets));
 export const chordsAtom = atom<{ [key: string]: ChordInfo }>({});
 export const guitarNotesAtom = atom<{ [key: string]: GuitarNotes }>(
-	initializeGuitarFretboard('Standard Tuning')
+	initializeGuitarFretboard('Standard Tuning') //!-------------- consider converting guitar notes to array to make the fretboard go pass 12
 );
 export const preferencesAtom = atom(initialPreferences);
 export const scalesAtom = atom<string[] | undefined>([]);
@@ -108,7 +108,7 @@ export const updateChordsAndScales = atom(null, (get, set) => {
 	const chordsLenght = Object.keys(chordsObj).length;
 	if (chordsLenght >= 1 || (activeChord ?? -1) >= chordsLenght) {
 		activeChord = 0;
-		set(updatePreferencesAtom, { type: 'SET_ACTIVE_CHORD', index: 0 });
+		set(updatePreferencesAtom, { type: 'SET_ACTIVE_CHORD', chordIndex: 0 });
 	}
 
 	if (activeChord !== null) {
@@ -242,49 +242,61 @@ export const updateScalesAtom = atom(
 export const updatePreferencesAtom = atom(null, (get, set, action: PreferencesAction) => {
 	const preferences = get(preferencesAtom);
 	const updatedPreferences: Preferences = deepCopy(preferences);
+	const chords = get(chordsAtom);
+
+	let guitarNotes = get(guitarNotesAtom);
+
+	const updateGuitarNotes = (chord: ChordInfo) => {
+		if (chord) {
+			const { notes, intervals } = chord;
+			guitarNotes = extractRelativeNotes(notes, intervals, guitarNotes);
+		}
+	};
 
 	switch (action.type) {
 		case 'SET_GUITAR_TUNING':
 			updatedPreferences.guitarTuning = action.guitarTuning;
 			const chordie = get(chordieAtom);
-			const newGuitarNotes = initializeGuitarFretboard(action.guitarTuning, chordie);
+			const { activeChord } = preferences;
 
-			set(guitarNotesAtom, newGuitarNotes);
+			guitarNotes = initializeGuitarFretboard(action.guitarTuning, chordie);
+
+			if (activeChord !== null && checkChords(chords, activeChord)) {
+				updateGuitarNotes(chords[activeChord]);
+			}
+
+			set(guitarNotesAtom, guitarNotes);
 			set(updateChordsAndScales);
+
 			break;
 		case 'TOGGLE_SHOW_MORE_CHORD_INFO':
 			updatedPreferences.showMoreChordInfo = !preferences.showMoreChordInfo;
+
 			break;
 		case 'SET_ACTIVE_CHORD':
-			const guitarNotes = get(guitarNotesAtom);
-			const chords = get(chordsAtom);
+			set(updateScalesAtom, action.chordIndex);
+			updatedPreferences.activeChord = action.chordIndex;
 
-			set(updateScalesAtom, action.index);
-			updatedPreferences.activeChord = action.index;
+			updatedPreferences.activeScale = null;
 
-			updatedPreferences.activeScale = null; //? toggle on/off active scale
-
-			// if (Object.keys(chords).length && chords[action.index].empty) {
-			// 	updatedPreferences.showNotes = true; //!------- force change when no intervals?
-			// }
-
-			if (Object.keys(chords).length) {
-				const { notes, intervals } = chords[action.index];
-				set(guitarNotesAtom, extractRelativeNotes(notes, intervals, guitarNotes));
+			if (checkChords(chords, action.chordIndex)) {
+				updateGuitarNotes(chords[action.chordIndex]);
+				set(guitarNotesAtom, guitarNotes);
 
 				if (preferences.highlightPosition) {
 					set(updateFretsAtom);
 				}
 			}
+
 			break;
 		case 'SET_ACTIVE_SCALE':
-			if (action.index === preferences.activeScale) {
+			if (action.scaleIndex === preferences.activeScale) {
 				updatedPreferences.activeScale = null;
 				set(updateGuitarNotesWithScaleAtom);
 				break;
 			}
 
-			updatedPreferences.activeScale = action.index;
+			updatedPreferences.activeScale = action.scaleIndex;
 			break;
 		case 'TOGGLE_PREFERENCE':
 			const { key } = action;

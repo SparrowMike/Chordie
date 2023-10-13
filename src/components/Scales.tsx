@@ -14,7 +14,7 @@ export const Scales = () => {
 
 	const handleUpdateScale = (scale: string, index: number) => {
 		updateGuitarNotesWithScale(scale);
-		setPreferences({ type: 'SET_ACTIVE_SCALE', index: index });
+		setPreferences({ type: 'SET_ACTIVE_SCALE', scaleIndex: index });
 	};
 
 	return (

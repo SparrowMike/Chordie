@@ -27,12 +27,12 @@ export const initialPreferences: Preferences = {
  * A mapping of selected chord tones for each string.
  */
 export const initialChordie = {
-	'1st String': null,
-	'2nd String': null,
-	'3nd String': null,
-	'4th String': null,
-	'5th String': null,
 	'6th String': null,
+	'5th String': null,
+	'4th String': null,
+	'3nd String': null,
+	'2nd String': null,
+	'1st String': null,
 };
 
 export const initialGuitarFrets = [

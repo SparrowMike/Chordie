@@ -12,12 +12,12 @@ export const ChordsInfo = () => {
 				<>
 					<h2 className='text-2xl'>Detected chords:</h2>
 					<ul className='flex flex-wrap'>
-						{Object.values(chords).map((chord, index) => (
+						{Object.values(chords).map((chord, chordIndex) => (
 							<li
-								key={index}
-								onClick={() => setPreferences({ type: 'SET_ACTIVE_CHORD', index })}
+								key={chordIndex}
+								onClick={() => setPreferences({ type: 'SET_ACTIVE_CHORD', chordIndex })}
 								className={`w-full border-2 border-transparent p-2 text-xl sm:w-1/2 ${
-									preferences.activeChord === index ? 'rounded-lg border-yellow-600' : ''
+									preferences.activeChord === chordIndex ? 'rounded-lg border-yellow-600' : ''
 								}`}
 							>
 								<div className='chord'>{chord.chord || chord.name}</div>

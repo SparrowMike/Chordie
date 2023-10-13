@@ -52,8 +52,8 @@ export interface Preferences {
 
 export type PreferencesAction =
 	| { type: 'TOGGLE_SHOW_MORE_CHORD_INFO' }
-	| { type: 'SET_ACTIVE_CHORD'; index: number }
-	| { type: 'SET_ACTIVE_SCALE'; index: number }
+	| { type: 'SET_ACTIVE_CHORD'; chordIndex: number }
+	| { type: 'SET_ACTIVE_SCALE'; scaleIndex: number }
 	| { type: 'TOGGLE_PREFERENCE'; key: keyof Preferences }
 	| { type: 'SET_ACTIVE_CHORD_RESET'; chordsLength?: number }
 	| { type: 'SET_GUITAR_TUNING'; guitarTuning: string };
