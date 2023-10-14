@@ -194,7 +194,7 @@ export const extractRelativeNotes = (
  * @param {number} activeChord - The index of the active chord to check.
  * @returns {boolean} `true` if the activeChord exists in the chords object; otherwise, `false`.
  */
-export const checkChords = (chords: { [key: string]: ChordInfo }, activeChord: number) => {
+export const checkChordsExists = (chords: { [key: string]: ChordInfo }, activeChord: number) => {
 	if (!Object.keys(chords).length) return false;
 	if (!chords[activeChord]) return false;
 	return true;

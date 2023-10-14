@@ -5,7 +5,7 @@ import { initialChordie, initialPreferences, initialGuitarFrets } from '../utils
 import {
 	deepCopy,
 	extractRelativeNotes,
-	checkChords,
+	checkChordsExists,
 	handleChordToneReset,
 	updateChordTones,
 	deleteRelativeNoteAndInterval,
@@ -53,8 +53,9 @@ export const handleFullResetAtom = atom(null, (get, set) => {
 
 /**
  * Atom that deals with highlighting positions on the fretboard.
+ *!----------------------------- experimental construction site
  */
-export const updateFretsAtom = atom(null, (get, set) => {
+export const updateFretsHighlighAtom = atom(null, (get, set) => {
 	const chords = get(chordsAtom);
 	const frets = get(fretsAtom);
 	const guitarNotes = get(guitarNotesAtom);
@@ -112,7 +113,7 @@ export const updateChordsAndScales = atom(null, (get, set) => {
 	}
 
 	if (activeChord !== null) {
-		if (checkChords(chordsObj, activeChord)) {
+		if (checkChordsExists(chordsObj, activeChord)) {
 			const { notes, intervals } = chordsObj[activeChord];
 			guitarNotes = extractRelativeNotes(notes, intervals, guitarNotes);
 		} else {
@@ -130,7 +131,7 @@ export const updateChordsAndScales = atom(null, (get, set) => {
 	set(chordsAtom, chordsObj);
 
 	if (preferences.highlightPosition) {
-		set(updateFretsAtom);
+		set(updateFretsHighlighAtom);
 	}
 });
 
@@ -145,8 +146,6 @@ export const updateChordsAndScales = atom(null, (get, set) => {
 export const updateChordieAtom = atom(null, (get, set, string: string, target: string) => {
 	const guitarNotes = get(guitarNotesAtom);
 	const chordie = deepCopy(get(chordieAtom));
-
-	if (guitarNotes[string][target].chordTone) return;
 
 	const currentTargetActiveState = guitarNotes[string][target].active;
 
@@ -224,7 +223,7 @@ export const updateScalesAtom = atom(
 	(get, set, activeChordIndex: number, chords?: { [key: string]: ChordInfo }) => {
 		if (!chords) chords = get(chordsAtom);
 
-		if (checkChords(chords, activeChordIndex)) {
+		if (checkChordsExists(chords, activeChordIndex)) {
 			const scales = chordScales(chords[activeChordIndex].chord.split('/')[0]);
 			set(scalesAtom, scales);
 		} else {
@@ -261,7 +260,7 @@ export const updatePreferencesAtom = atom(null, (get, set, action: PreferencesAc
 
 			guitarNotes = initializeGuitarFretboard(action.guitarTuning, chordie);
 
-			if (activeChord !== null && checkChords(chords, activeChord)) {
+			if (activeChord !== null && checkChordsExists(chords, activeChord)) {
 				updateGuitarNotes(chords[activeChord]);
 			}
 
@@ -279,13 +278,13 @@ export const updatePreferencesAtom = atom(null, (get, set, action: PreferencesAc
 
 			updatedPreferences.activeScale = null;
 
-			if (checkChords(chords, action.chordIndex)) {
+			if (checkChordsExists(chords, action.chordIndex)) {
+				if (preferences.highlightPosition) {
+					set(updateFretsHighlighAtom);
+				}
+
 				updateGuitarNotes(chords[action.chordIndex]);
 				set(guitarNotesAtom, guitarNotes);
-
-				if (preferences.highlightPosition) {
-					set(updateFretsAtom);
-				}
 			}
 
 			break;
@@ -293,6 +292,11 @@ export const updatePreferencesAtom = atom(null, (get, set, action: PreferencesAc
 			if (action.scaleIndex === preferences.activeScale) {
 				updatedPreferences.activeScale = null;
 				set(updateGuitarNotesWithScaleAtom);
+
+				if (preferences.showChordTones) {
+					set(guitarNotesAtom, updateChordTones(get(chordieAtom), guitarNotes));
+				}
+
 				break;
 			}
 
@@ -306,13 +310,13 @@ export const updatePreferencesAtom = atom(null, (get, set, action: PreferencesAc
 				case 'showChordTones':
 					if (updatedPreferences[key]) {
 						updatedPreferences.activeScale = null;
-						set(guitarNotesAtom, updateChordTones(get(chordieAtom), get(guitarNotesAtom)));
+						set(guitarNotesAtom, updateChordTones(get(chordieAtom), guitarNotes));
 					} else {
-						set(guitarNotesAtom, handleChordToneReset(get(guitarNotesAtom)));
+						set(guitarNotesAtom, handleChordToneReset(guitarNotes));
 					}
 					break;
 				case 'highlightPosition':
-					set(updateFretsAtom);
+					set(updateFretsHighlighAtom);
 					break;
 			}
 

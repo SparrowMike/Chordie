@@ -1,7 +1,7 @@
 import { useAtom } from 'jotai';
 import { preferencesAtom, updatePreferencesAtom, chordsAtom } from './../controller/atoms';
 import { PreferencesAction, ToggleOptionProps } from '../types/interfaces';
-import { checkChords } from '../utils/utils';
+import { checkChordsExists } from '../utils/utils';
 import { guitarTunings } from '../utils/constants';
 
 const ToggleOption: React.FC<ToggleOptionProps> = ({
@@ -43,7 +43,7 @@ export const Preference = () => {
 			/>
 			<ToggleOption
 				disabled={
-					!checkChords(chords, preferences.activeChord ?? -1) ||
+					!checkChordsExists(chords, preferences.activeChord ?? -1) ||
 					chords[preferences.activeChord ?? -1]?.empty ||
 					false
 				}
