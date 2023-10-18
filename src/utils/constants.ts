@@ -92,3 +92,18 @@ export const guitarTunings: GuitarTunings = {
 		{ string: '6th String', note: 'E', octave: 2 },
 	],
 };
+
+export const musicalColorsClasses: { [key: string]: string } = {
+	C: `bg-C/[.9]`,
+	'C#': `bg-C#/[.9]`,
+	D: `bg-D/[.9]`,
+	'D#': `bg-D#/[.9]`,
+	E: `bg-E/[.9]`,
+	F: `bg-F/[.9]`,
+	'F#': `bg-F#/[.9]`,
+	G: `bg-G/[.9]`,
+	'G#': `bg-G#/[.9]`,
+	A: `bg-A/[.9]`,
+	'A#': `bg-A#/[.9]`,
+	B: `bg-B/[.9]`,
+};

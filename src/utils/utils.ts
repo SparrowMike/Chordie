@@ -172,15 +172,14 @@ export const extractRelativeNotes = (
 
 	notes.forEach((relNote, idx) => {
 		for (const stringNotes of Object.values(guitarNotesTemp)) {
+			const targetNote = enharmonicMap[relNote] || relNote;
 			const interval = intervals[idx];
 
-			if (enharmonicMap[relNote]) {
-				const convertedNote = enharmonicMap[relNote];
-				stringNotes[convertedNote].relativeNote = relNote;
-				stringNotes[convertedNote].interval = interval;
-			} else {
-				stringNotes[relNote].interval = interval;
-			}
+			stringNotes[targetNote] = {
+				...stringNotes[targetNote],
+				relativeNote: relNote,
+				interval: interval,
+			};
 		}
 	});
 

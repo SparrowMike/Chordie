@@ -7,6 +7,7 @@ import {
 	preferencesAtom,
 	updateChordieAtom,
 } from './../controller/atoms';
+import { musicalColorsClasses } from '../utils/constants';
 
 // import { majorKey, minorKey } from '@tonaljs/key';
 
@@ -55,14 +56,21 @@ export const Fretboard = () => {
 								preferences.showNotes || intervalsAvailable || !Object.values(chords).length
 									? _v?.relativeNote || note
 									: _v?.interval;
-							const highlightRoot =
-								['1P', '8P'].some((el) => _v?.interval === el) && preferences.highlightRoot
-									? _v.active
-										? 'bg-orange-700'
-										: 'bg-orange-800'
-									: _v.active
-									? 'bg-yellow-500'
-									: 'bg-yellow-800';
+							const noteBackground = preferences.highlightNotes
+								? `${musicalColorsClasses[note]}`
+								: _v.active
+								? 'bg-orange-500/90'
+								: 'bg-orange-800/90';
+
+							// ['1P', '8P'].some((el) => _v?.interval === el) && preferences.highlightNotes
+							// 	? _v.active
+							// 		? 'bg-orange-700'
+							// 		: 'bg-orange-800'
+							// 	: _v.active
+							// 	? 'bg-yellow-500'
+							// 	: 'bg-yellow-800';
+
+							console.log(note, _v.relativeNote);
 
 							return (
 								<div
@@ -76,8 +84,7 @@ export const Fretboard = () => {
 									<h4
 										className={`z-30 flex aspect-square items-center justify-center rounded-3xl border-[3px] border-neutral-800 font-medium text-neutral-900 shadow-sm shadow-neutral-500/60 
 										${fretIdx === 0 && !_v.active && !_v.chordTone ? '!bg-transparent !text-white !backdrop-blur' : ''} 
-										${fretIdx === 0 ? 'h-[90%] sm:h-[80%]' : 'h-full sm:h-[90%]'} 
-										${highlightRoot}`}
+										${fretIdx === 0 ? 'h-[90%] sm:h-[80%]' : 'h-full sm:h-[90%]'} ${noteBackground}`}
 									>
 										{chordNote}
 									</h4>

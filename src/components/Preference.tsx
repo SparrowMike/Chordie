@@ -71,10 +71,10 @@ export const Preference = () => {
 				label='Show Scales'
 			/>
 			<ToggleOption
-				id='show-scales'
-				checked={preferences.highlightRoot}
-				onChange={() => handleSetPreferences({ type: 'TOGGLE_PREFERENCE', key: 'highlightRoot' })}
-				label='Highlight Root'
+				id='highlight-notes'
+				checked={preferences.highlightNotes}
+				onChange={() => handleSetPreferences({ type: 'TOGGLE_PREFERENCE', key: 'highlightNotes' })}
+				label='Highlight Notes'
 			/>
 			<ToggleOption
 				id='highlightPosition'

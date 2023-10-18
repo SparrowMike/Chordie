@@ -18,7 +18,7 @@ export const initialPreferences: Preferences = {
 	showScales: true,
 	activeChord: null,
 	activeScale: null,
-	highlightRoot: true,
+	highlightNotes: true,
 	highlightPosition: false,
 	guitarTuning: 'Standard Tuning',
 };

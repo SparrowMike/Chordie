@@ -45,7 +45,7 @@ export interface Preferences {
 	showScales: boolean;
 	activeChord: number | null;
 	activeScale: number | null;
-	highlightRoot: boolean;
+	highlightNotes: boolean;
 	highlightPosition: boolean;
 	guitarTuning: string;
 }
