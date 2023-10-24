@@ -91,6 +91,14 @@ export const guitarTunings: GuitarTunings = {
 		{ string: '5th String', note: 'B', octave: 2 },
 		{ string: '6th String', note: 'E', octave: 2 },
 	],
+	// 'Custom Tuning': [
+	// 	{ string: '1st String', note: '', octave: 4 },
+	// 	{ string: '2nd String', note: '', octave: 3 },
+	// 	{ string: '3rd String', note: '', octave: 3 },
+	// 	{ string: '4th String', note: '', octave: 3 },
+	// 	{ string: '5th String', note: '', octave: 2 },
+	// 	{ string: '6th String', note: '', octave: 2 },
+	// ],
 };
 
 export const musicalColorsClasses: { [key: string]: string } = {

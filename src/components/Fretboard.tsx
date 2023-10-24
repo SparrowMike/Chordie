@@ -61,17 +61,6 @@ export const Fretboard = () => {
 								: _v.active
 								? 'bg-orange-500/90'
 								: 'bg-orange-800/90';
-
-							// ['1P', '8P'].some((el) => _v?.interval === el) && preferences.highlightNotes
-							// 	? _v.active
-							// 		? 'bg-orange-700'
-							// 		: 'bg-orange-800'
-							// 	: _v.active
-							// 	? 'bg-yellow-500'
-							// 	: 'bg-yellow-800';
-
-							console.log(note, _v.relativeNote);
-
 							return (
 								<div
 									className={`note relative z-30 flex cursor-pointer items-center justify-center text-black opacity-0 ${FRET_SIZE} ${

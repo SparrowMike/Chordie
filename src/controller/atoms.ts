@@ -25,8 +25,9 @@ import {
 } from '../types/interfaces';
 
 import { enharmonicMap } from '../utils/constants';
-
 import { chromaticSharp } from '../utils/constants';
+
+const localStoragePreference = localStorage.getItem('chordiePreferences');
 
 export const chordieAtom = atom<Chordie>(deepCopy(initialChordie));
 export const fretsAtom = atom(deepCopy(initialGuitarFrets));
@@ -34,8 +35,30 @@ export const chordsAtom = atom<{ [key: string]: ChordInfo }>({});
 export const guitarNotesAtom = atom<{ [key: string]: GuitarNotes }>(
 	initializeGuitarFretboard('Standard Tuning') //!-------------- consider converting guitar notes to array to make the fretboard go pass 12
 );
-export const preferencesAtom = atom(initialPreferences);
+export const preferencesAtom = atom(
+	localStoragePreference ? JSON.parse(localStoragePreference) : initialPreferences
+);
 export const scalesAtom = atom<string[] | undefined>([]);
+
+/**
+ * Atom that initializes the state with an initial Chordie object.
+ *
+ * This atom sets the initial state of the Chordie object, which represents the active notes on a guitar fretboard.
+ * It sets the active notes on the guitar fretboard based on the provided Chordie object.
+ *
+ * @param {Chordie} chordie - The Chordie object representing active notes on the guitar fretboard.
+ */
+export const initialChordieAtom = atom(null, (get, set, chordie: Chordie) => {
+	const guitarNotes = get(guitarNotesAtom);
+
+	Object.entries(chordie).forEach(([key, val]) => {
+		if (val) guitarNotes[key][val].active = true;
+	});
+
+	set(chordieAtom, chordie);
+	set(guitarNotesAtom, guitarNotes);
+	set(updateChordsAndScales);
+});
 
 /**
  * Atom that handles a full reset of various state atoms.
@@ -49,6 +72,7 @@ export const handleFullResetAtom = atom(null, (get, set) => {
 	set(guitarNotesAtom, initializeGuitarFretboard(preference.guitarTuning));
 	set(fretsAtom, deepCopy(initialGuitarFrets));
 	set(scalesAtom, []);
+	localStorage.setItem('chordie', JSON.stringify(deepCopy(initialChordie)));
 });
 
 /**
@@ -161,6 +185,7 @@ export const updateChordieAtom = atom(null, (get, set, string: string, target: s
 	set(guitarNotesAtom, guitarNotes);
 
 	set(updateChordsAndScales);
+	localStorage.setItem('chordie', JSON.stringify(chordie));
 });
 
 /**
@@ -325,5 +350,6 @@ export const updatePreferencesAtom = atom(null, (get, set, action: PreferencesAc
 			console.error('updatePreferenceAtom missing action.type');
 	}
 
+	localStorage.setItem('chordiePreferences', JSON.stringify(updatedPreferences));
 	set(preferencesAtom, updatedPreferences);
 });
