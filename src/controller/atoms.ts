@@ -24,7 +24,7 @@ import {
 	PreferencesAction,
 } from '../types/interfaces';
 
-import { enharmonicMap } from '../utils/constants';
+import { enharmonicMap, guitarTunings } from '../utils/constants';
 import { chromaticSharp } from '../utils/constants';
 
 const localStoragePreference = localStorage.getItem('chordiePreferences');
@@ -32,8 +32,12 @@ const localStoragePreference = localStorage.getItem('chordiePreferences');
 export const chordieAtom = atom<Chordie>(deepCopy(initialChordie));
 export const fretsAtom = atom(deepCopy(initialGuitarFrets));
 export const chordsAtom = atom<{ [key: string]: ChordInfo }>({});
+
+//!-------------- consider converting guitar notes to array to make the fretboard go pass 12
 export const guitarNotesAtom = atom<{ [key: string]: GuitarNotes }>(
-	initializeGuitarFretboard('Standard Tuning') //!-------------- consider converting guitar notes to array to make the fretboard go pass 12
+	initializeGuitarFretboard(
+		localStoragePreference ? JSON.parse(localStoragePreference).guitarTuning : 'Standard Tuning'
+	)
 );
 export const preferencesAtom = atom(
 	localStoragePreference ? JSON.parse(localStoragePreference) : initialPreferences
@@ -278,12 +282,28 @@ export const updatePreferencesAtom = atom(null, (get, set, action: PreferencesAc
 	};
 
 	switch (action.type) {
+		// case 'SET_CUSTOM_GUITAR_TUNING':
+
+		// 	console.log('update ', action.values)
+
+		// 	set(guitarNotesAtom, guitarNotes);
+		// 	set(updateChordsAndScales);
+
+		// 	break;
 		case 'SET_GUITAR_TUNING':
-			updatedPreferences.guitarTuning = action.guitarTuning;
+			if (typeof action.guitarTuning !== 'string') {
+				updatedPreferences.guitarTuning = 'Custom Tuning';
+				guitarTunings['Custom Tuning'][Number(action.guitarTuning.string.slice(0, 1)) - 1].note =
+					action.guitarTuning.note;
+				localStorage.setItem('chordieCustomTuning', JSON.stringify(guitarTunings['Custom Tuning']));
+			} else {
+				updatedPreferences.guitarTuning = action.guitarTuning;
+			}
+
 			const chordie = get(chordieAtom);
 			const { activeChord } = preferences;
 
-			guitarNotes = initializeGuitarFretboard(action.guitarTuning, chordie);
+			guitarNotes = initializeGuitarFretboard(updatedPreferences.guitarTuning, chordie);
 
 			if (activeChord !== null && checkChordsExists(chords, activeChord)) {
 				updateGuitarNotes(chords[activeChord]);

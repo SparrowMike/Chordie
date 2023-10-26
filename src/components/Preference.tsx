@@ -2,7 +2,7 @@ import { useAtom } from 'jotai';
 import { preferencesAtom, updatePreferencesAtom, chordsAtom } from './../controller/atoms';
 import { PreferencesAction, ToggleOptionProps } from '../types/interfaces';
 import { checkChordsExists } from '../utils/utils';
-import { guitarTunings } from '../utils/constants';
+import { chromaticSharp, guitarTunings } from '../utils/constants';
 
 const ToggleOption: React.FC<ToggleOptionProps> = ({
 	checked,
@@ -24,6 +24,60 @@ export const Preference = () => {
 
 	const handleSetPreferences = <T extends PreferencesAction>(pref: T) => {
 		setPreferences(pref);
+	};
+
+	const GuitarTuning = () => {
+		return (
+			<label className='flex items-center gap-2 text-xl text-white'>
+				<select
+					value={preferences.guitarTuning}
+					onChange={(event) =>
+						handleSetPreferences({ type: 'SET_GUITAR_TUNING', guitarTuning: event.target.value })
+					}
+					className='h-8 w-full rounded-md border border-gray-600 bg-gray-800'
+				>
+					{Object.keys(guitarTunings).map((val, idx) => {
+						return (
+							<option key={idx} value={val}>
+								{val}
+							</option>
+						);
+					})}
+				</select>
+			</label>
+		);
+	};
+
+	const CustomTuning = () => {
+		const notes = chromaticSharp;
+		return (
+			<div className='my-2 flex justify-between'>
+				{guitarTunings['Custom Tuning'].map((el, idx) => {
+					return (
+						<label className='flex items-center gap-2 text-xl text-white' key={idx}>
+							<select
+								value={el.note}
+								onChange={(event) =>
+									handleSetPreferences({
+										type: 'SET_GUITAR_TUNING',
+										guitarTuning: { string: el.string, note: event.target.value },
+									})
+								}
+								className='h-8 w-12 rounded-md border border-gray-600 bg-gray-800'
+							>
+								{notes.map((val, idx) => {
+									return (
+										<option key={idx} value={val}>
+											{val}
+										</option>
+									);
+								})}
+							</select>
+						</label>
+					);
+				})}
+			</div>
+		);
 	};
 
 	return (
@@ -84,24 +138,8 @@ export const Preference = () => {
 				}
 				label='Highlight Position (experimental)'
 			/>
-
-			<label className='flex items-center gap-2 text-xl text-white'>
-				<select
-					value={preferences.guitarTuning}
-					onChange={(event) =>
-						handleSetPreferences({ type: 'SET_GUITAR_TUNING', guitarTuning: event.target.value })
-					}
-					className='h-8 w-full rounded-md border border-gray-600 bg-gray-800'
-				>
-					{Object.keys(guitarTunings).map((val, idx) => {
-						return (
-							<option key={idx} value={val}>
-								{val}
-							</option>
-						);
-					})}
-				</select>
-			</label>
+			<GuitarTuning />
+			{preferences.guitarTuning.includes('Custom') && <CustomTuning />}
 		</div>
 	);
 };
