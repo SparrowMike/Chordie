@@ -282,20 +282,17 @@ export const updatePreferencesAtom = atom(null, (get, set, action: PreferencesAc
 	};
 
 	switch (action.type) {
-		// case 'SET_CUSTOM_GUITAR_TUNING':
-
-		// 	console.log('update ', action.values)
-
-		// 	set(guitarNotesAtom, guitarNotes);
-		// 	set(updateChordsAndScales);
-
-		// 	break;
 		case 'SET_GUITAR_TUNING':
 			if (typeof action.guitarTuning !== 'string') {
+				//? exception for custom tuning
+				const stringIndex = Number(action.guitarTuning.string.slice(0, 1)) - 1;
 				updatedPreferences.guitarTuning = 'Custom Tuning';
-				guitarTunings['Custom Tuning'][Number(action.guitarTuning.string.slice(0, 1)) - 1].note =
-					action.guitarTuning.note;
+				const customTuning = guitarTunings['Custom Tuning'][stringIndex];
+				customTuning.note = action.guitarTuning.note;
+				customTuning.octave = action.guitarTuning.octave;
 				localStorage.setItem('chordieCustomTuning', JSON.stringify(guitarTunings['Custom Tuning']));
+
+				// console.table(guitarTunings['Custom Tuning'])
 			} else {
 				updatedPreferences.guitarTuning = action.guitarTuning;
 			}

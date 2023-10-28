@@ -50,20 +50,25 @@ export const Preference = () => {
 
 	const CustomTuning = () => {
 		const notes = chromaticSharp;
+		//! ----------- octave needs a solution
 		return (
-			<div className='my-2 flex justify-between'>
+			<div className='my-1 flex justify-between'>
 				{guitarTunings['Custom Tuning'].map((el, idx) => {
 					return (
-						<label className='flex items-center gap-2 text-xl text-white' key={idx}>
+						<label className='flex items-center text-xl text-white' key={idx}>
 							<select
 								value={el.note}
 								onChange={(event) =>
 									handleSetPreferences({
 										type: 'SET_GUITAR_TUNING',
-										guitarTuning: { string: el.string, note: event.target.value },
+										guitarTuning: {
+											string: el.string,
+											note: event.target.value,
+											octave: el.octave,
+										},
 									})
 								}
-								className='h-8 w-12 rounded-md border border-gray-600 bg-gray-800'
+								className='h-8 w-14 rounded-md border border-gray-600 bg-gray-800'
 							>
 								{notes.map((val, idx) => {
 									return (
@@ -81,7 +86,7 @@ export const Preference = () => {
 	};
 
 	return (
-		<div className='options flex flex-col p-4 pt-0'>
+		<div className='options m-auto flex flex-col p-4 pt-0'>
 			<h2 className='text-2xl'>Chord Options</h2>
 
 			<ToggleOption

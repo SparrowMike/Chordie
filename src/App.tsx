@@ -21,9 +21,9 @@ function App() {
 	}, []);
 
 	return (
-		<div className='App relative overflow-y-scroll text-white'>
+		<div className='App scroll relative overflow-y-auto text-white'>
 			<Navigation />
-			<div className='max-w-4xl space-y-2 px-2 pb-5 pt-12 sm:px-5 sm:pt-14'>
+			<div className='m-auto max-w-4xl space-y-2 px-2 pb-5 pt-12 sm:px-5 sm:pt-14'>
 				<Fretboard />
 				<ChordsInfo />
 				{preferences.showScales && <Scales />}

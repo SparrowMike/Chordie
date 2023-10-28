@@ -16,7 +16,7 @@ export const Navigation = () => {
 
 	return (
 		<div className='navigation fixed top-0 z-50 w-full bg-neutral-900'>
-			<div className='flex h-10 items-center justify-between px-4 py-2'>
+			<div className='m-auto flex h-10 max-w-4xl items-center justify-between px-4 py-2'>
 				{Object.values(chordie).filter((el) => el).length > 0 && (
 					<button
 						className='rounded-2xl bg-neutral-500 px-2 shadow-sm shadow-neutral-200/60 active:translate-y-0.5 active:shadow-transparent'
@@ -30,7 +30,7 @@ export const Navigation = () => {
 				</button>
 			</div>
 			<div
-				className={`absolute z-50 w-full overflow-hidden rounded-b-lg bg-neutral-900  transition-[height] ${
+				className={`absolute left-2/4 z-50 w-full max-w-4xl -translate-x-2/4 overflow-hidden rounded-b-lg bg-neutral-900 transition-[height]  ${
 					activeOptions
 						? preferences.guitarTuning.includes('Custom')
 							? 'h-[19rem]'

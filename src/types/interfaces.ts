@@ -56,4 +56,7 @@ export type PreferencesAction =
 	| { type: 'SET_ACTIVE_SCALE'; scaleIndex: number }
 	| { type: 'TOGGLE_PREFERENCE'; key: keyof Preferences }
 	| { type: 'SET_ACTIVE_CHORD_RESET'; chordsLength?: number }
-	| { type: 'SET_GUITAR_TUNING'; guitarTuning: string | { string: string; note: string } };
+	| {
+			type: 'SET_GUITAR_TUNING';
+			guitarTuning: string | { string: string; note: string; octave: number };
+	  };
