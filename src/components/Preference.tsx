@@ -72,7 +72,7 @@ export const Preference = () => {
 				{Object.entries(dropDown).map(([string, value], idx) => {
 					return (
 						<label className='text-xl text-white' key={idx}>
-							{string.split(' ')[0]}
+							{/* {string.split(' ')[0]}	 */}
 							<select
 								value={guitarTunings['Custom Tuning'][idx].note}
 								onChange={(event) => {
@@ -88,7 +88,7 @@ export const Preference = () => {
 										},
 									});
 								}}
-								className='mx-2 h-8 w-14 rounded-md border border-gray-600 bg-gray-800'
+								className='h-8 w-14 rounded-md border border-gray-600 bg-gray-800'
 							>
 								{Object.values(value).map((val, idx) => {
 									return (
