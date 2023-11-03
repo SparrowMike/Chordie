@@ -17,7 +17,7 @@ function App() {
 	useEffect(() => {
 		ReactGA.initialize('G-T8JLT44E6N');
 
-		if (localStorageChordie) trigger(JSON.parse(localStorageChordie));
+		if (localStorageChordie) trigger(JSON.parse(localStorageChordie)); //! --- will cause double log on boot
 	}, []);
 
 	return (

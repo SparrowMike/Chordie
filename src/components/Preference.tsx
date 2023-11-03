@@ -49,31 +49,51 @@ export const Preference = () => {
 	};
 
 	const CustomTuning = () => {
-		const notes = chromaticSharp;
-		//! ----------- octave needs a solution
+		const notes = Array.from({ length: 3 }, () => [...chromaticSharp]).flat();
+		const semiToneOffSet = 4;
+
+		const dropDown: { [key: string]: { note: string; octave: number }[] } = {};
+
+		guitarTunings['Standard Tuning'].forEach((el) => {
+			const noteIdx = notes.indexOf(el.note.toUpperCase());
+
+			dropDown[el.string] = [];
+
+			let octave = el.octave;
+			for (let i = 0; i <= 9; i++) {
+				const note = notes[noteIdx + chromaticSharp.length - semiToneOffSet + i];
+				if (i !== 0 && note === 'C') octave++;
+				dropDown[el.string].push({ note: note, octave: octave });
+			}
+		});
+
 		return (
 			<div className='my-1 flex justify-between'>
-				{guitarTunings['Custom Tuning'].map((el, idx) => {
+				{Object.entries(dropDown).map(([string, value], idx) => {
 					return (
-						<label className='flex items-center text-xl text-white' key={idx}>
+						<label className='text-xl text-white' key={idx}>
+							{string.split(' ')[0]}
 							<select
-								value={el.note}
-								onChange={(event) =>
+								value={guitarTunings['Custom Tuning'][idx].note}
+								onChange={(event) => {
+									const octaveAttribute =
+										event.target.selectedOptions[0].getAttribute('data-octave');
+
 									handleSetPreferences({
 										type: 'SET_GUITAR_TUNING',
 										guitarTuning: {
-											string: el.string,
+											string: string,
 											note: event.target.value,
-											octave: el.octave,
+											octave: Number(octaveAttribute),
 										},
-									})
-								}
-								className='h-8 w-14 rounded-md border border-gray-600 bg-gray-800'
+									});
+								}}
+								className='mx-2 h-8 w-14 rounded-md border border-gray-600 bg-gray-800'
 							>
-								{notes.map((val, idx) => {
+								{Object.values(value).map((val, idx) => {
 									return (
-										<option key={idx} value={val}>
-											{val}
+										<option key={idx} value={val.note} data-octave={val.octave}>
+											{val.note}
 										</option>
 									);
 								})}
