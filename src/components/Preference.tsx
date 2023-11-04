@@ -138,6 +138,12 @@ export const Preference = () => {
 				label='Show chord tones'
 			/>
 			<ToggleOption
+				id='zoom-fretboard'
+				checked={preferences.fretboardZoom}
+				onChange={() => handleSetPreferences({ type: 'TOGGLE_PREFERENCE', key: 'fretboardZoom' })}
+				label='Zoom In fretboard'
+			/>
+			<ToggleOption
 				id='chord-information'
 				checked={preferences.showMoreChordInfo}
 				onChange={() => handleSetPreferences({ type: 'TOGGLE_SHOW_MORE_CHORD_INFO' })}

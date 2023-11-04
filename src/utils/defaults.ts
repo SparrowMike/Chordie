@@ -20,6 +20,7 @@ export const initialPreferences: Preferences = {
 	activeScale: null,
 	highlightNotes: true,
 	highlightPosition: false,
+	fretboardZoom: true,
 	guitarTuning: 'Standard Tuning',
 };
 

@@ -18,8 +18,9 @@ export const Fretboard = () => {
 	const [preferences] = useAtom(preferencesAtom);
 	const [, setChordie] = useAtom(updateChordieAtom);
 
-	const FRET_SIZE =
-		'relative flex w-[3.25rem] first:w-[2.5rem] sm:w-[4.55rem] sm:first:w-[3.25rem]';
+	const FRET_SIZE = preferences.fretboardZoom
+		? 'relative flex w-[3.25rem] first:w-[2.5rem] sm:w-[4.55rem] sm:first:w-[3.25rem]'
+		: 'relative flex w-full';
 
 	const Frets = () => {
 		return (
@@ -49,7 +50,13 @@ export const Fretboard = () => {
 		return (
 			<div className='strings'>
 				{Object.entries(guitarNotes).map(([string, v], i) => (
-					<div className='string relative flex h-10 sm:h-12' key={i} data-string={string}>
+					<div
+						className={`string relative flex ${
+							preferences.fretboardZoom ? 'h-10 sm:h-12' : 'sm:h-12'
+						}`}
+						key={i}
+						data-string={string}
+					>
 						{Object.entries(v).map(([note, _v], fretIdx) => {
 							const intervalsAvailable = !chords[preferences.activeChord ?? -1]?.intervals?.length;
 							const chordNote =
@@ -73,7 +80,7 @@ export const Fretboard = () => {
 									<h4
 										className={`z-30 flex aspect-square items-center justify-center rounded-3xl border-[3px] border-neutral-800 font-medium text-neutral-900 shadow-sm shadow-neutral-500/60 
 										${fretIdx === 0 && !_v.active && !_v.chordTone ? '!bg-transparent !text-white !backdrop-blur' : ''} 
-										${fretIdx === 0 ? 'h-[90%] sm:h-[80%]' : 'h-full sm:h-[90%]'} ${noteBackground}`}
+										${fretIdx === 0 ? 'h-[90%] sm:h-[80%]' : 'h-[95%] sm:h-[90%]'} ${noteBackground}`}
 									>
 										{chordNote}
 									</h4>
@@ -88,7 +95,9 @@ export const Fretboard = () => {
 
 	return (
 		<div className='overflow-x-auto'>
-			<div className='guitar relative w-fit bg-cover p-0'>
+			<div
+				className={`guitar relative bg-cover p-0 ${preferences.fretboardZoom ? 'w-fit' : 'w-full'}`}
+			>
 				<Frets />
 				<Strings />
 			</div>

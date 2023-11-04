@@ -33,8 +33,8 @@ export const Navigation = () => {
 				className={`absolute left-2/4 z-50 w-full max-w-4xl -translate-x-2/4 overflow-hidden rounded-b-lg bg-neutral-900 transition-[height]  ${
 					activeOptions
 						? preferences.guitarTuning.includes('Custom')
-							? 'h-[19rem]'
-							: 'h-[17rem]'
+							? 'h-[21rem]'
+							: 'h-[19rem]'
 						: 'h-0'
 				}`}
 			>

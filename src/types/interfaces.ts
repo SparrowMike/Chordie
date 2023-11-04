@@ -47,6 +47,7 @@ export interface Preferences {
 	activeScale: number | null;
 	highlightNotes: boolean;
 	highlightPosition: boolean;
+	fretboardZoom: boolean;
 	guitarTuning: string;
 }
 
