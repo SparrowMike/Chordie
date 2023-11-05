@@ -1,6 +1,12 @@
 import { atom } from 'jotai';
 
-import { initialChordie, initialPreferences, initialGuitarFrets } from '../utils/defaults';
+import {
+	initialChordie,
+	initialPreferences,
+	initialGuitarFrets,
+	guitarTunings,
+} from '../utils/defaults';
+import { enharmonicMap, chromaticSharp } from '../utils/constants';
 
 import {
 	deepCopy,
@@ -23,9 +29,6 @@ import {
 	Preferences,
 	PreferencesAction,
 } from '../types/interfaces';
-
-import { enharmonicMap, guitarTunings } from '../utils/constants';
-import { chromaticSharp } from '../utils/constants';
 
 const localStoragePreference = localStorage.getItem('chordiePreferences');
 

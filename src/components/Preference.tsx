@@ -2,7 +2,8 @@ import { useAtom } from 'jotai';
 import { preferencesAtom, updatePreferencesAtom, chordsAtom } from './../controller/atoms';
 import { PreferencesAction, ToggleOptionProps } from '../types/interfaces';
 import { checkChordsExists } from '../utils/utils';
-import { chromaticSharp, guitarTunings } from '../utils/constants';
+import { chromaticSharp } from '../utils/constants';
+import { guitarTunings } from '../utils/defaults';
 
 const ToggleOption: React.FC<ToggleOptionProps> = ({
 	checked,

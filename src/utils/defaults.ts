@@ -1,4 +1,4 @@
-import { Preferences } from '../types/interfaces';
+import { GuitarTunings, Preferences } from '../types/interfaces';
 
 /**
  * Initial preferences for chord visualization.
@@ -50,3 +50,73 @@ export const initialGuitarFrets = [
 	{ fretNumber: 10, data: '' },
 	{ fretNumber: 11, data: '' },
 ];
+
+export const guitarTunings: GuitarTunings = {
+	'Standard Tuning': [
+		{ string: '1st String', note: 'e', octave: 4 },
+		{ string: '2nd String', note: 'B', octave: 3 },
+		{ string: '3rd String', note: 'G', octave: 3 },
+		{ string: '4th String', note: 'D', octave: 3 },
+		{ string: '5th String', note: 'A', octave: 2 },
+		{ string: '6th String', note: 'E', octave: 2 },
+	],
+	'Drop D Tuning': [
+		{ string: '1st String', note: 'e', octave: 4 },
+		{ string: '2nd String', note: 'B', octave: 3 },
+		{ string: '3rd String', note: 'G', octave: 3 },
+		{ string: '4th String', note: 'D', octave: 3 },
+		{ string: '5th String', note: 'A', octave: 2 },
+		{ string: '6th String', note: 'D', octave: 2 },
+	],
+	'Half-Step Down Tuning (Eb Standard)': [
+		{ string: '1st String', note: 'D#', octave: 4 },
+		{ string: '2nd String', note: 'A#', octave: 3 },
+		{ string: '3rd String', note: 'F#', octave: 3 },
+		{ string: '4th String', note: 'C#', octave: 3 },
+		{ string: '5th String', note: 'G#', octave: 2 },
+		{ string: '6th String', note: 'D#', octave: 2 },
+	],
+	'Drop C Tuning': [
+		{ string: '1st String', note: 'D', octave: 4 },
+		{ string: '2nd String', note: 'A', octave: 3 },
+		{ string: '3rd String', note: 'F', octave: 3 },
+		{ string: '4th String', note: 'C', octave: 3 },
+		{ string: '5th String', note: 'G', octave: 2 },
+		{ string: '6th String', note: 'C', octave: 2 },
+	],
+	'Open G Tuning': [
+		{ string: '1st String', note: 'D', octave: 4 },
+		{ string: '2nd String', note: 'B', octave: 3 },
+		{ string: '3rd String', note: 'G', octave: 3 },
+		{ string: '4th String', note: 'D', octave: 3 },
+		{ string: '5th String', note: 'G', octave: 2 },
+		{ string: '6th String', note: 'D', octave: 2 },
+	],
+	'Open D Tuning': [
+		{ string: '1st String', note: 'D', octave: 4 },
+		{ string: '2nd String', note: 'A', octave: 3 },
+		{ string: '3rd String', note: 'F#', octave: 3 },
+		{ string: '4th String', note: 'D', octave: 3 },
+		{ string: '5th String', note: 'A', octave: 2 },
+		{ string: '6th String', note: 'D', octave: 2 },
+	],
+	'Open E Tuning': [
+		{ string: '1st String', note: 'e', octave: 4 },
+		{ string: '2nd String', note: 'B', octave: 3 },
+		{ string: '3rd String', note: 'G#', octave: 3 },
+		{ string: '4th String', note: 'E', octave: 3 },
+		{ string: '5th String', note: 'B', octave: 2 },
+		{ string: '6th String', note: 'E', octave: 2 },
+	],
+	'Custom Tuning': [
+		{ string: '1st String', note: 'B', octave: 3 },
+		{ string: '2nd String', note: 'F#', octave: 3 },
+		{ string: '3rd String', note: 'D', octave: 3 },
+		{ string: '4th String', note: 'A', octave: 2 },
+		{ string: '5th String', note: 'E', octave: 2 },
+		{ string: '6th String', note: 'B', octave: 1 },
+	],
+};
+
+const localStorageCustomTuning = localStorage.getItem('chordieCustomTuning');
+if (localStorageCustomTuning) guitarTunings['Custom Tuning'] = JSON.parse(localStorageCustomTuning);

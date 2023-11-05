@@ -1,5 +1,7 @@
 import { ChordInfo, Chordie, GuitarNotes } from '../types/interfaces';
-import { guitarTunings, enharmonicMap, chromaticSharp } from './constants';
+import { enharmonicMap, chromaticSharp } from './constants';
+import { guitarTunings } from './defaults';
+
 import { get as getChordData, getChord as getChordDataSymbol } from '@tonaljs/chord'; //? ----- tbc { chordScales }
 import { detect as detectChord } from '@tonaljs/chord-detect';
 
