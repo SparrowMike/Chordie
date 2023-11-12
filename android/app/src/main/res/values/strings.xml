@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">chordie</string>
+    <string name="title_activity_main">chordie</string>
+    <string name="package_name">com.chordie.app</string>
+    <string name="custom_url_scheme">com.chordie.app</string>
+</resources>

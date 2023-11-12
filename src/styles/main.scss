@@ -11,6 +11,22 @@
 	color: inherit;
 }
 
+.app-navbar-notch {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 99;
+	height: env(safe-area-inset-top);
+	background-color: black;
+}
+
+body {
+	margin-top: constant(safe-area-inset-top);
+	margin-top: env(safe-area-inset-top);
+	margin-bottom: calc(4px + env(safe-area-inset-top));
+}
+
 html,
 body {
 	background-color: black;

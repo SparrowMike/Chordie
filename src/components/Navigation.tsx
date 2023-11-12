@@ -15,7 +15,7 @@ export const Navigation = () => {
 	};
 
 	return (
-		<div className='navigation fixed top-0 z-50 w-full bg-neutral-900'>
+		<div className='navigation fixed z-50 w-full bg-neutral-900'>
 			<div className='m-auto flex h-10 max-w-4xl items-center justify-between px-4 py-2'>
 				{Object.values(chordie).filter((el) => el).length > 0 && (
 					<button
