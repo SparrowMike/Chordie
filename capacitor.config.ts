@@ -5,8 +5,9 @@ const config: CapacitorConfig = {
 	appName: 'chordie',
 	webDir: 'dist',
 	server: {
-		url: 'http://192.168.18.5:5173/',
-		cleartext: true,
+		// androidScheme: 'https',
+		// url: 'http://192.168.18.5:5173/',
+		// cleartext: true,
 	},
 };
 
