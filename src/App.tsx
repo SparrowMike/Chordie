@@ -24,10 +24,12 @@ function App() {
 		<div className='App overflow-hidden text-white'>
 			<div className='app-navbar-notch'></div>
 			<Navigation />
-			<div className='m-auto max-w-4xl space-y-2 px-2 pb-5 pt-12 sm:px-5 sm:pt-14'>
+			<div className='m-auto max-w-4xl space-y-2 pb-5 pt-11 sm:px-5 sm:pt-14'>
 				<Fretboard />
-				<ChordsInfo />
-				{preferences.showScales && <Scales />}
+				<div className='px-2 sm:px-0'>
+					<ChordsInfo />
+					{preferences.showScales && <Scales />}
+				</div>
 			</div>
 		</div>
 	);

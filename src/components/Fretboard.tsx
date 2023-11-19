@@ -70,7 +70,7 @@ export const Fretboard = () => {
 								: 'bg-orange-800/90';
 							return (
 								<div
-									className={`note relative z-30 flex cursor-pointer items-center justify-center text-black opacity-0 ${FRET_SIZE} ${
+									className={`note relative z-30 flex aspect-square cursor-pointer items-center justify-center text-black opacity-0 ${FRET_SIZE} ${
 										isMobile ? '' : 'hover:opacity-100'
 									} ${_v.active || _v.chordTone || fretIdx === 0 ? 'opacity-100' : ''}`}
 									key={fretIdx}
@@ -80,7 +80,7 @@ export const Fretboard = () => {
 									<h4
 										className={`z-30 flex aspect-square items-center justify-center rounded-3xl border-[3px] border-neutral-800 font-medium text-neutral-900 shadow-sm shadow-neutral-500/60 
 										${fretIdx === 0 && !_v.active && !_v.chordTone ? '!bg-transparent !text-white !backdrop-blur' : ''} 
-										${fretIdx === 0 ? 'h-[90%] sm:h-[80%]' : 'h-[95%] sm:h-[90%]'} ${noteBackground}`}
+										${fretIdx === 0 ? 'h-[80%] sm:h-[85%]' : 'h-[90%] sm:h-[95%]'} ${noteBackground}`}
 									>
 										{chordNote}
 									</h4>

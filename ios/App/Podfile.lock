@@ -2,27 +2,21 @@ PODS:
   - Capacitor (5.5.1):
     - CapacitorCordova
   - CapacitorCordova (5.5.1)
-  - CapawesomeCapacitorAppUpdate (5.0.1):
-    - Capacitor
 
 DEPENDENCIES:
   - "Capacitor (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
-  - "CapawesomeCapacitorAppUpdate (from `../../node_modules/@capawesome/capacitor-app-update`)"
 
 EXTERNAL SOURCES:
   Capacitor:
     :path: "../../node_modules/@capacitor/ios"
   CapacitorCordova:
     :path: "../../node_modules/@capacitor/ios"
-  CapawesomeCapacitorAppUpdate:
-    :path: "../../node_modules/@capawesome/capacitor-app-update"
 
 SPEC CHECKSUMS:
   Capacitor: 9da0a2415e3b6098511f8b5ffdb578d91ee79f8f
   CapacitorCordova: e128cc7688c070ca0bfa439898a5f609da8dbcfe
-  CapawesomeCapacitorAppUpdate: abbfaa26fe3817dce42bd722731acc23e7a3274c
 
-PODFILE CHECKSUM: 2582fe88aa5464cb7415ffb2d3c3a0286b442e7c
+PODFILE CHECKSUM: 8ab55909c5de2b217f9841e5e5b329f5ec901553
 
 COCOAPODS: 1.14.2
