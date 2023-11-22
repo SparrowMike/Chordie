@@ -2,7 +2,7 @@
 	"name": "Chordie",
 	"short_name": "Chordie",
 	"description": "Chordie is an innovative tool designed specifically for guitar enthusiasts, educators, and students. With its intuitive interface, it simplifies the process of detecting chords, offering real-time feedback as users interact with a virtual fretboard.",
-	"start_url": "https://chordie-eight.vercel.app/",
+	"start_url": "/",
 	"display": "standalone",
 	"lang": "en",
 	"dir": "auto",
