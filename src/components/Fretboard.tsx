@@ -70,9 +70,11 @@ export const Fretboard = () => {
 								: 'bg-orange-800/90';
 							return (
 								<div
-									className={`note relative z-30 flex aspect-square cursor-pointer items-center justify-center text-black opacity-0 ${FRET_SIZE} ${
-										isMobile ? '' : 'hover:opacity-100'
-									} ${_v.active || _v.chordTone || fretIdx === 0 ? 'opacity-100' : ''}`}
+									className={`note relative z-30 flex cursor-pointer items-center justify-center text-black opacity-0 ${FRET_SIZE} ${
+										!preferences.fretboardZoom && 'aspect-square'
+									}${isMobile ? '' : 'hover:opacity-100'} ${
+										_v.active || _v.chordTone || fretIdx === 0 ? 'opacity-100' : ''
+									}`}
 									key={fretIdx}
 									onClick={() => setChordie(string, note)}
 									data-note={chordNote}
