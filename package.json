@@ -7,7 +7,7 @@
 		"dev": "cross-env NODE_ENV=development vite",
 		"dev:android": "cross-env NODE_ENV=development bunx cap run android",
 		"dev:ios": "cross-env NODE_ENV=development bunx cap run ios",
-		"build": "tsc && vite build && bunx cap sync",
+		"build": "tsc && vite build",
 		"lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
 		"prettier": "prettier --write '**/*.{js,jsx,tsx,ts,scss,md,json}' --ignore-path .prettierignore",
 		"preview": "vite preview",
@@ -15,7 +15,7 @@
 	},
 	"gitHooks": {
 		"pre-commit": "lint-staged",
-		"pre-push": "bun run build"
+		"pre-push": "bun run build && bunx cap sync"
 	},
 	"lint-staged": {
 		"*.{js,jsx,scss,md,json}": [
