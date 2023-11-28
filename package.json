@@ -11,11 +11,7 @@
 		"lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
 		"prettier": "prettier --write '**/*.{js,jsx,tsx,ts,scss,md,json}' --ignore-path .prettierignore",
 		"preview": "vite preview",
-		"postinstall": "husky install && chmod +x .husky/*"
-	},
-	"gitHooks": {
-		"pre-commit": "lint-staged",
-		"pre-push": "bun run build && bunx cap sync"
+		"prepare": "husky install"
 	},
 	"lint-staged": {
 		"*.{js,jsx,scss,md,json}": [
@@ -52,7 +48,7 @@
 		"eslint": "^8.45.0",
 		"eslint-plugin-react-hooks": "^4.6.0",
 		"eslint-plugin-react-refresh": "^0.4.3",
-		"husky": "^8.0.3",
+		"husky": "^8.0.0",
 		"postcss": "^8.4.30",
 		"prettier": "^3.0.3",
 		"prettier-plugin-tailwindcss": "^0.5.4",
