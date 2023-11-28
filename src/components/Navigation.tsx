@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { useAtom } from 'jotai';
-import { handleFullResetAtom, chordieAtom, preferencesAtom } from './../controller/atoms';
+import { handleFullResetAtom, chordieAtom } from './../controller/atoms';
 import { Preference } from './Preference';
 
 export const Navigation = () => {
 	const [activeOptions, setActiveOptions] = useState(false);
 	const [, handleFullReset] = useAtom(handleFullResetAtom);
-	const [preferences] = useAtom(preferencesAtom);
 	const [chordie] = useAtom(chordieAtom);
 
 	const handleDropDown = (e: React.MouseEvent) => {
@@ -31,11 +30,7 @@ export const Navigation = () => {
 			</div>
 			<div
 				className={`absolute left-2/4 z-50 w-full max-w-4xl -translate-x-2/4 overflow-hidden rounded-b-lg bg-neutral-900 transition-[height]  ${
-					activeOptions
-						? preferences.guitarTuning.includes('Custom')
-							? 'h-[21rem]'
-							: 'h-[19rem]'
-						: 'h-0'
+					activeOptions ? 'h-fit' : 'h-0'
 				}`}
 			>
 				<Preference />

@@ -7,7 +7,7 @@ export const ChordsInfo = () => {
 	const [, setPreferences] = useAtom(updatePreferencesAtom);
 
 	return (
-		<div className='notes '>
+		<div className='notes'>
 			{Object.keys(chords).length ? (
 				<>
 					<h2 className='text-2xl'>Detected chords:</h2>
@@ -16,7 +16,7 @@ export const ChordsInfo = () => {
 							<li
 								key={chordIndex}
 								onClick={() => setPreferences({ type: 'SET_ACTIVE_CHORD', chordIndex })}
-								className={`w-full border-2 border-transparent p-2 text-xl sm:w-1/2 ${
+								className={`w-full cursor-pointer border-2 border-transparent p-2 text-xl sm:w-1/2 ${
 									preferences.activeChord === chordIndex ? 'rounded-lg border-yellow-600' : ''
 								}`}
 							>

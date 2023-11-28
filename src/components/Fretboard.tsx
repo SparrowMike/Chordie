@@ -9,8 +9,6 @@ import {
 } from './../controller/atoms';
 import { musicalColorsClasses } from '../utils/constants';
 
-// import { majorKey, minorKey } from '@tonaljs/key';
-
 export const Fretboard = () => {
 	const [chords] = useAtom(chordsAtom);
 	const [frets] = useAtom(fretsAtom);

@@ -26,7 +26,7 @@ function App() {
 			<Navigation />
 			<div className='m-auto max-w-4xl space-y-2 pb-5 pt-11 sm:px-5 sm:pt-14'>
 				<Fretboard />
-				<div className='px-2 sm:px-0'>
+				<div className='space-y-2 px-2 sm:px-0'>
 					<ChordsInfo />
 					{preferences.showScales && <Scales />}
 				</div>

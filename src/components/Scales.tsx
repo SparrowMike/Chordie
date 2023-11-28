@@ -23,7 +23,7 @@ export const Scales = () => {
 				<div
 					onClick={() => handleUpdateScale(scale, idx)}
 					key={idx}
-					className={`border-2 border-transparent px-2 py-1 text-xl ${
+					className={`cursor-pointer border-2 border-transparent px-2 py-1 text-xl ${
 						idx === preferences.activeScale ? 'rounded-lg border-yellow-600' : ''
 					}`}
 				>

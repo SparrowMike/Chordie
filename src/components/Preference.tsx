@@ -14,7 +14,7 @@ const ToggleOption: React.FC<ToggleOptionProps> = ({
 }) => (
 	<label className='flex items-center gap-2 text-xl accent-yellow-600'>
 		<input className='h-4 w-4' type={type} checked={checked} onChange={onChange} {...props} />
-		<p className='whitespace-nowrap'>{label}</p>
+		<p>{label}</p>
 	</label>
 );
 
@@ -33,7 +33,10 @@ export const Preference = () => {
 				<select
 					value={preferences.guitarTuning}
 					onChange={(event) =>
-						handleSetPreferences({ type: 'SET_GUITAR_TUNING', guitarTuning: event.target.value })
+						handleSetPreferences({
+							type: 'SET_GUITAR_TUNING',
+							guitarTuning: event.target.value,
+						})
 					}
 					className='h-8 w-full rounded-md border border-gray-600 bg-gray-800'
 				>

@@ -26,9 +26,6 @@
 		]
 	},
 	"dependencies": {
-		"@capacitor/android": "^5.5.1",
-		"@capacitor/core": "^5.5.1",
-		"@capacitor/ios": "^5.5.1",
 		"@tonaljs/chord": "^5.0.0",
 		"@tonaljs/chord-detect": "^4.8.2",
 		"@tonaljs/key": "^4.9.1",
@@ -40,6 +37,9 @@
 		"react-ga4": "^2.1.0"
 	},
 	"devDependencies": {
+		"@capacitor/android": "^5.5.1",
+		"@capacitor/core": "^5.5.1",
+		"@capacitor/ios": "^5.5.1",
 		"@capacitor/assets": "^3.0.1",
 		"@capacitor/cli": "^5.5.1",
 		"@types/react": "^18.2.15",
