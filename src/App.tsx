@@ -14,10 +14,15 @@ function App() {
 	const [, trigger] = useAtom(initialChordieAtom);
 	const localStorageChordie = localStorage.getItem('chordie');
 
-	useEffect(() => {
-		ReactGA.initialize('G-T8JLT44E6N');
+	let didInit = false;
 
-		if (localStorageChordie) trigger(JSON.parse(localStorageChordie)); //! --- will cause double log on boot
+	useEffect(() => {
+		if (!didInit) {
+			didInit = true;
+			ReactGA.initialize('G-T8JLT44E6N');
+
+			if (localStorageChordie) trigger(JSON.parse(localStorageChordie));
+		}
 	}, []);
 
 	return (
