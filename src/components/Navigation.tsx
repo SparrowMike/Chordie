@@ -29,7 +29,7 @@ export const Navigation = () => {
 				</button>
 			</div>
 			<div
-				className={`absolute left-2/4 z-50 w-full max-w-4xl -translate-x-2/4 overflow-hidden rounded-t-lg bg-neutral-900 transition-[height]  ${
+				className={`fixed bottom-0 left-2/4 z-50 w-full max-w-4xl -translate-x-2/4 overflow-hidden rounded-t-lg bg-neutral-900 transition-[height]  ${
 					activeOptions ? 'h-fit' : 'h-0'
 				}`}
 			>
