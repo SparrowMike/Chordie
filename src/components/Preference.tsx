@@ -110,7 +110,7 @@ export const Preference = () => {
 	};
 
 	return (
-		<div className='options m-auto flex flex-col p-4 pt-0'>
+		<div className='options m-auto flex flex-col p-4'>
 			<h2 className='text-2xl'>Chord Options</h2>
 
 			<ToggleOption
